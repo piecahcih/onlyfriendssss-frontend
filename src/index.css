@@ -1,2 +1,114 @@
 @import "tailwindcss";
 @plugin "daisyui";
+@import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+.bai-jamjuree-extralight {
+  font-family: "Bai Jamjuree", sans-serif;
+  font-weight: 200;
+  font-style: normal;
+}
+
+.bai-jamjuree-light {
+  font-family: "Bai Jamjuree", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.bai-jamjuree-regular {
+  font-family: "Bai Jamjuree", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.bai-jamjuree-medium {
+  font-family: "Bai Jamjuree", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.bai-jamjuree-semibold {
+  font-family: "Bai Jamjuree", sans-serif;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.bai-jamjuree-bold {
+  font-family: "Bai Jamjuree", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.bai-jamjuree-extralight-italic {
+  font-family: "Bai Jamjuree", sans-serif;
+  font-weight: 200;
+  font-style: italic;
+}
+
+.bai-jamjuree-light-italic {
+  font-family: "Bai Jamjuree", sans-serif;
+  font-weight: 300;
+  font-style: italic;
+}
+
+.bai-jamjuree-regular-italic {
+  font-family: "Bai Jamjuree", sans-serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.bai-jamjuree-medium-italic {
+  font-family: "Bai Jamjuree", sans-serif;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.bai-jamjuree-semibold-italic {
+  font-family: "Bai Jamjuree", sans-serif;
+  font-weight: 600;
+  font-style: italic;
+}
+
+.bai-jamjuree-bold-italic {
+  font-family: "Bai Jamjuree", sans-serif;
+  font-weight: 700;
+  font-style: italic;
+}
+
+@theme {
+    --font-sans: "Bai Jamjuree", sans-serif, system-ui, sans-serif;
+}
+
+@plugin "daisyui/theme" {
+    name: "light";
+    default: true;
+
+    /* Base background and text */  
+    --color-base-100: #f1f1f1;   
+    --color-base-200: #FBF9F6;  /*bg*/ 
+    --color-base-300: #E4E4E4;   /*searchgray*/   
+    --color-base-content: #676767; 
+
+    /* Primary */
+    --color-primary: #FC5100;          
+    --color-primary-focus: #D44A1B;    
+    --color-primary-content: #000000;
+
+    /* Secondary */
+    --color-secondary: #FF7F50;          
+    --color-secondary-focus: #F59F65;    
+    --color-secondary-content: #ffffff;/*white/search*/
+
+    /* Neutral: Gray for secondary/primary text */
+    --color-neutral: #505050;
+    --color-neutral-focus: #000000;
+    --color-neutral-content: #ffffff;
+
+    /* Status colors */
+    --color-info: #4285F4;
+    --color-success: #42B72A;
+    --color-warning: #F7B928;
+    --color-error: #CF0000;
+
+
+
+}
