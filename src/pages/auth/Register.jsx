@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router'
+import { NavLink, useNavigate } from 'react-router'
 import { AppleLogo, FacebookLogo, GoogleLogo } from '../../icons'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -14,12 +14,27 @@ function Register() {
   })
   const {errors, isSubmitting, isValid} = formState
 
+  const navigate = useNavigate()
+
+  const onSubmit = async (body) => {
+    try {
+        await new Promise(resolve => setTimeout(resolve, 2000))
+        //add functionlogin from back
+
+        navigate('/identify-verification')
+    } catch (error) {
+        const errMsg = error.response?.data.message || error.message
+        console.error(errMsg)
+    }
+  }
+
   const inpStyle = 'bg-base-100 rounded-[18px] px-5 py-2 w-[315px]'
   return (
     <div className='bg-base-200 min-h-screen'>
       <div className="flex flex-col items-center pt-14">
         <h1 className='text-primary text-[32px] bai-jamjuree-bold my-8'>onlyfriendssss</h1>
-        <form action="">
+
+        <form onSubmit={handleSubmit(onSubmit)}>
           <fieldset>
             <div className="flex flex-col gap-2.5">
               <div className="flex flex-col gap-1.5">
