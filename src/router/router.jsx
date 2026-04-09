@@ -9,6 +9,8 @@ import CreateAct from "../pages/CreateAct";
 import Chat from "../pages/Chat";
 import Profile from "../pages/Profile";
 import Login from "../pages/auth/Login";
+import Add2Interest from "../pages/auth/Add2Interest";
+import Add1Profile from "../pages/auth/Add1Profile";
 
 const guestRouter = createBrowserRouter([
     {
@@ -26,7 +28,15 @@ const guestRouter = createBrowserRouter([
             {
                 path: 'identify-verification',
                 element:<IdenVeri/>
-            }
+            },
+            {
+                path: 'add-profile',
+                element:<Add1Profile/>
+            },
+            {
+                path: 'add-interest',
+                element:<Add2Interest/>
+            },
         ]
     }
 ])
