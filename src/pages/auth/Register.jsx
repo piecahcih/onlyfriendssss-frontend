@@ -2,11 +2,15 @@ import { NavLink } from 'react-router'
 import { AppleLogo, FacebookLogo, GoogleLogo } from '../../icons'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { registerSchema } from '../../validators/schema'
 
 function Register() {
   const {register, handleSubmit, formState} = useForm({
-    // resolver: zodResolver(registerSchema),
-    mode: 'onSubmit'
+    resolver: zodResolver(registerSchema),
+    mode: 'onSubmit',
+    defaultValues: {
+        email:'', password: '', confirmPassword: '', firstName: '', lastName: ''
+    }
   })
   const {errors, isSubmitting, isValid} = formState
 
@@ -45,9 +49,10 @@ function Register() {
               </div>
 
             </div>
+
+            <button className="bg-primary text-white bai-jamjuree-bold rounded-[18px] px-5 py-2 w-[315px] mt-8">Register</button>
           </fieldset>
 
-          <button className="bg-primary text-white bai-jamjuree-bold rounded-[18px] px-5 py-2 w-[315px] mt-8">Register</button>
         </form>
 
     <div className="divider mx-12 text-[12px]">OR</div>

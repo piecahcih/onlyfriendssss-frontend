@@ -2,10 +2,11 @@ import { NavLink } from 'react-router'
 import { AppleLogo, FacebookLogo, GoogleLogo } from '../../icons'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { loginSchema } from '../../validators/schema'
 
 function Login() {
-  const {register, handleSubmit, formState} = useForm({
-    // resolver: zodResolver(loginSchema),
+  const {register, handleSubmit, formState, reset} = useForm({
+    resolver: zodResolver(loginSchema),
     mode: 'onSubmit'
   })
   const {errors, isSubmitting, isValid} = formState
@@ -29,9 +30,14 @@ function Login() {
                   className={inpStyle}/>
               </div>
             </div>
+            <div className="flex">
+                <input type="checkbox" className="ml-4 mr-2 accent-primary" {...register('rememberMe')}/>
+                <p>Remember Me</p>
+            </div>
+
+            <button className="bg-primary text-white bai-jamjuree-bold rounded-[18px] px-5 py-2 w-[315px] mt-8">Login</button>
           </fieldset>
 
-          <button className="bg-primary text-white bai-jamjuree-bold rounded-[18px] px-5 py-2 w-[315px] mt-8">Login</button>
         </form>
 
     <div className="divider mx-12 text-[12px]">OR</div>
