@@ -3,9 +3,9 @@ import { AppleLogo, FacebookLogo, GoogleLogo } from '../../icons'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-function Register() {
+function Login() {
   const {register, handleSubmit, formState} = useForm({
-    // resolver: zodResolver(registerSchema),
+    // resolver: zodResolver(loginSchema),
     mode: 'onSubmit'
   })
   const {errors, isSubmitting, isValid} = formState
@@ -28,26 +28,10 @@ function Register() {
                 <input type="password" placeholder="Password" {...register('password')} 
                   className={inpStyle}/>
               </div>
-              <div className="flex flex-col gap-1.5">
-                <h3 className='bai-jamjuree-semibold'>Confirm Password</h3>
-                <input type="password" placeholder="Confirm Password" {...register('confirmPassword')} 
-                  className={inpStyle}/>
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <h3 className='bai-jamjuree-semibold'>Firstname</h3>
-                <input type="text" placeholder="Firstname" {...register('firstName')} 
-                  className={inpStyle}/>
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <h3 className='bai-jamjuree-semibold'>Lastname</h3>
-                <input type="text" placeholder="Lastname" {...register('lastName')} 
-                  className={inpStyle}/>
-              </div>
-
             </div>
           </fieldset>
 
-          <button className="bg-primary text-white bai-jamjuree-bold rounded-[18px] px-5 py-2 w-[315px] mt-8">Register</button>
+          <button className="bg-primary text-white bai-jamjuree-bold rounded-[18px] px-5 py-2 w-[315px] mt-8">Login</button>
         </form>
 
     <div className="divider mx-12 text-[12px]">OR</div>
@@ -57,11 +41,11 @@ function Register() {
           <GoogleLogo className="bg-base-100 rounded-full p-2"/>
           <AppleLogo className="bg-base-100 rounded-full p-2"/>
         </div>
-        
-        <p className="text-[12px] text-center mt-5">Already have account? <span className="underline"><NavLink to="/login">Login</NavLink></span></p>
+
+        <p className="text-[12px] text-center mt-5">Don't have an account? <span className="underline"><NavLink to="/">Sign up</NavLink></span></p>
       </div>
     </div>
   )
 }
 
-export default Register
+export default Login

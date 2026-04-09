@@ -1,9 +1,9 @@
-import Register from "../pages/auth/Register"
+import { Outlet } from "react-router"
 
 function GuestLayout() {
   return (
     <div>
-        <Register/>
+        <Outlet/>
     </div>
   )
 }

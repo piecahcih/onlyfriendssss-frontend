@@ -8,6 +8,7 @@ import Activities from "../pages/Activities";
 import CreateAct from "../pages/CreateAct";
 import Chat from "../pages/Chat";
 import Profile from "../pages/Profile";
+import Login from "../pages/auth/Login";
 
 const guestRouter = createBrowserRouter([
     {
@@ -17,6 +18,10 @@ const guestRouter = createBrowserRouter([
             {
                 index: true,
                 element: <Register/>
+            },
+            {
+                path: 'login',
+                element:<Login/>
             },
             {
                 path: 'identify-verification',
