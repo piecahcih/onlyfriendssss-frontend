@@ -1,0 +1,43 @@
+import { z } from "zod";
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Register schema
+export const registerSchema = z
+  .object({
+    email: z
+      .string()
+      .trim()
+      .min(2, "Must have morethan 2 characters")
+      .email("Invalid email")
+      .refine((val) => emailRegex.test(val), "Email is required"),
+    password: z.string().min(6, "Password must be morethan 6 characters"),
+    confirmPassword: z.string().min(2, "Confirm password is required"),
+    firstname: z
+      .string()
+      .trim()
+      .min(3, "firstname must be at least 3 characters"),
+    lastname: z
+      .string()
+      .trim()
+      .min(3, "lasttname must be at least 3 characters"),
+    role: z.enum(["USER", "ADMIN"]).optional().default("USER"),
+  })
+  .refine((inp) => inp.password === inp.confirmPassword, {
+    message: "Password do not match",
+    path: ["confirmPassword"],
+  })
+
+
+//Login schema
+export const loginSchema = z
+  .object({
+    email: z
+      .string()
+      .min(2, "Email is required")
+      .refine((val) => emailRegex.test(val), {
+        message: "Email invalid",
+      }),
+    password: z.string().min(3, "Password must be least 3 characters"),
+    rememberMe: z.boolean().optional()
+  })
