@@ -5,12 +5,16 @@ import IdenVeri from "../pages/auth/IdenVeri";
 import UserLayout from "../layouts/UserLayout";
 import LDDiscover from "../pages/LDDiscover";
 import Activities from "../pages/Activities";
-import CreateAct from "../pages/CreateAct";
-import Chat from "../pages/Chat";
+import Chat from "../pages/chat/Chat";
 import Profile from "../pages/Profile";
 import Login from "../pages/auth/Login";
 import Add2Interest from "../pages/auth/Add2Interest";
 import Add1Profile from "../pages/auth/Add1Profile";
+import CreateActivity from "../pages/create/CreateActivity";
+import ChooseLocation from "../pages/create/ChooseLocation";
+import ShowCreate from "../pages/create/ShowCreate";
+import InsideChat from "../pages/chat/InsideChat";
+import Welcome from "../pages/Welcome";
 
 const guestRouter = createBrowserRouter([
     {
@@ -51,16 +55,32 @@ const userRouter = createBrowserRouter([
                 element: <LDDiscover/>
             },
             {
+                path: 'welcome',
+                element: <Welcome/>
+            },
+            {
                 path: 'activities',
                 element: <Activities/>
             },
             {
                 path:'create',
-                element: <CreateAct/>
+                element: <CreateActivity/>
+            },
+            {
+                path:'create-chooselocation',
+                element: <ChooseLocation/>
+            },
+            {
+                path:'create-showcreate',
+                element: <ShowCreate/>
             },
             {
                 path:'chat',
                 element: <Chat/>
+            },
+            {
+                path:'chat/:name',
+                element: <InsideChat/>
             },
             {
                 path:'profile',
