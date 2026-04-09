@@ -1,9 +1,15 @@
-import React from 'react'
+import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 
-function userStore() {
-  return (
-    <div>userStore</div>
-  )
-}
+const useUserStore = create(persist((set,get)=>({
+  user: null,
+  token: '',
+  rememberMe: false,
+  logout: () => {
+    set({ token: '', user: null})
+    localStorage.removeItem('userState')
+  }
 
-export default userStore
+}), { name: 'OFsssUserState', storage: createJSONStorage(() => localStorage) }))
+
+export default useUserStore
