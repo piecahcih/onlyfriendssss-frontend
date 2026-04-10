@@ -13,7 +13,7 @@ export function SearchIcon(props) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function DiscoveryIcon(props) {
@@ -27,7 +27,7 @@ export function DiscoveryIcon(props) {
     >
       <path d="M12 24C5.4 24 0 18.6 0 12S5.4 0 12 0s12 5.4 12 12-5.4 12-12 12zm-2.5-7c.6 3.1 1.7 5 2.5 5s1.9-1.9 2.5-5h-5zm7.1 0c-.3 1.7-.8 3.3-1.4 4.5 2.3-.8 4.3-2.4 5.5-4.5h-4.1zM3.3 17c1.2 2.1 3.2 3.7 5.5 4.5-.6-1.2-1.1-2.8-1.4-4.5H3.3zm13.6-2h4.7c.2-.9.4-2 .4-3s-.2-2.1-.5-3h-4.7c.2 1 .2 2 .2 3s0 2-.1 3zm-7.7 0h5.7c.1-.9.2-1.9.2-3s-.1-2.1-.2-3H9.2c-.1.9-.2 1.9-.2 3s.1 2.1.2 3zm-6.7 0h4.7c-.1-1-.1-2-.1-3s0-2 .1-3H2.5c-.3.9-.5 2-.5 3s.2 2.1.5 3zm14.1-8h4.1c-1.2-2.1-3.2-3.7-5.5-4.5.6 1.2 1.1 2.8 1.4 4.5zM9.5 7h5.1c-.6-3.1-1.7-5-2.5-5s-2 1.9-2.6 5zM3.3 7h4.1c.3-1.7.8-3.3 1.4-4.5-2.3.8-4.2 2.4-5.5 4.5z" />
     </svg>
-  )
+  );
 }
 
 export function CreateIcon(props) {
@@ -47,23 +47,33 @@ export function CreateIcon(props) {
         />
       </g>
     </svg>
-  )
+  );
 }
 
 export function ChatIcon(props) {
   return (
-    <svg fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <svg
+      fill="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
       <path d="M22 3a1 1 0 00-1-1H3a1 1 0 00-1 1v14a1 1 0 001 1h5.5l2.7 3.6a1 1 0 001.6 0l2.7-3.6H21a1 1 0 001-1zm-2 13h-5a1 1 0 00-.8.4L12 19.333 9.8 16.4A1 1 0 009 16H4V4h16zM7 8a1 1 0 011-1h8a1 1 0 010 2H8a1 1 0 01-1-1zm0 5a1 1 0 011-1h4a1 1 0 010 2H8a1 1 0 01-1-1z" />
     </svg>
-  )
+  );
 }
 
 export function FacebookLogo(props) {
-    return (
-    <svg fill="currentColor" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" {...props}>
+  return (
+    <svg
+      fill="currentColor"
+      viewBox="0 0 32 32"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
       <path d="M30.996 16.091C30.995 7.81 24.282 1.097 16 1.097S1.004 7.811 1.004 16.093c0 7.455 5.44 13.639 12.566 14.8l.086.012V20.427H9.848v-4.336h3.808v-3.302a5.293 5.293 0 015.684-5.834l-.018-.001c1.199.017 2.359.123 3.491.312l-.134-.019v3.69h-1.892a2.168 2.168 0 00-2.444 2.351l-.001-.009v2.812h4.159l-.665 4.336h-3.494v10.478c7.213-1.174 12.653-7.359 12.654-14.814z" />
     </svg>
-  )
+  );
 }
 
 export function GoogleLogo(props) {
@@ -92,7 +102,7 @@ export function GoogleLogo(props) {
         />
       </g>
     </svg>
-  )
+  );
 }
 
 export function AppleLogo(props) {
@@ -107,7 +117,7 @@ export function AppleLogo(props) {
         fillRule="evenodd"
       />
     </svg>
-  )
+  );
 }
 
 export function PhotoIcon(props) {
@@ -120,9 +130,20 @@ export function PhotoIcon(props) {
         transform="translate(-473 -244)"
       />
     </svg>
-  )
+  );
 }
 
-export function CIcon(props) {
+export function CIcon(props) {}
 
+export function Notification(props) {
+  return (
+    <svg
+      fill="currentColor"
+      viewBox="0 0 640 640"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path d="M320 64C302.3 64 288 78.3 288 96L288 99.2C215 114 160 178.6 160 256L160 277.7C160 325.8 143.6 372.5 113.6 410.1L103.8 422.3C98.7 428.6 96 436.4 96 444.5C96 464.1 111.9 480 131.5 480L508.4 480C528 480 543.9 464.1 543.9 444.5C543.9 436.4 541.2 428.6 536.1 422.3L526.3 410.1C496.4 372.5 480 325.8 480 277.7L480 256C480 178.6 425 114 352 99.2L352 96C352 78.3 337.7 64 320 64zM258 528C265.1 555.6 290.2 576 320 576C349.8 576 374.9 555.6 382 528L258 528z" />
+    </svg>
+  );
 }

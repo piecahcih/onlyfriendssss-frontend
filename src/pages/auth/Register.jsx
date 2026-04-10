@@ -8,14 +8,14 @@ import mainApi from '../../api/mainApi'
 function Register() {
   const { register, handleSubmit, formState } = useForm({
     resolver: zodResolver(registerSchema),
-    mode: 'onSubmit',
+    mode: "onSubmit",
     defaultValues: {
       email: '', password: '', confirmPassword: '', firstName: '', lastName: ''
     }
   })
   const { errors, isSubmitting, isValid } = formState
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     console.log("Submit clicked!", data)
@@ -29,13 +29,15 @@ function Register() {
       const errMsg = error.response?.data.message || error.message
       console.error(errMsg)
     }
-  }
+  };
 
-  const inpStyle = 'bg-base-100 rounded-[18px] px-5 py-2 w-[315px]'
+  const inpStyle = "bg-base-100 rounded-[18px] px-5 py-2 w-[315px]";
   return (
-    <div className='bg-base-200 min-h-screen'>
+    <div className="bg-base-200 min-h-screen">
       <div className="flex flex-col items-center pt-14">
-        <h1 className='text-primary text-[32px] bai-jamjuree-bold my-8'>onlyfriendssss</h1>
+        <h1 className="text-primary text-[32px] bai-jamjuree-bold my-8">
+          onlyfriendssss
+        </h1>
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <fieldset>
@@ -65,7 +67,6 @@ function Register() {
                 <input type="text" placeholder="Lastname" {...register('lastName')}
                   className={inpStyle} />
               </div>
-
             </div>
 
             <button
@@ -78,7 +79,6 @@ function Register() {
               ) : 'Register'}
             </button>
           </fieldset>
-
         </form>
 
         <div className="divider mx-12 text-[12px]">OR</div>
@@ -92,7 +92,7 @@ function Register() {
         <p className="text-[12px] text-center mt-5">Already have account? <span className="underline"><NavLink to="/login">Login</NavLink></span></p>
       </div>
     </div>
-  )
+  );
 }
 
-export default Register
+export default Register;
