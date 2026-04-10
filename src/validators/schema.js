@@ -13,11 +13,11 @@ export const registerSchema = z
       .refine((val) => emailRegex.test(val), "Email is required"),
     password: z.string().min(6, "Password must be morethan 6 characters"),
     confirmPassword: z.string().min(2, "Confirm password is required"),
-    firstname: z
+    firstName: z
       .string()
       .trim()
       .min(3, "firstname must be at least 3 characters"),
-    lastname: z
+    lastName: z
       .string()
       .trim()
       .min(3, "lasttname must be at least 3 characters"),

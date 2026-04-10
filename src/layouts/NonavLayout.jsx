@@ -1,6 +1,7 @@
+import React from "react";
 import { Outlet } from "react-router";
 
-function GuestLayout() {
+function NonavLayout() {
   return (
     <div>
       <Outlet />
@@ -8,4 +9,4 @@ function GuestLayout() {
   );
 }
 
-export default GuestLayout;
+export default NonavLayout;

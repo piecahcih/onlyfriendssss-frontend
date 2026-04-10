@@ -1,9 +1,7 @@
-import React from 'react'
+import axios from 'axios'
 
-function mainApi() {
-  return (
-    <div>mainApi</div>
-  )
-}
+const mainApi = axios.create({
+  baseURL: 'http://localhost:3999/api'
+})
 
 export default mainApi
