@@ -15,7 +15,8 @@ import ChooseLocation from "../pages/create/ChooseLocation";
 import ShowCreate from "../pages/create/ShowCreate";
 import InsideChat from "../pages/chat/InsideChat";
 import Welcome from "../pages/Welcome";
-import ChatLayout from "../layouts/ChatLayout";
+import Friendlist from "../pages/Friends/Friendlist";
+import NonavLayout from "../layouts/NonavLayout";
 
 const guestRouter = createBrowserRouter([
   {
@@ -88,11 +89,15 @@ const userRouter = createBrowserRouter([
   },
   {
     path: "/",
-    element: <ChatLayout />,
+    element: <NonavLayout />,
     children: [
       {
         path: "chat/:name",
         element: <InsideChat />,
+      },
+      {
+        path: "flist",
+        element: <Friendlist />,
       },
     ],
   },
