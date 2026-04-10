@@ -15,79 +15,97 @@ import ChooseLocation from "../pages/create/ChooseLocation";
 import ShowCreate from "../pages/create/ShowCreate";
 import InsideChat from "../pages/chat/InsideChat";
 import Welcome from "../pages/Welcome";
+import ChatLayout from "../layouts/ChatLayout";
 
 const guestRouter = createBrowserRouter([
-    {
-        path:"/",
-        element:<GuestLayout/>,
-        children:[
-            {
-                index: true,
-                element: <Register/>
-            },
-            {
-                path: 'login',
-                element:<Login/>
-            },
-            {
-                path: 'identify-verification',
-                element:<IdenVeri/>
-            },
-            {
-                path: 'add-profile',
-                element:<Add1Profile/>
-            },
-            {
-                path: 'add-interest',
-                element:<Add2Interest/>
-            },
-        ]
-    }
-])
+  {
+    path: "/",
+    element: <GuestLayout />,
+    children: [
+      {
+        index: true,
+        element: <Register />,
+      },
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "identify-verification",
+        element: <IdenVeri />,
+      },
+      {
+        path: "add-profile",
+        element: <Add1Profile />,
+      },
+      {
+        path: "add-interest",
+        element: <Add2Interest />,
+      },
+    ],
+  },
+]);
 
 const userRouter = createBrowserRouter([
-    {
-        path:"/",
-        element:<UserLayout/>,
-        children:[
-            {
-                index: true,
-                element: <LDDiscover/>
-            },
-            {
-                path: 'welcome',
-                element: <Welcome/>
-            },
-            {
-                path: 'activities',
-                element: <Activities/>
-            },
-            {
-                path:'create',
-                element: <CreateActivity/>
-            },
-            {
-                path:'create-chooselocation',
-                element: <ChooseLocation/>
-            },
-            {
-                path:'create-showcreate',
-                element: <ShowCreate/>
-            },
-            {
-                path:'chat',
-                element: <Chat/>
-            },
-            {
-                path:'chat/:name',
-                element: <InsideChat/>
-            },
-            {
-                path:'profile',
-                element: <Profile/>
-            }
-        ]
-    }
-])
+  {
+    path: "/",
+    element: <UserLayout />,
+    children: [
+      {
+        index: true,
+        element: <LDDiscover />,
+      },
+      {
+        path: "welcome",
+        element: <Welcome />,
+      },
+      {
+        path: "activities",
+        element: <Activities />,
+      },
+      {
+        path: "create",
+        element: <CreateActivity />,
+      },
+      {
+        path: "create-chooselocation",
+        element: <ChooseLocation />,
+      },
+      {
+        path: "create-showcreate",
+        element: <ShowCreate />,
+      },
 
-export{ guestRouter, userRouter }
+      {
+        path: "profile",
+        element: <Profile />,
+      },
+      {
+        path: "chat",
+        element: <Chat />,
+      },
+    ],
+  },
+  {
+    path: "/",
+    element: <ChatLayout />,
+    children: [
+      {
+        path: "chat/:name",
+        element: <InsideChat />,
+      },
+    ],
+  },
+  {
+    path: "*",
+    element: <UserLayout />,
+    children: [
+      {
+        index: true,
+        element: <LDDiscover />,
+      },
+    ],
+  },
+]);
+
+export { guestRouter, userRouter };
