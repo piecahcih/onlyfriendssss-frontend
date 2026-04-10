@@ -3,36 +3,31 @@ import { AppleLogo, FacebookLogo, GoogleLogo } from '../../icons'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { loginSchema } from '../../validators/schema'
-import { useState } from 'react'
-import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'
+import { signInWithPopup } from 'firebase/auth'
 import { auth, googleProvider } from '../../utils/firebase'
 import mainApi from '../../api/mainApi'
 
 function Login() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const navigate = useNavigate()
 
   const onSubmit = async (data) => {
-    const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password)
-    const user = userCredential.user
-
-    const idToken = await user.getIdToken()
-    const resp = await mainApi.post('/auth/registerOrLogin', {},
-      {
-        headers: {
-          Authorization: `Bearer ${idToken}`
-        }
+    try {
+      const resp = await mainApi.post('/auth/login', {
+        email: data.email,
+        password: data.password
       })
 
-    console.log('Backend Response', resp.data)
-    alert('เข้าสู่ระบบสำเร็จ')
-    navigate('/identify-verification')
-
-      .catch((error) => {
-        const errorMsg = error.response?.data?.error
-        alert('Error: ', errorMsg)
-      })
+      if (resp.status === 200) {
+        localStorage.setItem('token', resp.data.token)
+        console.log(resp.data)
+        alert('เข้าสู่ระบบสำเร็จ')
+        navigate('/identify-verification')
+      }
+    } catch (error) {
+      const errMsg = error.response?.data?.message || "อีเมลหรือรหัสผ่านไม่ถูกต้อง"
+      console.error("Login Error:", error)
+      alert(errMsg)
+    }
   }
 
   googleProvider.setCustomParameters({
@@ -43,30 +38,30 @@ function Login() {
     try {
       const result = await signInWithPopup(auth, googleProvider)
       const idToken = await result.user.getIdToken()
-
-      const resp = await mainApi.post('auth/registerOrLogin', {}, {
+      console.log(idToken)
+      const resp = await mainApi.post('/auth/registerOrLogin', {}, {
         headers: {
           Authorization: `Bearer ${idToken}`
         }
       })
 
-      if (resp.status === 200) {
-        console.log('Backend Response', resp.data)
+      if (resp.status === 200 || resp.status === 201) {
+        localStorage.setItem('token', resp.data.token)
+        console.log('Google Sync Response', resp.data)
         alert('เข้าสู่ระบบสำเร็จ')
         navigate('/identify-verification')
       }
     } catch (error) {
-      console.error('Google Login Error', error.resp.data)
+      console.error('Google Login Error', error)
+      alert("เกิดข้อผิดพลาดในการเข้าสู่ระบบด้วย Google")
     }
   }
-
 
   const { register, handleSubmit, formState, reset } = useForm({
     resolver: zodResolver(loginSchema),
     mode: 'onSubmit'
   })
   const { errors, isSubmitting, isValid } = formState
-
 
   const inpStyle = 'bg-base-100 rounded-[18px] px-5 py-2 w-[315px]'
 
@@ -83,7 +78,6 @@ function Login() {
                 <input
                   type="text"
                   placeholder="Email"
-                  onChange={(e) => setEmail(e.target.value)}
                   {...register('email')}
                   className={inpStyle} />
               </div>
@@ -92,7 +86,6 @@ function Login() {
                 <input
                   type="password"
                   placeholder="Password"
-                  onChange={(e) => setPassword(e.target.value)}
                   {...register('password')}
                   className={inpStyle} />
               </div>
@@ -111,7 +104,7 @@ function Login() {
 
         </form>
 
-        <div className="divider mx-12 text-[12px]">OR</div>
+        <div className="divider w-90 m-auto text-[12px] p-7">OR</div>
 
         <div className="flex justify-center gap-4 h-[50px]">
           <FacebookLogo className="bg-base-100 rounded-full p-2 text-black" />
