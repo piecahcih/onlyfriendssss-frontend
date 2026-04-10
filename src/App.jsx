@@ -4,9 +4,9 @@ import useUserStore from "./stores/userStore";
 import { useEffect } from "react";
 
 function App() {
-  // const user = null;
-  const user = { email: "peach@gmail.com" };
-  const finalRouter = user ? userRouter : guestRouter;
+  // const user = null
+  const user = { email: 'peach@gmail.com'}
+  const finalRouter = user ? userRouter : guestRouter ;
 
   useEffect(() => {
     const { user, rememberMe, logout } = useUserStore.getState();
