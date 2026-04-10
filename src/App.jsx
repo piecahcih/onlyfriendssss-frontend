@@ -20,7 +20,8 @@ function App() {
 
   return (
     <>
-      <RouterProvider router={userRouter} />
+      <RouterProvider router={guestRouter} />
+      {/* <RouterProvider router={userRouter} /> */}
     </>
   );
 }
