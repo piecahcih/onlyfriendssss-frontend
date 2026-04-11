@@ -45,6 +45,10 @@ const guestRouter = createBrowserRouter([
       },
     ],
   },
+  {
+    path: "*",
+    element: <Navigate to = '/'/>
+  },
 ]);
 
 const userRouter = createBrowserRouter([
