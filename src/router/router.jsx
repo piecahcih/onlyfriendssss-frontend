@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Navigate } from "react-router";
 import GuestLayout from "../layouts/GuestLayout";
 import Register from "../pages/auth/Register";
 import IdenVeri from "../pages/auth/IdenVeri";
@@ -65,19 +65,6 @@ const userRouter = createBrowserRouter([
         element: <Activities />,
       },
       {
-        path: "create",
-        element: <CreateActivity />,
-      },
-      {
-        path: "create-chooselocation",
-        element: <ChooseLocation />,
-      },
-      {
-        path: "create-showcreate",
-        element: <ShowCreate />,
-      },
-
-      {
         path: "profile",
         element: <Profile />,
       },
@@ -99,17 +86,23 @@ const userRouter = createBrowserRouter([
         path: "flist",
         element: <Friendlist />,
       },
+      {
+        path: "create",
+        element: <CreateActivity />,
+      },
+      {
+        path: "create-chooselocation",
+        element: <ChooseLocation />,
+      },
+      {
+        path: "create-showcreate",
+        element: <ShowCreate />,
+      },
     ],
   },
   {
     path: "*",
-    element: <UserLayout />,
-    children: [
-      {
-        index: true,
-        element: <LDDiscover />,
-      },
-    ],
+    element: <Navigate to = '/'/>
   },
 ]);
 
