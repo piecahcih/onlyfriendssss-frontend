@@ -11,12 +11,12 @@ import Login from "../pages/auth/Login";
 import Add2Interest from "../pages/auth/Add2Interest";
 import Add1Profile from "../pages/auth/Add1Profile";
 import CreateActivity from "../pages/create/CreateActivity";
-import ChooseLocation from "../pages/create/ChooseLocation";
 import ShowCreate from "../pages/create/ShowCreate";
 import InsideChat from "../pages/chat/InsideChat";
 import Welcome from "../pages/Welcome";
 import Friendlist from "../pages/Friends/Friendlist";
 import NonavLayout from "../layouts/NonavLayout";
+import Aija from "../pages/Aija";
 
 const guestRouter = createBrowserRouter([
   {
@@ -65,6 +65,10 @@ const userRouter = createBrowserRouter([
         element: <Activities />,
       },
       {
+        path: "ai",
+        element: <Aija />,
+      },
+      {
         path: "profile",
         element: <Profile />,
       },
@@ -89,10 +93,6 @@ const userRouter = createBrowserRouter([
       {
         path: "create",
         element: <CreateActivity />,
-      },
-      {
-        path: "create-chooselocation",
-        element: <ChooseLocation />,
       },
       {
         path: "create-showcreate",

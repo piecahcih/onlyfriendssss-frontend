@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { LeftIcon, PhotoIcon } from '../../icons'
 import { useNavigate } from 'react-router'
 import MapModal from '../../components/MapModal'
@@ -31,6 +31,10 @@ function CreateActivity() {
         { id: "TRAVEL", title: "Travel", icon: "✈️" }
     ];
 
+    const hdlPreCreateActivity = () => {
+      navigate('/create-showcreate')
+    }
+
 
     const lblTitleStyle = "text-[18px] font-bold text-neutral"
   return (
@@ -51,10 +55,10 @@ function CreateActivity() {
         <div className="w-8"></div>
     </header>
 
-      <main className="max-w-2xl mx-auto px-6 pt-8 space-y-8">
+      <div className="max-w-2xl mx-auto px-6 pt-8 space-y-8">
 
         {/* Form Fields */}
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={hdlPreCreateActivity}>
 
           {/* Public Badge / Privacy */}
             <button type='button' onClick={()=>hdlPrivacyStatus()}>
@@ -148,7 +152,7 @@ function CreateActivity() {
           </div>
 
           {/* Category Chips */}
-        <div className="space-y-3">
+          <div className="space-y-3">
             <label className={lblTitleStyle}><span>🏷️</span> Category </label>
             <div className="flex flex-wrap gap-2">
                 {categoryList.map((cat) => {
@@ -171,7 +175,7 @@ function CreateActivity() {
                 );
                 })}
             </div>
-        </div>
+          </div>
 
           {/* Notes */}
           <div className="space-y-2">
@@ -185,15 +189,15 @@ function CreateActivity() {
               ></textarea>
             </div>
           </div>
+
+          <div className="pt-4 pb-12">
+            <button className="w-full py-4 rounded-full bg-primary text-white font-bold text-lg shadow-[0_8px_32px_rgba(168,49,0,0.24)] active:scale-95 transition-all">
+              Create Activity
+            </button>
+          </div>
         </form>
 
-        {/* Main CTA */}
-        <div className="pt-4 pb-12">
-          <button className="w-full py-4 rounded-full bg-primary text-white font-bold text-lg shadow-[0_8px_32px_rgba(168,49,0,0.24)] active:scale-95 transition-all">
-            Create Activity
-          </button>
-        </div>
-      </main>
+      </div>
 
       <MapModal isOpen={isMapOpen} onClose={()=>setIsMapOpen(false)} onConfirm={hdlConfirmLocation} />
     </div>
