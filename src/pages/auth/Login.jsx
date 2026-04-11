@@ -5,63 +5,52 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { loginSchema } from '../../validators/schema'
 import { signInWithPopup } from 'firebase/auth'
 import { auth, googleProvider } from '../../utils/firebase'
-import mainApi from '../../api/mainApi'
+import useUserStore from '../../stores/userStore'
+import { toast } from 'react-toastify'
 
 function Login() {
+  const login = useUserStore((state) => state.login)
+  const loginWithGoogle = useUserStore((state) => state.loginWithGoogle)
   const navigate = useNavigate()
 
-  const onSubmit = async (data) => {
-    try {
-      const resp = await mainApi.post('/auth/login', {
-        email: data.email,
-        password: data.password
-      })
-
-      if (resp.status === 200) {
-        localStorage.setItem('token', resp.data.token)
-        console.log(resp.data)
-        alert('เข้าสู่ระบบสำเร็จ')
-        navigate('/identify-verification')
-      }
-    } catch (error) {
-      const errMsg = error.response?.data?.message || "อีเมลหรือรหัสผ่านไม่ถูกต้อง"
-      console.error("Login Error:", error)
-      alert(errMsg)
-    }
-  }
-
-  googleProvider.setCustomParameters({
-    prompt: 'select_account'
-  })
-
-  const handleGoogleLogin = async () => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider)
-      const idToken = await result.user.getIdToken()
-      console.log(idToken)
-      const resp = await mainApi.post('/auth/registerOrLogin', {}, {
-        headers: {
-          Authorization: `Bearer ${idToken}`
-        }
-      })
-
-      if (resp.status === 200 || resp.status === 201) {
-        localStorage.setItem('token', resp.data.token)
-        console.log('Google Sync Response', resp.data)
-        alert('เข้าสู่ระบบสำเร็จ')
-        navigate('/identify-verification')
-      }
-    } catch (error) {
-      console.error('Google Login Error', error)
-      alert("เกิดข้อผิดพลาดในการเข้าสู่ระบบด้วย Google")
-    }
-  }
-
-  const { register, handleSubmit, formState, reset } = useForm({
+  const { register, handleSubmit } = useForm({
     resolver: zodResolver(loginSchema),
     mode: 'onSubmit'
   })
-  const { errors, isSubmitting, isValid } = formState
+
+  const onSubmit = async (data) => {
+    try {
+      const res = await login(data)
+      // console.log(res.data.message)
+      toast.success(res.data.message)
+      navigate('/')
+    } catch (error) {
+      const errMsg = error.response?.data?.message || "อีเมลหรือรหัสผ่านไม่ถูกต้อง"
+      toast.error(errMsg)
+    }
+  }
+
+  const handleGoogleLogin = async () => {
+    try {
+      googleProvider.setCustomParameters({ prompt: 'select_account' })
+      const result = await signInWithPopup(auth, googleProvider)
+      const idToken = await result.user.getIdToken()
+
+      const userData = {
+        email: result.user.email,
+        displayName: result.user.displayName,
+        photoURL: result.user.photoURL
+      }
+
+      console.log(userData)
+      await loginWithGoogle(idToken, userData)
+      toast.success('Login Success')
+      navigate('/')
+    } catch (error) {
+      console.error('Google Login Error', error)
+      toast.error("เกิดข้อผิดพลาดในการเข้าสู่ระบบด้วย Google")
+    }
+  }
 
   const inpStyle = 'bg-base-100 rounded-[18px] px-5 py-2 w-[315px]'
 
