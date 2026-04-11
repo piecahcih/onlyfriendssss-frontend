@@ -14,20 +14,3 @@ mainApi.interceptors.request.use((config) => {
   }
   return config;
 });
-
-//friend api
-// friendRoute.get("/list", ...)
-export const GetFriendListApi = async () => await mainApi.get("/friend/list");
-
-// friendRoute.post("/request/:id", ...)
-export const SendFriendRequestApi = async (targetId) =>
-  await mainApi.post(`/friend/request/${targetId}`);
-
-// friendRoute.patch("/accept/:id", ...)
-export const AcceptFriendApi = async (friendshipId) =>
-  await mainApi.patch(`/friend/accept/${friendshipId}`);
-
-// friendRoute.delete("/unfriend/:id", ...)
-export const UnfriendApi = async (friendshipId) =>
-  await mainApi.delete(`/friend/unfriend/${friendshipId}`);
-export default mainApi;
