@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { SearchIcon } from "../../icons";
 import defaultProfile from "../../assets/default-profilepic.jpg";
-import useFriendStore from "../../store/useFriendStore"; // Import store มาใช้งาน
+import useFriendStore from "../../stores/friendStore";
 
 function Friendlist() {
   const [activeTab, setActiveTab] = useState("friends");
