@@ -16,6 +16,9 @@ const useUserStore = create(persist((set, get) => ({
         set({ token: res.data.token, user: res.data.user });
         return res;
       },
+
+      setUser: (userData) => set({ user: userData }),
+      
       logout: () => {
         set({ token: "", user: null });
         localStorage.removeItem("OFsssUserState");

@@ -44,4 +44,13 @@ export const UnfriendApi = async (friendshipId) =>
   await mainApi.delete(`/friend/unfriend/${friendshipId}`);
 
 
+
+////////USER PROFILE
+// ดึงข้อมูลตัวเอง
+export const getProfileApi = () => mainApi.get("/account/profile");
+
+// แก้ไขข้อมูลตัวเอง (username, bio, gender, etc.)
+export const updateProfileApi = (body) => mainApi.patch("/account/profile", body);
+
+
 export default mainApi;
