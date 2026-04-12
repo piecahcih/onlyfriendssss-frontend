@@ -27,11 +27,13 @@ function Register() {
     try {
       await new Promise(resolve => setTimeout(resolve, 2000))
       const resp = await registerApi(data)
+      const newUser = resp.data.user
       // console.log(resp)
-      navigate('/identify-verification')
+      toast.success('Register Success')
+      navigate('/add-profile', { state: { newUser } })
     } catch (error) {
       const errMsg = error.response?.data.message || error.message
-      console.error(errMsg)
+      toast.error(errMsg)
     }
   }
 

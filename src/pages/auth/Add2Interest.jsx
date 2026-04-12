@@ -2,9 +2,7 @@ import React from 'react'
 
 function Add2Interest() {
   return (
-    <div className='bg-base-200 min-h-screen'>
-        Add2Interest
-    </div>
+    <div>Add2Interest</div>
   )
 }
 
