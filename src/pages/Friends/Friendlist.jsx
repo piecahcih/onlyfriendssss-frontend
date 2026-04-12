@@ -1,66 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { SearchIcon } from "../../icons";
 import defaultProfile from "../../assets/default-profilepic.jpg";
-
-const mockFriends = [
-  {
-    id: 1,
-    username: "Peach",
-    firstName: "Pichayapa",
-    lastName: "Thaisedhawatkul",
-    profileImg: "https://i.pinimg.com/736x/82/b5/59/82b5591589b5b545726a31fd54728fd4.jpg",
-    status: "Online",
-  },
-  {
-    id: 2,
-    username: "Benjy",
-    firstName: "Phattharaphon",
-    lastName: "Saengphak",
-    profileImg: "https://i.pinimg.com/736x/82/b5/59/82b5591589b5b545726a31fd54728fd4.jpg",
-    status: "Away",
-  },
-  {
-    id: 3,
-    username: "Keng",
-    firstName: "Harit",
-    lastName: "Buayoi",
-    profileImg: "https://res.cloudinary.com/piecahcih/image/upload/v1774238072/y9x0bjp2guf5q7ds8lmb.jpg",
-    status: "Offline",
-  },
-  {
-    id: 4,
-    username: "Art",
-    firstName: "Attachai",
-    lastName: "Jumpahome",
-    profileImg: "https://i.pinimg.com/736x/82/b5/59/82b5591589b5b545726a31fd54728fd4.jpg",
-    status: "Online",
-  },
-  {
-    id: 5,
-    username: "Hera",
-    firstName: "Jatuphon",
-    lastName: "Seedas",
-    profileImg: "https://res.cloudinary.com/piecahcih/image/upload/v1774238072/y9x0bjp2guf5q7ds8lmb.jpg",
-    status: "In a meeting",
-  },
-];
+import useFriendStore from "../../stores/friendStore";
 
 function Friendlist() {
+  const [activeTab, setActiveTab] = useState("friends");
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredFriends = mockFriends.filter((friend) =>
-    friend.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    friend.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    friend.lastName.toLowerCase().includes(searchTerm.toLowerCase())
+  // ดึงข้อมูลและฟังก์ชันจาก Store
+  const { friends, requests, getFriends, acceptFriend, removeFriendship } =
+    useFriendStore();
+
+  // ดึงข้อมูลใหม่ทุกครั้งที่เปิดหน้า
+  useEffect(() => {
+    getFriends();
+  }, []);
+
+  // Handler สำหรับรับเพื่อน
+  const handleAccept = async (id) => {
+    await acceptFriend(id);
+  };
+
+  // Handler สำหรับลบเพื่อน / ปฏิเสธคำขอ
+  const handleDelete = async (id, name) => {
+    if (window.confirm(`Are you sure you want to proceed with ${name}?`)) {
+      await removeFriendship(id);
+    }
+  };
+
+  // กรองรายชื่อเพื่อนตามช่อง Search
+  const filteredFriends = friends.filter((item) =>
+    item.friend?.username?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
     <div className="min-h-screen bg-base-200 pb-24">
-      {/* Header */}
+      {/* Header & Search */}
       <div className="bg-white px-5 pt-8 pb-4 shadow-sm sticky top-0 z-10">
-        <h1 className="text-2xl font-bold bai-jamjuree-bold text-neutral-focus">Friends</h1>
-        
-        {/* Search Bar */}
+        <h1 className="text-secondary text-2xl font-bold bai-jamjuree-bold">
+          Your friendssss
+        </h1>
+
         <div className="mt-4 relative">
           <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
             <SearchIcon className="w-5 h-5 text-base-content/50" />
@@ -68,72 +48,172 @@ function Friendlist() {
           <input
             type="text"
             placeholder="Search friends..."
-            className="w-full bg-base-300 border-none rounded-xl py-3 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary outline-none transition-all"
+            className="w-full bg-base-300 border-none rounded-xl py-3 pl-10 pr-4 text-sm outline-none focus:ring-2 focus:ring-primary transition-all"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
+
+        {/* Tabs Control */}
+        <div className="flex mt-6 bg-base-200 p-1 rounded-xl">
+          <button
+            onClick={() => setActiveTab("friends")}
+            className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${
+              activeTab === "friends"
+                ? "bg-white shadow-sm text-primary"
+                : "text-base-content/50"
+            }`}
+          >
+            Friends ({friends.length})
+          </button>
+          <button
+            onClick={() => setActiveTab("requests")}
+            className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${
+              activeTab === "requests"
+                ? "bg-white shadow-sm text-primary"
+                : "text-base-content/50"
+            }`}
+          >
+            Requests ({requests.length})
+          </button>
+        </div>
       </div>
 
-      {/* Friends List */}
-      <div className="px-5 mt-4 space-y-3">
-        {filteredFriends.length > 0 ? (
-          filteredFriends.map((friend) => (
-            <div
-              key={friend.id}
-              className="flex items-center justify-between p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow cursor-pointer border border-transparent hover:border-primary/20"
-            >
-              <div className="flex items-center space-x-4">
-                <div className="relative">
-                  <img
-                    src={friend.profileImg || defaultProfile}
-                    alt={friend.username}
-                    className="w-14 h-14 rounded-full object-cover border-2 border-primary/10"
-                    onError={(e) => {
-                      e.target.src = defaultProfile;
-                    }}
-                  />
-                  <div 
-                    className={`absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full border-2 border-white ${
-                      friend.status === "Online" ? "bg-success" : 
-                      friend.status === "Away" ? "bg-warning" : "bg-base-content/30"
-                    }`}
-                  ></div>
+      {/* Content Area */}
+      <div className="px-5 mt-4">
+        {activeTab === "friends" ? (
+          /* --- ฝั่งซ้าย: My Friends --- */
+          <div className="space-y-3">
+            <p className="text-xs font-bold text-base-content/40 uppercase pl-2">
+              All Friends
+            </p>
+
+            {filteredFriends.length > 0 ? (
+              filteredFriends.map((item) => (
+                <div
+                  key={item.id}
+                  className="bg-white p-4 rounded-2xl shadow-sm flex items-center justify-between border border-transparent hover:border-primary/10 transition-all"
+                >
+                  <div className="flex items-center space-x-3">
+                    <div className="avatar online">
+                      <div className="w-12 rounded-full border border-primary/10">
+                        <img
+                          src={item.friend?.profileImg || defaultProfile}
+                          alt="user"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-sm">
+                        {item.friend?.username}
+                      </h3>
+                      <p className="text-xs text-success">Online</p>
+                    </div>
+                  </div>
+
+                  <div className="dropdown dropdown-end">
+                    <label
+                      tabIndex={0}
+                      className="btn btn-ghost btn-circle btn-sm text-base-content/30"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        className="w-5 h-5"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+                        />
+                      </svg>
+                    </label>
+                    <ul
+                      tabIndex={0}
+                      className="dropdown-content z-[20] menu p-2 shadow bg-base-100 rounded-box w-40 border border-base-200"
+                    >
+                      <li>
+                        <a className="text-sm">View Profile</a>
+                      </li>
+                      <li>
+                        <a className="text-sm">Start Chat</a>
+                      </li>
+                      <div className="divider my-0"></div>
+                      <li>
+                        <a
+                          onClick={() =>
+                            handleDelete(item.id, item.friend?.username)
+                          }
+                          className="text-sm text-error"
+                        >
+                          Unfriend
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold bai-jamjuree-semibold text-neutral-focus">
-                    {friend.username}
-                  </h3>
-                  <p className="text-xs text-base-content/70 bai-jamjuree-regular">
-                    {friend.firstName} {friend.lastName}
-                  </p>
-                  <p className="text-[10px] mt-0.5 text-primary font-medium">
-                    {friend.status}
-                  </p>
-                </div>
+              ))
+            ) : (
+              <div className="py-20 text-center text-base-content/50 italic">
+                No friends found
               </div>
-              
-              <button className="btn btn-circle btn-ghost btn-sm text-base-content/40 hover:text-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
-                </svg>
-              </button>
-            </div>
-          ))
+            )}
+          </div>
         ) : (
-          <div className="py-20 text-center">
-            <p className="text-base-content/50 bai-jamjuree-medium italic">No friends found</p>
+          /* --- ฝั่งขวา: Friend Requests --- */
+          <div className="space-y-3">
+            <p className="text-xs font-bold text-base-content/40 uppercase pl-2">
+              Pending Invitations
+            </p>
+            {requests.length > 0 ? (
+              requests.map((item) => (
+                <div
+                  key={item.id}
+                  className="bg-white p-4 rounded-2xl shadow-sm flex items-center justify-between border border-primary/5"
+                >
+                  <div className="flex items-center space-x-3">
+                    <img
+                      src={item.sender?.profileImg || defaultProfile}
+                      className="w-12 h-12 rounded-full object-cover border border-primary/10"
+                      alt="user"
+                    />
+                    <div>
+                      <h3 className="font-semibold text-sm">
+                        {item.sender?.username}
+                      </h3>
+                      <p className="text-xs text-base-content/60">
+                        Wants to be your friend
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleAccept(item.id)}
+                      className="btn btn-primary btn-sm rounded-lg px-4 shadow-sm"
+                    >
+                      Accept
+                    </button>
+                    <button
+                      onClick={() =>
+                        handleDelete(item.id, item.sender?.username)
+                      }
+                      className="btn btn-ghost btn-sm rounded-lg text-base-content/40 hover:text-error hover:bg-error/10"
+                    >
+                      Decline
+                    </button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="py-20 text-center text-base-content/50 italic">
+                No pending requests
+              </div>
+            )}
           </div>
         )}
-      </div>
-
-      {/* Quick Actions / Floating Button (Optional) */}
-      <div className="fixed bottom-24 right-6">
-        <button className="btn btn-primary btn-circle shadow-lg hover:scale-105 active:scale-95 transition-transform border-none">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="white" className="w-6 h-6">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-          </svg>
-        </button>
       </div>
     </div>
   );

@@ -91,7 +91,7 @@ const userRouter = createBrowserRouter([
         element: <InsideChat />,
       },
       {
-        path: "flist",
+        path: "friendlist",
         element: <Friendlist />,
       },
       {
