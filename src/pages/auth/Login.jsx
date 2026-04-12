@@ -3,70 +3,54 @@ import { AppleLogo, FacebookLogo, GoogleLogo } from '../../icons'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { loginSchema } from '../../validators/schema'
-import { useState } from 'react'
-import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'
+import { signInWithPopup } from 'firebase/auth'
 import { auth, googleProvider } from '../../utils/firebase'
-import mainApi from '../../api/mainApi'
+import useUserStore from '../../stores/userStore'
+import { toast } from 'react-toastify'
 
 function Login() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const login = useUserStore((state) => state.login)
+  const loginWithGoogle = useUserStore((state) => state.loginWithGoogle)
   const navigate = useNavigate()
 
-  const onSubmit = async (data) => {
-    const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password)
-    const user = userCredential.user
-
-    const idToken = await user.getIdToken()
-    const resp = await mainApi.post('/auth/registerOrLogin', {},
-      {
-        headers: {
-          Authorization: `Bearer ${idToken}`
-        }
-      })
-
-    console.log('Backend Response', resp.data)
-    alert('เข้าสู่ระบบสำเร็จ')
-    navigate('/identify-verification')
-
-      .catch((error) => {
-        const errorMsg = error.response?.data?.error
-        alert('Error: ', errorMsg)
-      })
-  }
-
-  googleProvider.setCustomParameters({
-    prompt: 'select_account'
-  })
-
-  const handleGoogleLogin = async () => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider)
-      const idToken = await result.user.getIdToken()
-
-      const resp = await mainApi.post('auth/registerOrLogin', {}, {
-        headers: {
-          Authorization: `Bearer ${idToken}`
-        }
-      })
-
-      if (resp.status === 200) {
-        console.log('Backend Response', resp.data)
-        alert('เข้าสู่ระบบสำเร็จ')
-        navigate('/identify-verification')
-      }
-    } catch (error) {
-      console.error('Google Login Error', error.resp.data)
-    }
-  }
-
-
-  const { register, handleSubmit, formState, reset } = useForm({
+  const { register, handleSubmit } = useForm({
     resolver: zodResolver(loginSchema),
     mode: 'onSubmit'
   })
-  const { errors, isSubmitting, isValid } = formState
 
+  const onSubmit = async (data) => {
+    try {
+      const res = await login(data)
+      // console.log(res.data.message)
+      toast.success(res.data.message)
+      navigate('/')
+    } catch (error) {
+      const errMsg = error.response?.data?.message || "อีเมลหรือรหัสผ่านไม่ถูกต้อง"
+      toast.error(errMsg)
+    }
+  }
+
+  const handleGoogleLogin = async () => {
+    try {
+      googleProvider.setCustomParameters({ prompt: 'select_account' })
+      const result = await signInWithPopup(auth, googleProvider)
+      const idToken = await result.user.getIdToken()
+
+      const userData = {
+        email: result.user.email,
+        displayName: result.user.displayName,
+        photoURL: result.user.photoURL
+      }
+
+      console.log(userData)
+      await loginWithGoogle(idToken, userData)
+      toast.success('Login Success')
+      navigate('/')
+    } catch (error) {
+      console.error('Google Login Error', error)
+      toast.error("เกิดข้อผิดพลาดในการเข้าสู่ระบบด้วย Google")
+    }
+  }
 
   const inpStyle = 'bg-base-100 rounded-[18px] px-5 py-2 w-[315px]'
 
@@ -83,7 +67,6 @@ function Login() {
                 <input
                   type="text"
                   placeholder="Email"
-                  onChange={(e) => setEmail(e.target.value)}
                   {...register('email')}
                   className={inpStyle} />
               </div>
@@ -92,7 +75,6 @@ function Login() {
                 <input
                   type="password"
                   placeholder="Password"
-                  onChange={(e) => setPassword(e.target.value)}
                   {...register('password')}
                   className={inpStyle} />
               </div>
@@ -111,7 +93,7 @@ function Login() {
 
         </form>
 
-        <div className="divider mx-12 text-[12px]">OR</div>
+        <div className="divider w-90 m-auto text-[12px] p-7">OR</div>
 
         <div className="flex justify-center gap-4 h-[50px]">
           <FacebookLogo className="bg-base-100 rounded-full p-2 text-black" />

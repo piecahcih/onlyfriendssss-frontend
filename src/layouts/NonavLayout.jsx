@@ -1,7 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router";
 
-function ChatLayout() {
+function NonavLayout() {
   return (
     <div>
       <Outlet />
@@ -9,4 +9,4 @@ function ChatLayout() {
   );
 }
 
-export default ChatLayout;
+export default NonavLayout;

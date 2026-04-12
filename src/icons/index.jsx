@@ -133,17 +133,74 @@ export function PhotoIcon(props) {
   );
 }
 
-export function CIcon(props) {}
-
 export function Notification(props) {
-  return (
-    <svg
-      fill="currentColor"
-      viewBox="0 0 640 640"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
+    return (
+        <svg
+        fill="currentColor"
+        viewBox="0 0 640 640"
+        xmlns="http://www.w3.org/2000/svg"
+        {...props}
+        >
       <path d="M320 64C302.3 64 288 78.3 288 96L288 99.2C215 114 160 178.6 160 256L160 277.7C160 325.8 143.6 372.5 113.6 410.1L103.8 422.3C98.7 428.6 96 436.4 96 444.5C96 464.1 111.9 480 131.5 480L508.4 480C528 480 543.9 464.1 543.9 444.5C543.9 436.4 541.2 428.6 536.1 422.3L526.3 410.1C496.4 372.5 480 325.8 480 277.7L480 256C480 178.6 425 114 352 99.2L352 96C352 78.3 337.7 64 320 64zM258 528C265.1 555.6 290.2 576 320 576C349.8 576 374.9 555.6 382 528L258 528z" />
     </svg>
   );
+}
+
+export function LeftIcon(props) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M15.707 4.293a1 1 0 010 1.414L9.414 12l6.293 6.293a1 1 0 01-1.414 1.414l-7-7a1 1 0 010-1.414l7-7a1 1 0 011.414 0z"
+        fill="#000"
+      />
+    </svg>
+  )
+}
+
+export function LocationIcon(props) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 64 64"
+      xmlSpace="preserve"
+      fill="currentColor"
+      {...props}
+    >
+      <path
+        fill="currentColor"
+        d="M32 0C18.746 0 8 10.746 8 24c0 5.219 1.711 10.008 4.555 13.93.051.094.059.199.117.289l16 24a4.001 4.001 0 006.656 0l16-24c.059-.09.066-.195.117-.289C54.289 34.008 56 29.219 56 24 56 10.746 45.254 0 32 0zm0 32a8 8 0 110-16 8 8 0 010 16z"
+      />
+    </svg>
+  )    
+}
+
+export function MicIcon(props) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <rect x={8} y={2} width={8} height={13} rx={4} fill="#222" />
+      <path
+        d="M5 11a7 7 0 1014 0M12 21v-2"
+        stroke="#222"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+export function CIcon(props) {
+
 }

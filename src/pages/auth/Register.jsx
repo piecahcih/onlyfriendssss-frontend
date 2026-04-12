@@ -1,36 +1,55 @@
-import { NavLink, useNavigate } from "react-router";
-import { AppleLogo, FacebookLogo, GoogleLogo } from "../../icons";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { registerSchema } from "../../validators/schema";
+import { NavLink, useNavigate } from 'react-router'
+import { AppleLogo, FacebookLogo, GoogleLogo } from '../../icons'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { registerSchema } from '../../validators/schema'
+import { registerApi } from '../../api/mainApi'
+import { signInWithPopup } from 'firebase/auth'
+import { toast } from 'react-toastify'
+import { googleProvider, auth } from '../../utils/firebase'
+import useUserStore from '../../stores/userStore'
 
 function Register() {
+  const loginWithGoogle = useUserStore((state) => state.loginWithGoogle)
+
   const { register, handleSubmit, formState } = useForm({
     resolver: zodResolver(registerSchema),
     mode: "onSubmit",
     defaultValues: {
-      email: "",
-      password: "",
-      confirmPassword: "",
-      firstName: "",
-      lastName: "",
-    },
-  });
-  const { errors, isSubmitting, isValid } = formState;
+      email: '', password: '', confirmPassword: ''
+    }
+  })
+  const { errors, isSubmitting, isValid } = formState
 
   const navigate = useNavigate();
 
-  const onSubmit = async (body) => {
+  const onSubmit = async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      //add functionlogin from back
-
-      navigate("/identify-verification");
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      const resp = await registerApi(data)
+      // console.log(resp)
+      navigate('/identify-verification')
     } catch (error) {
-      const errMsg = error.response?.data.message || error.message;
-      console.error(errMsg);
+      const errMsg = error.response?.data.message || error.message
+      console.error(errMsg)
     }
-  };
+  }
+
+  const handleGoogleLogin = async () => {
+    try {
+      googleProvider.setCustomParameters({ prompt: 'select_account' })
+      const result = await signInWithPopup(auth, googleProvider)
+      const idToken = await result.user.getIdToken()
+
+      // console.log(result.user)
+      await loginWithGoogle(idToken)
+      toast.success('Login Success')
+      navigate('/')
+    } catch (error) {
+      console.error('Google Login Error', error)
+      toast.error("เกิดข้อผิดพลาดในการเข้าสู่ระบบด้วย Google")
+    }
+  }
 
   const inpStyle = "bg-base-100 rounded-[18px] px-5 py-2 w-[315px]";
   return (
@@ -44,71 +63,45 @@ function Register() {
           <fieldset>
             <div className="flex flex-col gap-2.5">
               <div className="flex flex-col gap-1.5">
-                <h3 className="bai-jamjuree-semibold">Email</h3>
-                <input
-                  type="text"
-                  placeholder="Email"
-                  {...register("email")}
-                  className={inpStyle}
-                />
+                <h3 className='bai-jamjuree-semibold'>Email</h3>
+                <input type="text" placeholder="Email" {...register('email')}
+                  className={inpStyle} />
               </div>
               <div className="flex flex-col gap-1.5">
-                <h3 className="bai-jamjuree-semibold">Password</h3>
-                <input
-                  type="password"
-                  placeholder="Password"
-                  {...register("password")}
-                  className={inpStyle}
-                />
+                <h3 className='bai-jamjuree-semibold'>Password</h3>
+                <input type="password" placeholder="Password" {...register('password')}
+                  className={inpStyle} />
               </div>
               <div className="flex flex-col gap-1.5">
-                <h3 className="bai-jamjuree-semibold">Confirm Password</h3>
-                <input
-                  type="password"
-                  placeholder="Confirm Password"
-                  {...register("confirmPassword")}
-                  className={inpStyle}
-                />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <h3 className="bai-jamjuree-semibold">Firstname</h3>
-                <input
-                  type="text"
-                  placeholder="Firstname"
-                  {...register("firstName")}
-                  className={inpStyle}
-                />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <h3 className="bai-jamjuree-semibold">Lastname</h3>
-                <input
-                  type="text"
-                  placeholder="Lastname"
-                  {...register("lastName")}
-                  className={inpStyle}
-                />
+                <h3 className='bai-jamjuree-semibold'>Confirm Password</h3>
+                <input type="password" placeholder="Confirm Password" {...register('confirmPassword')}
+                  className={inpStyle} />
               </div>
             </div>
 
-            <button className="bg-primary text-white bai-jamjuree-bold rounded-[18px] px-5 py-2 w-[315px] mt-8">
-              Register
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className={`bg-primary text-white bai-jamjuree-bold rounded-[18px] px-5 py-2 w-[315px] mt-8 flex justify-center items-center ${isSubmitting ? 'opacity-70' : ''}`}
+            >
+              {isSubmitting ? (
+                <span className="loading loading-spinner loading-sm"></span>
+              ) : 'Register'}
             </button>
           </fieldset>
         </form>
+
         <div className="divider mx-12 text-[12px]">OR</div>
 
         <div className="flex justify-center gap-4 h-[50px]">
           <FacebookLogo className="bg-base-100 rounded-full p-2 text-black" />
-          <GoogleLogo className="bg-base-100 rounded-full p-2" />
+          <button onClick={handleGoogleLogin} className="transition-transform active:scale-95 bg-base-100 rounded-full p-2 shadow-sm hover:bg-gray-100">
+            <GoogleLogo className="w-8 h-6" />
+          </button>
           <AppleLogo className="bg-base-100 rounded-full p-2" />
         </div>
 
-        <p className="text-[12px] text-center mt-5">
-          Already have account?{" "}
-          <span className="underline">
-            <NavLink to="/login">Login</NavLink>
-          </span>
-        </p>
+        <p className="text-[12px] text-center mt-5">Already have account? <span className="underline"><NavLink to="/login">Login</NavLink></span></p>
       </div>
     </div>
   );

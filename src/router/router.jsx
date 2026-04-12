@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Navigate } from "react-router";
 import GuestLayout from "../layouts/GuestLayout";
 import Register from "../pages/auth/Register";
 import IdenVeri from "../pages/auth/IdenVeri";
@@ -11,7 +11,6 @@ import Login from "../pages/auth/Login";
 import Add2Interest from "../pages/auth/Add2Interest";
 import Add1Profile from "../pages/auth/Add1Profile";
 import CreateActivity from "../pages/create/CreateActivity";
-import ChooseLocation from "../pages/create/ChooseLocation";
 import ShowCreate from "../pages/create/ShowCreate";
 import InsideChat from "../pages/chat/InsideChat";
 import Welcome from "../pages/Welcome";
@@ -45,6 +44,10 @@ const guestRouter = createBrowserRouter([
       },
     ],
   },
+  {
+    path: "*",
+    element: <Navigate to = '/'/>
+  },
 ]);
 
 const userRouter = createBrowserRouter([
@@ -68,18 +71,9 @@ const userRouter = createBrowserRouter([
         element: <Activities />,
       },
       {
-        path: "create",
-        element: <CreateActivity />,
+        path: "ai",
+        element: <Aija />,
       },
-      {
-        path: "create-chooselocation",
-        element: <ChooseLocation />,
-      },
-      {
-        path: "create-showcreate",
-        element: <ShowCreate />,
-      },
-
       {
         path: "profile",
         element: <Profile />,
@@ -92,23 +86,29 @@ const userRouter = createBrowserRouter([
   },
   {
     path: "/",
-    element: <ChatLayout />,
+    element: <NonavLayout />,
     children: [
       {
         path: "chat/:name",
         element: <InsideChat />,
       },
+      {
+        path: "flist",
+        element: <Friendlist />,
+      },
+      {
+        path: "create",
+        element: <CreateActivity />,
+      },
+      {
+        path: "create-showcreate",
+        element: <ShowCreate />,
+      },
     ],
   },
   {
     path: "*",
-    element: <UserLayout />,
-    children: [
-      {
-        index: true,
-        element: <LDDiscover />,
-      },
-    ],
+    element: <Navigate to = '/'/>
   },
 ]);
 
