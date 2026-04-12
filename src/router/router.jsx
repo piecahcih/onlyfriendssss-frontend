@@ -16,7 +16,6 @@ import InsideChat from "../pages/chat/InsideChat";
 import Welcome from "../pages/Welcome";
 import Friendlist from "../pages/Friends/Friendlist";
 import NonavLayout from "../layouts/NonavLayout";
-import Aija from "../pages/Aija";
 
 const guestRouter = createBrowserRouter([
   {
@@ -67,10 +66,6 @@ const userRouter = createBrowserRouter([
       {
         path: "activities",
         element: <Activities />,
-      },
-      {
-        path: "ai",
-        element: <Aija />,
       },
       {
         path: "profile",

@@ -4,7 +4,7 @@ import {
   GetFriendListApi,
   SendFriendRequestApi,
   UnfriendApi,
-} from "../api/friendApi";
+} from "../api/mainApi";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 const useFriendStore = create(persist((set, get) => ({
