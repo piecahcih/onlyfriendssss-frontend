@@ -2,35 +2,44 @@ import React, { useState, useEffect } from "react";
 import { SearchIcon } from "../../icons";
 import defaultProfile from "../../assets/default-profilepic.jpg";
 import useFriendStore from "../../stores/friendStore";
+import { toast } from "react-toastify";
 
 function Friendlist() {
   const [activeTab, setActiveTab] = useState("friends");
   const [searchTerm, setSearchTerm] = useState("");
 
-  // ดึงข้อมูลและฟังก์ชันจาก Store
-  const { friends, requests, getFriends, acceptFriend, removeFriendship } =
+  const { friends, requests, getFriends, acceptFriend, unFriendship } =
     useFriendStore();
 
-  // ดึงข้อมูลใหม่ทุกครั้งที่เปิดหน้า
   useEffect(() => {
     getFriends();
   }, []);
 
-  // Handler สำหรับรับเพื่อน
   const handleAccept = async (id) => {
-    await acceptFriend(id);
-  };
-
-  // Handler สำหรับลบเพื่อน / ปฏิเสธคำขอ
-  const handleDelete = async (id, name) => {
-    if (window.confirm(`Are you sure you want to proceed with ${name}?`)) {
-      await removeFriendship(id);
+    try {
+      await acceptFriend(id);
+      await getFriends();
+      toast.success("Accepted friend request!");
+    } catch (error) {
+      toast.error("Failed to accept");
     }
   };
 
-  // กรองรายชื่อเพื่อนตามช่อง Search
+  const handleDelete = async (id, name) => {
+    console.log("id", name);
+    if (window.confirm(`Are you sure you want to proceed with ${name}?`)) {
+      try {
+        await unFriendship(id);
+        await getFriends();
+        toast.success(`Remove ${name} from the list`);
+      } catch (error) {
+        toast.error("Failed to remove");
+      }
+    }
+  };
+
   const filteredFriends = friends.filter((item) =>
-    item.friend?.username?.toLowerCase().includes(searchTerm.toLowerCase()),
+    item.username?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
@@ -82,7 +91,7 @@ function Friendlist() {
       {/* Content Area */}
       <div className="px-5 mt-4">
         {activeTab === "friends" ? (
-          /* --- ฝั่งซ้าย: My Friends --- */
+          /* --- My Friends --- */
           <div className="space-y-3">
             <p className="text-xs font-bold text-base-content/40 uppercase pl-2">
               All Friends
@@ -98,15 +107,13 @@ function Friendlist() {
                     <div className="avatar online">
                       <div className="w-12 rounded-full border border-primary/10">
                         <img
-                          src={item.friend?.profileImg || defaultProfile}
+                          src={item.profileImg || defaultProfile}
                           alt="user"
                         />
                       </div>
                     </div>
                     <div>
-                      <h3 className="font-semibold text-sm">
-                        {item.friend?.username}
-                      </h3>
+                      <h3 className="font-semibold text-sm">{item.username}</h3>
                       <p className="text-xs text-success">Online</p>
                     </div>
                   </div>
@@ -145,7 +152,7 @@ function Friendlist() {
                       <li>
                         <a
                           onClick={() =>
-                            handleDelete(item.id, item.friend?.username)
+                            handleDelete(item.friendshipId, item.username)
                           }
                           className="text-sm text-error"
                         >
@@ -163,7 +170,7 @@ function Friendlist() {
             )}
           </div>
         ) : (
-          /* --- ฝั่งขวา: Friend Requests --- */
+          /* --- Friend Requests --- */
           <div className="space-y-3">
             <p className="text-xs font-bold text-base-content/40 uppercase pl-2">
               Pending Invitations
