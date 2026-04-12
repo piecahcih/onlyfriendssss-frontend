@@ -1,8 +1,11 @@
 import { ChatIcon, CreateIcon, DiscoveryIcon, SearchIcon } from "../../icons"
-import defaultProfile from "../../assets/default-profilepic.jpg"
 import { NavLink } from "react-router"
+import ProfilePic from "../profile/ProfilePic"
+import useUserStore from "../../stores/userStore"
 
 function NavBar() {
+    const user = useUserStore(st=>st.user)
+    
   return (
     <div className='h-[78px] bg-primary flex justify-between pt-4 px-5'>
         <NavLink to ='/' className="flex flex-col items-center text-white w-[50px]">
@@ -21,7 +24,7 @@ function NavBar() {
             <p className="text-[bai-jamjuree-semibold] text-[12px]">Chat</p>
         </NavLink>
         <NavLink to ='/profile' className="flex flex-col items-center text-white w-[50px] object-cover">
-            <img src={defaultProfile} alt="profilepic" className="rounded-full h-[30px] border border-white border-2" />
+            <ProfilePic imgSrc={user?.profileImg} className="rounded-full h-[30px] border border-white border-2"/>
             <p className="text-[bai-jamjuree-semibold] text-[12px]">Profile</p>
         </NavLink>
     </div>
