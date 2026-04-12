@@ -2,6 +2,8 @@ import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import ProfilePic from '../components/profile/ProfilePic';
 import useUserStore from '../stores/userStore';
+import { SettingIcon } from '../icons';
+import { NavLink } from 'react-router';
 
 // --- Local Icons ---
 const LocationIcon = (props) => (
@@ -66,18 +68,29 @@ const Profile = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState(user);
   const tabs = ["Joined", "Created", "Memory"];
-
+  
   // --- Refs ---
   const fileInputRef = useRef(null);
-
+  
   useEffect(() => {
     localStorage.setItem('userProfile', JSON.stringify(user));
   }, [user]);
-
+  
   // --- Handlers ---
   const handleEditOpen = () => {
     setEditForm({ ...user }); 
     setIsEditing(true);
+  };
+
+  
+  const [settingForm, setSettingForm] = useState(false);
+  const handleSettingOpen = () => {
+    setSettingForm(true);
+  };
+  
+  const logout = useUserStore(st=>st.logout)
+  const hdlLogout= () => {
+    logout()
   };
 
   const handleSave = (e) => {
@@ -137,7 +150,7 @@ const Profile = ({
                 <h2 className="text-2xl bai-jamjuree-bold text-neutral-focus">Edit Profile</h2>
                 <button 
                   onClick={() => setIsEditing(false)} 
-                  className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors">
+                  className="p-2 rounded-full hover:bg-gray-200 transition-colors">
                   <CloseIcon className="w-6 h-6 text-gray-500" />
                 </button>
               </div>
@@ -235,14 +248,65 @@ const Profile = ({
         )}
       </AnimatePresence>
 
+      {/* --- SETTING MODAL --- */}
+      <AnimatePresence>
+        {settingForm && (
+          <>
+            {/* Background Overlay */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSettingForm(false)}
+              className="fixed inset-0 bg-black/50 z-[100] backdrop-blur-sm"/>
+            
+            {/* Modal Content */}
+            <motion.div 
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed bottom-0 left-0 right-0 bg-white z-[101] rounded-t-[40px] p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
+
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl bai-jamjuree-bold text-neutral-focus">Setting</h2>
+                <button 
+                  onClick={() => setIsEditing(false)} 
+                  className="p-2 rounded-full hover:bg-gray-200 transition-colors">
+                  <CloseIcon className="w-6 h-6 text-gray-500" />
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-3 items-start text-[18px]">
+                <button onClick={hdlLogout}
+                className='font-medium' >
+                  Log out</button>
+                <button onClick={'use function delete'}
+                className='font-medium text-error'>
+                  Delete Account</button>
+              </div>
+
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+
       {/* --- HEADER --- */}
       <div className="pt-12 pb-4 text-center relative flex items-center justify-center">
         <h1 className="text-xl bai-jamjuree-bold text-neutral-focus">Profile</h1>
-        <button 
-          onClick={handleEditOpen}
-          className="absolute right-6 top-11 p-2 bg-white rounded-full shadow-sm hover:bg-gray-50 active:scale-90 transition-all text-primary">
-          <EditIcon className="w-5 h-5" />
-        </button>
+        <div className="absolute right-6 top-11 ">
+          <button 
+            onClick={handleEditOpen}
+            className="p-2 bg-white rounded-full shadow-sm hover:bg-gray-50 active:scale-90 transition-all text-primary">
+              <EditIcon className="w-5 h-5" />
+          </button>
+          <button 
+            onClick={handleSettingOpen}
+            className="p-2 bg-white rounded-full shadow-sm hover:bg-gray-50 active:scale-90 transition-all text-primary">
+              <SettingIcon className="w-5 h-5"  />
+          </button>
+        </div>
       </div>
 
       {/* --- PROFILE INFO --- */}
@@ -265,10 +329,10 @@ const Profile = ({
                 <span className="text-lg bai-jamjuree-bold">{user.events}</span>
                 <span className="text-[10px] bai-jamjuree-medium opacity-90">Events</span>
               </div>
-              <div className="flex flex-col items-center flex-1">
+              <NavLink to='/friendlist' className="flex flex-col items-center flex-1">
                 <span className="text-lg bai-jamjuree-bold">{user.friends}</span>
                 <span className="text-[10px] bai-jamjuree-medium opacity-90">Friends</span>
-              </div>
+              </NavLink>
             </div>
           </div>
         </div>
