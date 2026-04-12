@@ -2,7 +2,6 @@ import { useLocation, useNavigate } from "react-router"
 import defaultProfile from "../../assets/default-profilepic.jpg"
 import ProfilePic from "../../components/profile/ProfilePic"
 import { PhotoIcon } from "../../icons"
-import useUserStore from "../../stores/userStore"
 import { useState } from "react"
 import { updateProfileApi } from "../../api/mainApi"
 import { toast } from "react-toastify"
@@ -58,7 +57,7 @@ function Add1Profile() {
 
       const res = await updateProfileApi(newUser.id, formData)
       toast.success('Update Success')
-      navigate('/add-interest', { state: { newUser } })
+      navigate('/add-interest', { state: { newUser: res.data.user || newUser } })
     } catch (error) {
       console.log(error);
       toast(error.response?.data?.message || "เกิดข้อผิดพลาด")
@@ -110,7 +109,7 @@ function Add1Profile() {
                     : 'border-gray-100  text-gray-500 hover:bg-gray-100 hover:border-gray-200'
                     }`}
                 >
-                    <span className="text-sm capitalize bai-jamjuree-semibold">{item}</span>
+                  <span className="text-sm capitalize bai-jamjuree-semibold">{item}</span>
                   <input
                     type="radio"
                     name="gender"

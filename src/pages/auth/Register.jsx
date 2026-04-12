@@ -30,7 +30,7 @@ function Register() {
       const newUser = resp.data.user
       // console.log(resp)
       toast.success('Register Success')
-      navigate('/add-profile', { state: { newUser } })
+      navigate('/add-profile', { state: { newUser } }) // ส่งข้อมูล newUser ไปด้วย
     } catch (error) {
       const errMsg = error.response?.data.message || error.message
       toast.error(errMsg)

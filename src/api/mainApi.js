@@ -24,6 +24,6 @@ export const googleLoginApi = (idToken) =>
     },
   );
 export const updateProfileApi = (id, formData) => mainApi.patch(`/auth/register/profile/${id}`, formData)
-
+export const addInterests = (id, formData) => mainApi.post(`/auth/register/interests/${id}`, formData)
 
 export default mainApi;
