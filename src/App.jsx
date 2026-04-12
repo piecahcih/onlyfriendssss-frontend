@@ -4,12 +4,11 @@ import useUserStore from "./stores/userStore";
 import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 
-
 function App() {
   // const user = { email: 'peach@gmail.com'}
-  const user = useUserStore(st => st.user)
+  const user = useUserStore((st) => st.user);
   ////  ยังไม่ได้เพิ่ม routerAdim ให้พีชมาเพิ่มเอง
-  const finalRouter = !user ? guestRouter : userRouter
+  const finalRouter = !user ? guestRouter : userRouter;
 
   useEffect(() => {
     const { user, rememberMe, logout } = useUserStore.getState();
