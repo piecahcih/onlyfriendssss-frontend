@@ -17,7 +17,7 @@ function NavBar() {
         </div>
         <div className="flex flex-col items-center text-white w-[50px]">
             <ChatIcon className="w-7"/>
-            <p className="text-[bai-jamjuree-semibold] text-[12px]">Discover</p>
+            <p className="text-[bai-jamjuree-semibold] text-[12px]">Chat</p>
         </div>
         <div className="flex flex-col items-center text-white w-[50px] object-cover">
             <img src={defaultProfile} alt="profilepic" className="rounded-full h-[30px] border border-white border-2" />

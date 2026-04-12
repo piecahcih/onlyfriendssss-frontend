@@ -16,6 +16,7 @@ import ShowCreate from "../pages/create/ShowCreate";
 import InsideChat from "../pages/chat/InsideChat";
 import Welcome from "../pages/Welcome";
 import ChatLayout from "../layouts/ChatLayout";
+import Account from "../pages/account/account"
 
 const guestRouter = createBrowserRouter([
   {
@@ -58,6 +59,9 @@ const userRouter = createBrowserRouter([
       {
         path: "welcome",
         element: <Welcome />,
+      },{
+        path: "account",
+        element: <Account />,
       },
       {
         path: "activities",
