@@ -2,9 +2,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { googleLoginApi, loginApi } from "../api/mainApi";
 
-const useUserStore = create(
-  persist(
-    (set, get) => ({
+const useUserStore = create(persist((set, get) => ({
       user: null,
       token: "",
       rememberMe: false,
@@ -22,9 +20,6 @@ const useUserStore = create(
         set({ token: "", user: null });
         localStorage.removeItem("OFsssUserState");
       },
-    }),
-    { name: "OFsssUserState", storage: createJSONStorage(() => localStorage) },
-  ),
-);
+    }),{ name: "OFsssUserState", storage: createJSONStorage(() => localStorage) }));
 
 export default useUserStore;
