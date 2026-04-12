@@ -7,9 +7,7 @@ import {
 } from "../api/mainApi";
 import { createJSONStorage } from "zustand/middleware";
 
-const useFriendStore = create(
-  persist(
-    (set, get) => ({
+const useFriendStore = create(persist((set, get) => ({
       friends: [],
       requests: [],
 
@@ -58,9 +56,7 @@ const useFriendStore = create(
         }
       },
       clearFriendStore: () => set({ friends: [], requests: [] }),
-    }),
-    { name: "olfssssState", storage: createJSONStorage(() => localStorage) },
-  ),
-);
+      
+    }),{ name: "olfssssState", storage: createJSONStorage(() => localStorage) },),);
 
 export default useFriendStore;
