@@ -1,9 +1,18 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { changeActivityStatusApi, createActivitiesApi, deleteActivityByIdApi, editActivityByIdApi, getActivityByCategoryApi, getActivityByIdApi, getAllActivitiesApi, getAllActivitiesCreatedByThisAccountApi } from "../api/mainApi";
+import { changeActivityStatusApi, createActivityApi, deleteActivityByIdApi, editActivityByIdApi, getActivityByCategoryApi, getActivityByIdApi, getAllActivitiesApi, getAllActivitiesCreatedByThisAccountApi, getAllCurrentActivitiesApi } from "../api/mainApi";
 
 const useActivityStore = create(persist((set,get)=>({
   activities: [],
+  creatingActivity: {},
+  setCreatingActivity: (data) => {
+    console.log('data:', data)
+    set({ creatingActivity: data })
+  } , 
+  getAllCurrentActivities: async () => {
+    const res = await getAllCurrentActivitiesApi()
+    set({ activities:res.data.activities })
+  },
   getAllActivities: async () => {
     const res = await getAllActivitiesApi()
     set({ activities:res.data.activities })
@@ -22,9 +31,13 @@ const useActivityStore = create(persist((set,get)=>({
 
     set({ activities:res.data.activities })
   },
-  createActivities: async (body) => {
-    const res = await createActivitiesApi(body)
-    set({ activities:res.data.activities })
+  createActivity: async (body) => {
+    // console.log('start')
+    await createActivityApi(body)
+    // console.log('body:',body)
+    await get().getAllCurrentActivities()
+
+    set({ creatingActivity: {} })
   },
   editActivityById: async (activityid,body) => {
     const res = await editActivityByIdApi(activityid,body)

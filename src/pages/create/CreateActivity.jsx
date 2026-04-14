@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { LeftIcon, PhotoIcon } from '../../icons'
 import { useNavigate } from 'react-router'
 import MapModal from '../../components/MapModal'
+import useActivityStore from '../../stores/activitiesStore'
+import useUserStore from '../../stores/userStore'
 
 function CreateActivity() {
     const navigate = useNavigate()
@@ -31,7 +33,28 @@ function CreateActivity() {
         { id: "TRAVEL", title: "Travel", icon: "✈️" }
     ];
 
-    const hdlPreCreateActivity = () => {
+    const user = useUserStore(st=>st.user)
+    const Adata = {
+      hostId: user.id,
+      isPublic: true,
+      coverPhoto:'https:res.cloudinary.com/piecahcih/image/upload/v1774345102/1amannlIMG1_kf4hqs.webp',
+      placeId: 1,
+      title: 'title',
+      eventStartTime: new Date("2027-09-19T13:00:00"),
+      category: 'ART',
+      description: 'description',
+    }
+  
+    // if(eventEndTime){
+    //   Adata.eventEndTime = eventEndTime
+    // }
+
+    // const { coverPhoto,category,title,description,eventStartTime,eventEndTime,placeId } = req.body
+    
+    const hdlPreCreateActivity = (e,Adata) => {
+      e.preventDefault()
+      useActivityStore.getState().setCreatingActivity(Adata)
+
       navigate('/create-showcreate')
     }
 
@@ -44,7 +67,7 @@ function CreateActivity() {
     <header className="w-full top-0 sticky z-40 bg-base-200 shadow-[0_8px_32px_rgba(78,33,32,0.08)] flex items-center justify-between px-6 py-4 relative">
 
         <button type='button' onClick={()=>hdlGoBack()} 
-            className="text-[#a83100] hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-200 relative z-10">
+            className="text-[#a83100] hover:opacity-80  active:scale-95 transition-transform duration-200 relative z-10">
             <LeftIcon className='w-8' />
         </button>
 
@@ -58,7 +81,7 @@ function CreateActivity() {
       <div className="max-w-2xl mx-auto px-6 pt-8 space-y-8">
 
         {/* Form Fields */}
-        <form className="space-y-6" onSubmit={hdlPreCreateActivity}>
+        <form className="space-y-6" onSubmit={(e)=>hdlPreCreateActivity(e,Adata)}>
 
           {/* Public Badge / Privacy */}
             <button type='button' onClick={()=>hdlPrivacyStatus()}>
@@ -128,7 +151,31 @@ function CreateActivity() {
           {/* Date & Time Row */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className={lblTitleStyle}>Date</label>
+              <label className={lblTitleStyle}>Start Date</label>
+              <div className="relative">
+                <span className="absolute left-5 top-1/2 -translate-y-1/2 text-xl">📅</span>
+                <input
+                  className="w-full pl-14 pr-4 py-3 rounded-full bg-white border-none ring-2 ring-[#e09c99]/20 focus:ring-[#a83100] transition-all outline-none text-neutral text-sm"
+                  placeholder="Oct 24, 2023"
+                  type="text"
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className={lblTitleStyle}>Time</label>
+              <div className="relative">
+                <span className="absolute left-5 top-1/2 -translate-y-1/2 text-xl">🕒</span>
+                <input
+                  className="w-full pl-14 pr-4 py-3 rounded-full bg-white border-none ring-2 ring-[#e09c99]/20 focus:ring-[#a83100] transition-all outline-none text-neutral text-sm"
+                  placeholder="08:30 AM"
+                  type="text"
+                />
+              </div>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className={lblTitleStyle}>End Date</label>
               <div className="relative">
                 <span className="absolute left-5 top-1/2 -translate-y-1/2 text-xl">📅</span>
                 <input
@@ -191,7 +238,7 @@ function CreateActivity() {
           </div>
 
           <div className="pt-4 pb-12">
-            <button className="w-full py-4 rounded-full bg-primary text-white font-bold text-lg shadow-[0_8px_32px_rgba(168,49,0,0.24)] active:scale-95 transition-all">
+            <button className="w-full py-4 rounded-full bg-linear-to-r from-primary to-secondary text-white font-bold text-lg shadow-[0_8px_32px_rgba(168,49,0,0.24)] active:scale-95 transition-all">
               Create Activity
             </button>
           </div>
