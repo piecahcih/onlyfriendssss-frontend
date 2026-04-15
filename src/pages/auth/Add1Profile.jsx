@@ -37,7 +37,6 @@ function Add1Profile() {
 
       setFile(selectFile)
       setPreview(newPreviewUrl)
-      console.log("Preview URL created:", newPreviewUrl)
     }
   }
 
@@ -72,7 +71,7 @@ function Add1Profile() {
       <div className="flex flex-col items-center">
         <div className="relative group cursor-pointer h-[150px] w-[150px] my-3">
           <ProfilePic
-            src={preview || (newUser?.profileImg ? `http://localhost:3999/uploads/${newUser.profileImg}` : defaultProfile)}
+            imgSrc={preview || (newUser?.profileImg ? `http://localhost:3999/uploads/${newUser.profileImg}` : defaultProfile)}
             className="rounded-full h-[150px] w-[150px] border-4 border-primary object-cover"
           />
           <div onClick={() => document.getElementById('fileInput').click()}
