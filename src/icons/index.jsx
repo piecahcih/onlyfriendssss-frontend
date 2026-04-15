@@ -134,16 +134,24 @@ export function PhotoIcon(props) {
 }
 
 export function Notification(props) {
-    return (
-        <svg
-        fill="currentColor"
-        viewBox="0 0 640 640"
-        xmlns="http://www.w3.org/2000/svg"
-        {...props}
-        >
-      <path d="M320 64C302.3 64 288 78.3 288 96L288 99.2C215 114 160 178.6 160 256L160 277.7C160 325.8 143.6 372.5 113.6 410.1L103.8 422.3C98.7 428.6 96 436.4 96 444.5C96 464.1 111.9 480 131.5 480L508.4 480C528 480 543.9 464.1 543.9 444.5C543.9 436.4 541.2 428.6 536.1 422.3L526.3 410.1C496.4 372.5 480 325.8 480 277.7L480 256C480 178.6 425 114 352 99.2L352 96C352 78.3 337.7 64 320 64zM258 528C265.1 555.6 290.2 576 320 576C349.8 576 374.9 555.6 382 528L258 528z" />
+  return (
+    <svg
+      fill="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+      className="icon line"
+      {...props}
+    >
+      <path
+        d="M19.38 14.38a2.12 2.12 0 01.62 1.5h0A2.12 2.12 0 0117.88 18H6.12A2.12 2.12 0 014 15.88h0a2.12 2.12 0 01.62-1.5L6 13V9a6 6 0 016-6h0a6 6 0 016 6v4zM15 18H9a3 3 0 003 3h0a3 3 0 003-3z"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={1.5}
+      />
     </svg>
-  );
+  )
 }
 
 export function LeftIcon(props) {
