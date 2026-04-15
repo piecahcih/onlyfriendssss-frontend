@@ -2,6 +2,11 @@ import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import ProfilePic from '../components/profile/ProfilePic';
 import useUserStore from '../stores/userStore';
+import { SettingIcon } from '../icons';
+import { NavLink } from 'react-router';
+// import mainApi from '../api/mainApi';
+import { getProfileApi, SendFriendRequestApi, editProfileApi } from '../api/mainApi';
+
 
 // --- Local Icons ---
 const LocationIcon = (props) => (
@@ -41,38 +46,48 @@ const CameraIcon = (props) => (
   </svg>
 );
 
-const Profile = ({
-  initialUser = {
-    username: "Mr. Catlover",
-    firstName: "Cat",
-    lastName: "Lover",
-    profilePic: null, // เพิ่มฟิลด์สำหรับเก็บรูป
-    rating: 4.9,
-    events: 10,
-    friends: 122,
-    isFriend: false,
-    bio: "Tell me your favorite colors, I wanna know you",
-    gender: "Male",
-    tags: ['Talkative', 'Good manners', 'Foodie', 'Super User']
-  },
-  onRequestFriend = () => alert("Friend Request Sent!")
-}) => {
-  // --- States ---
-  const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem('userProfile');
-    return savedUser ? JSON.parse(savedUser) : initialUser;
+const Profile = ({ onRequestFriend = () => alert("Friend Request Sent!") }) => {
+  // 1. ดึงข้อมูลจาก Store (สมมติว่า Store มี 'user' และ 'setUser')
+  const storeUser = useUserStore((state) => state.user);
+  const setStoreUser = useUserStore((state) => state.setUser);
+
+  // 2. ใช้ค่าจาก Store เป็นค่าตั้งต้นของ Local State
+  const [user, setUser] = useState(storeUser || {
+    username: "",
+    firstName: "",
+    lastName: "",
+    profileImg: null,
+    rating: 0,
+    events: 0,
+    friends: 0,
+    bio: "",
+    gender: "",
+    tags: []
   });
+  
   const [activeTab, setActiveTab] = useState("Joined");
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState(user);
   const tabs = ["Joined", "Created", "Memory"];
-
-  // --- Refs ---
   const fileInputRef = useRef(null);
 
+  // --- ดึงข้อมูลจาก Database เมื่อโหลดหน้า ---
   useEffect(() => {
-    localStorage.setItem('userProfile', JSON.stringify(user));
-  }, [user]);
+    fetchUserProfile();
+  }, []);
+
+  const fetchUserProfile = async () => {
+  try {
+    const response = await getProfileApi();
+    const data = response.data;
+    
+    setUser(data);      // อัปเดตหน้าจอตัวเอง
+    setEditForm(data);  // อัปเดตฟอร์มแก้
+    setStoreUser(data); // <--- อัปเดต Store ส่วนกลาง
+  } catch (error) {
+    console.error("Fetch Profile Error:", error);
+  }
+};
 
   // --- Handlers ---
   const handleEditOpen = () => {
@@ -80,35 +95,69 @@ const Profile = ({
     setIsEditing(true);
   };
 
-  const handleSave = (e) => {
-    e.preventDefault();
-    setUser({ ...editForm }); 
-    setIsEditing(false);
+  
+  const [settingForm, setSettingForm] = useState(false);
+  const handleSettingOpen = () => {
+    setSettingForm(true);
   };
+  
+  const logout = useUserStore(st=>st.logout)
+  const hdlLogout= () => {
+    logout()
+  };
+
+  // ---  บันทึกข้อมูลลง Database ---
+ const handleSave = async (e) => {
+  e.preventDefault();
+  try {
+    await editProfileApi(editForm); 
+    
+    // อัปเดตสถานะในหน้าปัจจุบัน
+    setUser(editForm);
+    // อัปเดตสถานะใน Store ส่วนกลาง (เพื่อให้ Navbar หรือหน้าอื่นเปลี่ยนรูป/ชื่อตาม)
+    setStoreUser(editForm); 
+    
+    setIsEditing(false);
+    alert("Saved Successfully!");
+  } catch (error) {
+    alert(error.response?.data?.message || "Error saving data");
+  }
+};
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setEditForm(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
       if (file.size > 2 * 1024 * 1024) {
-        alert("File is too large! Please choose an image under 2MB.");
+        alert("File is too large! Under 2MB only.");
         return;
       }
+      
       const reader = new FileReader();
       reader.onloadend = () => {
-        setEditForm(prev => ({ ...prev, profilePic: reader.result }));
+        setEditForm(prev => ({ ...prev, profileImg: reader.result }));
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const triggerFileInput = () => {
-    fileInputRef.current.click();
-  };
+  const triggerFileInput = () => fileInputRef.current.click();
+
+  const handleRequestFriend = async () => {
+  try {
+    // สมมติว่า user.id คือ id ของเจ้าของโปรไฟล์ที่เรากำลังดูอยู่
+    await SendFriendRequestApi(user.id); 
+    alert("ส่งคำขอเป็นเพื่อนแล้ว!");
+    // อาจจะ fetch ข้อมูลใหม่เพื่อเปลี่ยนสถานะปุ่ม
+    fetchUserProfile(); 
+  } catch (error) {
+    alert(error.response?.data?.message || "ไม่สามารถส่งคำขอได้");
+  }
+};
 
   return (
     <div className="bg-base-200 min-h-screen flex flex-col font-sans pb-24 relative overflow-x-hidden">
@@ -137,7 +186,7 @@ const Profile = ({
                 <h2 className="text-2xl bai-jamjuree-bold text-neutral-focus">Edit Profile</h2>
                 <button 
                   onClick={() => setIsEditing(false)} 
-                  className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors">
+                  className="p-2 rounded-full hover:bg-gray-200 transition-colors">
                   <CloseIcon className="w-6 h-6 text-gray-500" />
                 </button>
               </div>
@@ -235,21 +284,72 @@ const Profile = ({
         )}
       </AnimatePresence>
 
+      {/* --- SETTING MODAL --- */}
+      <AnimatePresence>
+        {settingForm && (
+          <>
+            {/* Background Overlay */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSettingForm(false)}
+              className="fixed inset-0 bg-black/50 z-[100] backdrop-blur-sm"/>
+            
+            {/* Modal Content */}
+            <motion.div 
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed bottom-0 left-0 right-0 bg-white z-[101] rounded-t-[40px] p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
+
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl bai-jamjuree-bold text-neutral-focus">Setting</h2>
+                <button 
+                  onClick={() => setSettingForm(false)} 
+                  className="p-2 rounded-full hover:bg-gray-200 transition-colors">
+                  <CloseIcon className="w-6 h-6 text-gray-500" />
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-3 items-start text-[18px]">
+                <button onClick={hdlLogout}
+                className='font-medium' >
+                  Log out</button>
+                <button onClick={'use function delete'}
+                className='font-medium text-error'>
+                  Delete Account</button>
+              </div>
+
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+
       {/* --- HEADER --- */}
       <div className="pt-12 pb-4 text-center relative flex items-center justify-center">
         <h1 className="text-xl bai-jamjuree-bold text-neutral-focus">Profile</h1>
-        <button 
-          onClick={handleEditOpen}
-          className="absolute right-6 top-11 p-2 bg-white rounded-full shadow-sm hover:bg-gray-50 active:scale-90 transition-all text-primary">
-          <EditIcon className="w-5 h-5" />
-        </button>
+        <div className="absolute right-6 top-11 ">
+          <button 
+            onClick={handleEditOpen}
+            className="p-2 bg-white rounded-full shadow-sm hover:bg-gray-50 active:scale-90 transition-all text-primary">
+              <EditIcon className="w-5 h-5" />
+          </button>
+          <button 
+            onClick={handleSettingOpen}
+            className="p-2 bg-white rounded-full shadow-sm hover:bg-gray-50 active:scale-90 transition-all text-primary">
+              <SettingIcon className="w-5 h-5"  />
+          </button>
+        </div>
       </div>
 
       {/* --- PROFILE INFO --- */}
       <div className="px-6 flex flex-col">
         <div className="flex items-center w-full gap-4 mb-6">
           <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-white shadow-md flex-shrink-0 bg-white">
-            <ProfilePic src={user.profilePic} />
+            <ProfilePic imgSrc={user.profileImg} />
           </div>
 
           <div className="flex-1 flex flex-col">
@@ -265,10 +365,10 @@ const Profile = ({
                 <span className="text-lg bai-jamjuree-bold">{user.events}</span>
                 <span className="text-[10px] bai-jamjuree-medium opacity-90">Events</span>
               </div>
-              <div className="flex flex-col items-center flex-1">
+              <NavLink to='/friendlist' className="flex flex-col items-center flex-1">
                 <span className="text-lg bai-jamjuree-bold">{user.friends}</span>
                 <span className="text-[10px] bai-jamjuree-medium opacity-90">Friends</span>
-              </div>
+              </NavLink>
             </div>
           </div>
         </div>
@@ -289,7 +389,7 @@ const Profile = ({
           </div>
           
           <div className="flex flex-wrap gap-2 pt-2">
-            {user.tags.map((tag) => (
+            {user.tags?.map((tag) => (
               <span key={tag} className="bg-secondary text-white px-4 py-1.5 rounded-full text-xs bai-jamjuree-medium shadow-sm">
                 {tag}
               </span>

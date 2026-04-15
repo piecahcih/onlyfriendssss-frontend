@@ -17,6 +17,7 @@ const useFriendStore = create(
       getFriends: async () => {
         try {
           const res = await GetFriendListApi();
+          console.log("backend res", res.data);
           set({
             friends: res.data.friends || [],
             requests: res.data.requests || [],
@@ -37,7 +38,7 @@ const useFriendStore = create(
       },
 
       //รับคำขอเพื่อน
-      acceptFriend: async () => {
+      acceptFriend: async (id) => {
         try {
           const res = await AcceptFriendApi(id);
           await get().getFriends();
@@ -48,13 +49,13 @@ const useFriendStore = create(
       },
 
       //ลบเพื่อน
-      unFriendship: async () => {
+      unFriendship: async (id) => {
         try {
           const res = await UnfriendApi(id);
           await get().getFriends();
           return res;
         } catch (error) {
-          console.error("Unfriend error:", err);
+          console.error("Unfriend error:", error);
         }
       },
       clearFriendStore: () => set({ friends: [], requests: [] }),
