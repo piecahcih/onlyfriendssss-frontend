@@ -46,7 +46,7 @@ const guestRouter = createBrowserRouter([
   },
   {
     path: "*",
-    element: <Navigate to = '/'/>
+    element: <Navigate to='/' />
   },
 ]);
 
@@ -56,12 +56,8 @@ const userRouter = createBrowserRouter([
     element: <UserLayout />,
     children: [
       {
-        index: true,
+        path: "lddiscover",
         element: <LDDiscover />,
-      },
-      {
-        path: "welcome",
-        element: <Welcome />,
       },
       {
         path: "activities",
@@ -82,6 +78,10 @@ const userRouter = createBrowserRouter([
     element: <NonavLayout />,
     children: [
       {
+        index: true,
+        element: <Welcome />,
+      },
+      {
         path: "chat/:name",
         element: <InsideChat />,
       },
@@ -101,7 +101,7 @@ const userRouter = createBrowserRouter([
   },
   {
     path: "*",
-    element: <Navigate to = '/'/>
+    element: <Navigate to='/' />
   },
 ]);
 
