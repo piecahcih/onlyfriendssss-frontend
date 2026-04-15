@@ -10,7 +10,7 @@ function MapboxViewer() {
   const mapRef = useRef()
 
   useEffect(() => {
-    mapboxgl.accessToken = 'pk.eyJ1IjoicGllY2FoY2loIiwiYSI6ImNtbnpzaTdrZTAwb2MycW85a3h3emo4ajgifQ.C4MYpaww3qohUUsVSWeLJA'
+    mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN
     
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current, 
@@ -108,7 +108,7 @@ function MapModal({ isOpen, onClose, onConfirm }) {
 
           </main>
         </motion.div>
-        
+
       )}
     </AnimatePresence>
   )
