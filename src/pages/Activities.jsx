@@ -4,6 +4,8 @@ import mockActImg from '../assets/mockActImg.jpg'
 import defaultProfile from '../assets/default-profilepic.jpg'
 import useActivityStore from '../stores/activitiesStore';
 import {format} from 'date-fns'
+import NotificationModal from '../components/NotificationModal';
+import { NavLink } from 'react-router';
 
 function Activities() {
     const [selectedCategory, setSelectedCategory] = useState("all");
@@ -17,11 +19,11 @@ function Activities() {
     ];
 
     const activities = useActivityStore(st=>st.activities)
-    const getAllActivities = useActivityStore(st=>st.getAllActivities)
+    const getAllCurrentActivities = useActivityStore(st=>st.getAllCurrentActivities)
     const getActivityByCategory = useActivityStore(st=>st.getActivityByCategory)
 
     useEffect(()=>{
-        selectedCategory === 'all' ? getAllActivities()
+        selectedCategory === 'all' ? getAllCurrentActivities()
         :getActivityByCategory(selectedCategory);
         // console.log('selectedCategory:', selectedCategory)
         console.log('activities', activities)
@@ -31,6 +33,8 @@ function Activities() {
     const filteredActivities = selectedCategory === "all" 
         ? activities 
         : activities.filter(act => act.category === selectedCategory.toUpperCase());
+
+    const [notiOpen, setNotiOpen] = useState(false)
 
     return (
         <div className="min-h-screen bg-base-200 pb-24">
@@ -50,7 +54,7 @@ function Activities() {
                             <MicIcon className="w-6 text-on-surface/40" />
                         </div>
                     </div>
-                    <button className="relative p-4 w-fit h rounded-full bg-white ring-2 ring-[#e09c99]/20 shadow-sm active:scale-95 transition-all">
+                    <button type='button' onClick={()=>setNotiOpen(true)} className="relative p-4 w-fit h rounded-full bg-white ring-2 ring-[#e09c99]/20 shadow-sm active:scale-95 transition-all">
                         <Notification className="w-6 h-6" />
                         <span className="absolute top-2 right-2 w-5 h-5 bg-primary flex items-center justify-center text-[10px] font-bold text-white border-2 border-white rounded-full">1</span>
                     </button>
@@ -83,9 +87,11 @@ function Activities() {
                         {/* <button className="text-primary font-bold text-sm hover:underline">See all</button> */}
                     </div>
 
-                    <div className="space-y-6">
+                    <div className="space-y-8">
                         {filteredActivities.map((activity) => (
-                            <div key={activity.id} className="bg-white rounded-[2rem] overflow-hidden shadow-[0_12px_32px_rgba(78,33,32,0.04)] hover:shadow-[0_12px_48px_rgba(78,33,32,0.08)] transition-all duration-300 group">
+                          <NavLink to={`/activity-details?actid=${activity.id}`} key={activity.id} className="block" >
+                            <div className="bg-white rounded-[35px] overflow-hidden shadow-[0_12px_32px_rgba(78,33,32,0.04)] hover:shadow-[0_12px_48px_rgba(78,33,32,0.08)] transition-all duration-300">
+                            
                                 <div className="relative h-48 w-full overflow-hidden">
                                     <img 
                                         src={activity.coverPhoto} 
@@ -127,7 +133,7 @@ function Activities() {
 
                                     <div className="pt-4 flex items-center justify-between border-t border-surface-container-low">
                                         <div className="flex items-center gap-3">
-                                            <div className="flex -space-x-3">
+                                            <div className="flex -space-x-3.5 items-center">
                                                 {[...Array(3)].map((_, i) => (
                                                     <img 
                                                         key={i}
@@ -136,26 +142,27 @@ function Activities() {
                                                         alt="attendee" 
                                                     />
                                                 ))}
-                                                <div className="w-10 h-10 rounded-full border-2 border-white bg-surface-container-high flex items-center justify-center text-[12px] font-bold text-on-surface/60">
-                                                    +{activity.attendees}
+                                                <div className=" w-10 h-6 rounded-full bg-[#ffccb5] border-2 border-white bg-surface-container-high flex items-center justify-center text-[12px] font-bold text-on-surface/60">
+                                                    19
                                                 </div>
-                                            </div>
-                                            <div className="flex flex-col">
-                                                <span className="text-[10px] text-on-surface/40 font-bold uppercase tracking-wider">Hosted by</span>
-                                                <span className="text-sm font-bold">{activity.host}</span>
                                             </div>
                                         </div>
                                         
-                                        <button className="px-8 py-3 rounded-full bg-gradient-to-r from-primary to-secondary text-white font-bold text-sm shadow-[0_8px_24px_rgba(252,81,0,0.2)] active:scale-95 transition-all">
-                                            Join Now
-                                        </button>
+                                        <div className="flex flex-col items-end">
+                                            <span className="text-[10px] text-on-surface/40 font-bold uppercase tracking-wider">Hosted by</span>
+                                            <span className="text-sm font-bold">{activity.host.username}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                          </NavLink> 
                         ))}
                     </div>
                 </section>
+
+
             </main>
+            <NotificationModal isOpen={notiOpen} onClose={()=>setNotiOpen(false)} />
         </div>
     )
 }

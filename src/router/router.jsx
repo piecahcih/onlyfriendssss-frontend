@@ -16,6 +16,7 @@ import InsideChat from "../pages/chat/InsideChat";
 import Welcome from "../pages/Welcome";
 import Friendlist from "../pages/Friends/Friendlist";
 import NonavLayout from "../layouts/NonavLayout";
+import ActivityDetails from "../pages/ActivityDetails";
 
 const guestRouter = createBrowserRouter([
   {
@@ -96,6 +97,10 @@ const userRouter = createBrowserRouter([
       {
         path: "create-showcreate",
         element: <ShowCreate />,
+      },
+      {
+        path: "activity-details",
+        element: <ActivityDetails />,
       },
     ],
   },

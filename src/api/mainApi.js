@@ -55,13 +55,15 @@ export const editProfileApi = (body) => mainApi.patch("/account/profile", body);
 
 
 ////////ACTIVITIES
-export const getAllActivitiesApi = () => mainApi.get("/activity")
+export const getAllCurrentActivitiesApi = () => mainApi.get("/activity")
+export const getAllActivitiesApi = () => mainApi.get("/activity/all")
 export const getAllActivitiesCreatedByThisAccountApi = () => mainApi.get("/activity/my-activities")
+export const getAllActivitiesJoinedByThisAccountApi = () => mainApi.get("/activity/my-joined-activities")
 export const getActivityByIdApi = (activityid) => mainApi.get(`/activity/${activityid}`)
 export const getActivityByCategoryApi = (category) => mainApi.get(`/activity/category/${category}`)
-export const createActivitiesApi = (body) => mainApi.post("/activity",body)
-export const editActivityByIdApi = (activityid) => mainApi.put(`/activity/${activityid}`)
-export const changeActivityStatusApi = (activityid,body) => mainApi.patch(`/activity/${activityid}`,body)
+export const createActivityApi = (body) => mainApi.post("/activity",body)
+export const editActivityByIdApi = (activityid) => mainApi.patch(`/activity/${activityid}`)
+export const changeActivityStatusApi = (activityid,body) => mainApi.patch(`/activity/status/${activityid}`,body)
 export const deleteActivityByIdApi = (activityid) => mainApi.delete(`/activity/${activityid}`)
 
 
