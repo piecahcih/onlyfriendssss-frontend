@@ -5,6 +5,7 @@ import defaultProfile from '../assets/default-profilepic.jpg'
 import useActivityStore from '../stores/activitiesStore';
 import {format} from 'date-fns'
 import NotificationModal from '../components/NotificationModal';
+import { NavLink } from 'react-router';
 
 function Activities() {
     const [selectedCategory, setSelectedCategory] = useState("all");
@@ -86,9 +87,11 @@ function Activities() {
                         {/* <button className="text-primary font-bold text-sm hover:underline">See all</button> */}
                     </div>
 
-                    <div className="space-y-6">
+                    <div className="space-y-8">
                         {filteredActivities.map((activity) => (
-                            <div key={activity.id} className="bg-white rounded-[2rem] overflow-hidden shadow-[0_12px_32px_rgba(78,33,32,0.04)] hover:shadow-[0_12px_48px_rgba(78,33,32,0.08)] transition-all duration-300 group">
+                          <NavLink to={`/activity-details?actid=${activity.id}`} key={activity.id} className="block" >
+                            <div className="bg-white rounded-[35px] overflow-hidden shadow-[0_12px_32px_rgba(78,33,32,0.04)] hover:shadow-[0_12px_48px_rgba(78,33,32,0.08)] transition-all duration-300">
+                            
                                 <div className="relative h-48 w-full overflow-hidden">
                                     <img 
                                         src={activity.coverPhoto} 
@@ -143,21 +146,21 @@ function Activities() {
                                                     19
                                                 </div>
                                             </div>
-                                            <div className="flex flex-col">
-                                                <span className="text-[10px] text-on-surface/40 font-bold uppercase tracking-wider">Hosted by</span>
-                                                <span className="text-sm font-bold">{activity.host.username}</span>
-                                            </div>
                                         </div>
                                         
-                                        <button className="px-4 py-3 rounded-full bg-linear-to-r from-primary to-secondary text-white font-bold text-sm shadow-[0_8px_24px_rgba(252,81,0,0.2)] active:scale-95 transition-all">
-                                            Join
-                                        </button>
+                                        <div className="flex flex-col items-end">
+                                            <span className="text-[10px] text-on-surface/40 font-bold uppercase tracking-wider">Hosted by</span>
+                                            <span className="text-sm font-bold">{activity.host.username}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                          </NavLink> 
                         ))}
                     </div>
                 </section>
+
+
             </main>
             <NotificationModal isOpen={notiOpen} onClose={()=>setNotiOpen(false)} />
         </div>

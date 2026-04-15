@@ -61,7 +61,7 @@ function CreateActivity() {
 
     const lblTitleStyle = "text-[18px] font-bold text-neutral"
   return (
-    <div className="min-h-screen bg-base-200 text-neutral font-sans">
+    <div className="min-h-screen bg-base-200 text-neutral">
         
       {/* TopAppBar */}
     <header className="w-full top-0 sticky z-40 bg-base-200 shadow-[0_8px_32px_rgba(78,33,32,0.08)] flex items-center justify-between px-6 py-4 relative">
@@ -78,7 +78,7 @@ function CreateActivity() {
         <div className="w-8"></div>
     </header>
 
-      <div className="max-w-2xl mx-auto px-6 pt-8 space-y-8">
+      <div className="mx-auto px-6 pt-8 space-y-8">
 
         {/* Form Fields */}
         <form className="space-y-6" onSubmit={(e)=>hdlPreCreateActivity(e,Adata)}>

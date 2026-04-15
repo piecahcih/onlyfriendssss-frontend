@@ -1,8 +1,42 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import MockingMap from '../assets/mockingmap.png'
 import { LocationIcon, MicIcon, SearchIcon } from '../icons'
+import { useRef, useEffect } from 'react'
+import mapboxgl from 'mapbox-gl'
+import 'mapbox-gl/dist/mapbox-gl.css';
+
+function MapboxViewer() {
+  const mapContainerRef = useRef()
+  const mapRef = useRef()
+
+  useEffect(() => {
+    mapboxgl.accessToken = 'pk.eyJ1IjoicGllY2FoY2loIiwiYSI6ImNtbnpzaTdrZTAwb2MycW85a3h3emo4ajgifQ.C4MYpaww3qohUUsVSWeLJA'
+    
+    mapRef.current = new mapboxgl.Map({
+      container: mapContainerRef.current, 
+      center: [100.53499383276497, 13.758571505785834], 
+      zoom: 15 
+    });
+
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.remove()
+      }
+    }
+  }, []) 
+
+  return (
+    <div 
+      id='map-container' 
+      ref={mapContainerRef} 
+      style={{ width: '100%', height: '500px' }} 
+      className="rounded-2xl overflow-hidden shadow-lg"
+    />
+  )
+}
 
 function MapModal({ isOpen, onClose, onConfirm }) {
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -46,9 +80,9 @@ function MapModal({ isOpen, onClose, onConfirm }) {
             </section>
 
             {/* Map Container */}
-            <section>
+            <MapboxViewer/>
+            {/* <section>
               <div className="relative w-full h-4/5 rounded-2xl overflow-hidden shadow-[0_12px_48px_rgba(78,33,32,0.1)] ring-4 ring-white">
-                {/* Map Placeholder */}
                 <div className="w-full h-full bg-base-200 relative">
                   <img 
                     alt="Interactive map view" 
@@ -56,7 +90,6 @@ function MapModal({ isOpen, onClose, onConfirm }) {
                     src={MockingMap}
                   />
                   
-                  {/* Pulsing Pin Marker */}
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
                     <div className="w-15 h-15 flex items-center justify-center rounded-full bg-secondary/40 ">
                       <LocationIcon className='w-8 text-primary'/>
@@ -64,19 +97,18 @@ function MapModal({ isOpen, onClose, onConfirm }) {
                   </div>
                 </div>
               </div>
-            </section>
+            </section> */}
 
-
-            <button onClick={onConfirm}
-                className="w-full -mt-20 py-4 bg-linear-to-r from-primary to-secondary text-white font-bold text-xl rounded-full shadow-[0_12px_32px_rgba(168,49,0,0.3)] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-                <span>Continue</span>
-            </button>
-
+            <div className="fixed bottom-0 left-0 w-full p-6 z-40">
+              <button onClick={onConfirm}
+                  className="w-full py-4 bg-linear-to-r from-primary to-secondary text-white font-bold text-xl rounded-full shadow-[0_12px_32px_rgba(168,49,0,0.3)] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                  <span>Continue</span>
+              </button>
+            </div>
 
           </main>
-
         </motion.div>
-
+        
       )}
     </AnimatePresence>
   )
