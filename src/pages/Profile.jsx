@@ -35,7 +35,7 @@ const Profile = () => {
     try {
       const response = await getProfileApi();
       const data = response.data.user?.data || response.data.user || response.data;
-      console.log("Gender from API:", data.gender)
+      console.log("Gender from API:", data)
       
       setProfileData(data);
       setEditForm(data);
@@ -162,7 +162,7 @@ const Profile = () => {
               className="fixed bottom-0 left-0 right-0 bg-white z-[101] rounded-t-[40px] p-8 shadow-2xl max-h-[90vh] overflow-y-auto"
             >
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl bai-jamjuree-bold text-neutral-focus">แก้ไขโปรไฟล์</h2>
+                <h2 className="text-2xl bai-jamjuree-bold text-neutral-focus">Edit Profile</h2>
                 <button onClick={() => setIsEditing(false)} className="p-2 rounded-full hover:bg-gray-200 transition-colors">
                   <CloseIcon className="w-6 h-6 text-gray-500" />
                 </button>
@@ -183,41 +183,41 @@ const Profile = () => {
                     </button>
                   </div>
                   <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
-                  <p className="text-[10px] bai-jamjuree-medium text-gray-400 mt-2 uppercase">แตะที่รูปเพื่อเปลี่ยน</p>
+                  <p className="text-[10px] bai-jamjuree-medium text-gray-400 mt-2 uppercase">Tap to change photo</p>
                 </div>
 
                 <div>
-                  <label className="block text-sm bai-jamjuree-semibold text-gray-500 mb-1.5 ml-1">ชื่อผู้ใช้</label>
+                  <label className="block text-sm bai-jamjuree-semibold text-gray-500 mb-1.5 ml-1">Username</label>
                   <input name="username" value={editForm.username || ""} onChange={handleChange} className="w-full px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20" />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm bai-jamjuree-semibold text-gray-500 mb-1.5 ml-1">ชื่อจริง</label>
+                    <label className="block text-sm bai-jamjuree-semibold text-gray-500 mb-1.5 ml-1">First Name</label>
                     <input name="firstName" value={editForm.firstName || ""} onChange={handleChange} className="w-full px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20" />
                   </div>
                   <div>
-                    <label className="block text-sm bai-jamjuree-semibold text-gray-500 mb-1.5 ml-1">นามสกุล</label>
+                    <label className="block text-sm bai-jamjuree-semibold text-gray-500 mb-1.5 ml-1">Last Name</label>
                     <input name="lastName" value={editForm.lastName || ""} onChange={handleChange} className="w-full px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20" />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm bai-jamjuree-semibold text-gray-500 mb-1.5 ml-1">เพศ</label>
+                  <label className="block text-sm bai-jamjuree-semibold text-gray-500 mb-1.5 ml-1">Gender</label>
                   <select name="gender" value={editForm.gender || "MALE"} onChange={handleChange} className="w-full px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20">
-                    <option value="MALE">ชาย</option>
-                    <option value="FEMALE">หญิง</option>
-                    <option value="OTHER">อื่นๆ</option>
+                    <option value="MALE">MALE</option>
+                    <option value="FEMALE">FEMALE</option>
+                    <option value="OTHER">OTHER</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-sm bai-jamjuree-semibold text-gray-500 mb-1.5 ml-1">แนะนำตัวเอง</label>
+                  <label className="block text-sm bai-jamjuree-semibold text-gray-500 mb-1.5 ml-1">Bio</label>
                   <textarea name="bio" value={editForm.bio || ""} onChange={handleChange} rows="3" className="w-full px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-primary/20" />
                 </div>
 
                 <button type="submit" className="w-full py-4 bg-primary text-white rounded-2xl bai-jamjuree-bold shadow-lg shadow-primary/30 active:scale-95 transition-all mt-4">
-                  บันทึกการเปลี่ยนแปลง
+                  SAVE
                 </button>
               </form>
             </motion.div>
