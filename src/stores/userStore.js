@@ -20,6 +20,9 @@ const useUserStore = create(persist((set, get) => ({
         set({ token: "", user: null });
         localStorage.removeItem("OFsssUserState");
       },
-    }),{ name: "OFsssUserState", storage: createJSONStorage(() => localStorage) },),);
+
+      setUser: (userData) => set({ user: userData }),
+      
+    }),{ name: "OFsssUserState", storage: createJSONStorage(() => localStorage) }));
 
 export default useUserStore;

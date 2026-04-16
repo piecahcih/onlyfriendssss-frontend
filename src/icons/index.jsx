@@ -1,3 +1,21 @@
+
+export function WelcomeIcon(props) {
+  return (
+    <svg
+      width="80"
+      height="80"
+      viewBox="0 0 100 100"
+      className="text-black"
+      {...props}
+    >
+      <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="4" />
+      <circle cx="35" cy="40" r="4" fill="currentColor" />
+      <circle cx="65" cy="40" r="4" fill="currentColor" />
+      <path d="M30 65 Q50 80 70 65" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function SearchIcon(props) {
   return (
     <svg
@@ -134,16 +152,24 @@ export function PhotoIcon(props) {
 }
 
 export function Notification(props) {
-    return (
-        <svg
-        fill="currentColor"
-        viewBox="0 0 640 640"
-        xmlns="http://www.w3.org/2000/svg"
-        {...props}
-        >
-      <path d="M320 64C302.3 64 288 78.3 288 96L288 99.2C215 114 160 178.6 160 256L160 277.7C160 325.8 143.6 372.5 113.6 410.1L103.8 422.3C98.7 428.6 96 436.4 96 444.5C96 464.1 111.9 480 131.5 480L508.4 480C528 480 543.9 464.1 543.9 444.5C543.9 436.4 541.2 428.6 536.1 422.3L526.3 410.1C496.4 372.5 480 325.8 480 277.7L480 256C480 178.6 425 114 352 99.2L352 96C352 78.3 337.7 64 320 64zM258 528C265.1 555.6 290.2 576 320 576C349.8 576 374.9 555.6 382 528L258 528z" />
+  return (
+    <svg
+      fill="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+      className="icon line"
+      {...props}
+    >
+      <path
+        d="M19.38 14.38a2.12 2.12 0 01.62 1.5h0A2.12 2.12 0 0117.88 18H6.12A2.12 2.12 0 014 15.88h0a2.12 2.12 0 01.62-1.5L6 13V9a6 6 0 016-6h0a6 6 0 016 6v4zM15 18H9a3 3 0 003 3h0a3 3 0 003-3z"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={1.5}
+      />
     </svg>
-  );
+  )
 }
 
 export function LeftIcon(props) {
@@ -178,7 +204,7 @@ export function LocationIcon(props) {
         d="M32 0C18.746 0 8 10.746 8 24c0 5.219 1.711 10.008 4.555 13.93.051.094.059.199.117.289l16 24a4.001 4.001 0 006.656 0l16-24c.059-.09.066-.195.117-.289C54.289 34.008 56 29.219 56 24 56 10.746 45.254 0 32 0zm0 32a8 8 0 110-16 8 8 0 010 16z"
       />
     </svg>
-  )    
+  )
 }
 
 export function MicIcon(props) {
@@ -196,6 +222,93 @@ export function MicIcon(props) {
         strokeWidth={2}
         strokeLinecap="round"
         strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+export function SettingIcon(props) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <g
+        stroke="currentColor"
+        strokeWidth={2}
+        strokeMiterlimit={10}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+        <path d="M2 12.88v-1.76c0-1.04.85-1.9 1.9-1.9 1.81 0 2.55-1.28 1.64-2.85-.52-.9-.21-2.07.7-2.59l1.73-.99c.79-.47 1.81-.19 2.28.6l.11.19c.9 1.57 2.38 1.57 3.29 0l.11-.19c.47-.79 1.49-1.07 2.28-.6l1.73.99c.91.52 1.22 1.69.7 2.59-.91 1.57-.17 2.85 1.64 2.85 1.04 0 1.9.85 1.9 1.9v1.76c0 1.04-.85 1.9-1.9 1.9-1.81 0-2.55 1.28-1.64 2.85.52.91.21 2.07-.7 2.59l-1.73.99c-.79.47-1.81.19-2.28-.6l-.11-.19c-.9-1.57-2.38-1.57-3.29 0l-.11.19c-.47.79-1.49 1.07-2.28.6l-1.73-.99a1.899 1.899 0 01-.7-2.59c.91-1.57.17-2.85-1.64-2.85-1.05 0-1.9-.86-1.9-1.9z" />
+      </g>
+    </svg>
+  )
+}
+
+
+export const CalendarIcon = (props) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+    <line x1="16" y1="2" x2="16" y2="6" />
+    <line x1="8" y1="2" x2="8" y2="6" />
+    <line x1="3" y1="10" x2="21" y2="10" />
+  </svg>
+);
+
+export const EditIcon = (props) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+  </svg>
+);
+
+export const CloseIcon = (props) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+);
+
+export const CameraIcon = (props) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+    <circle cx="12" cy="13" r="4" />
+  </svg>
+);
+
+export function HeartIcon(props) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M12.39 20.87a.696.696 0 01-.78 0C9.764 19.637 2 14.15 2 8.973c0-6.68 7.85-7.75 10-3.25 2.15-4.5 10-3.43 10 3.25 0 5.178-7.764 10.664-9.61 11.895z"
+        fill="#D44A1B"
+      />
+    </svg>
+  )
+}
+
+export function HeartLineIcon(props) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M7.781 4C4.537 4 2 6.82 2 10.156c0 1.735.278 3.164 1.313 4.667.988 1.435 2.63 2.883 5.178 4.793L12 22l3.508-2.384c2.549-1.91 4.192-3.358 5.18-4.793C21.721 13.32 22 11.891 22 10.156 22 6.82 19.463 4 16.219 4 14.59 4 13.182 4.663 12 5.863 10.818 4.663 9.41 4 7.781 4zm0 2C5.776 6 4 7.785 4 10.156c0 .549.031 1.031.109 1.476.13.746.39 1.386.851 2.057.785 1.14 2.189 2.421 4.732 4.327L12 19.749l2.308-1.733c2.543-1.906 3.947-3.186 4.732-4.327.738-1.071.96-2.065.96-3.533C20 7.786 18.224 6 16.219 6c-1.236 0-2.369.586-3.416 1.998a1 1 0 01-1.606 0C10.15 6.586 9.017 6 7.78 6z"
+        fill="currentColor"
       />
     </svg>
   )

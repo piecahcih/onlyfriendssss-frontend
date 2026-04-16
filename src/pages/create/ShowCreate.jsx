@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router'
 import MockingMap from '../../assets/mockingmap.png'
 import mockActImg from '../../assets/mockActImg.jpg'
 import Swal from 'sweetalert2'
+import useActivityStore from '../../stores/activitiesStore'
 
 function ShowCreate() {
     const navigate = useNavigate()
@@ -18,12 +19,16 @@ function ShowCreate() {
         setGroupStatus(!groupStatus)
     }
 
-    const hdlCreateActivity = (e) => {
+    const creatingActivity = useActivityStore(st=>st.creatingActivity)
+    const hdlCreateActivity = async (e) => {
       e.preventDefault()
+      console.log('creatingActivity', creatingActivity)
+      await useActivityStore.getState().createActivity(creatingActivity)
+
       navigate('/')
       Swal.fire({
         title: '<h2 class="text-[24px] font-bold text-neutral leading-tight">Activity Created Successfully</h2>',
-        confirmButtonColor: "#a83100",
+        confirmButtonColor: "#FC5100",
         width: '300px',  
         padding: '1em',  
       });
@@ -51,7 +56,7 @@ function ShowCreate() {
       <div className="mx-auto px-6 pt-4 space-y-8">
 
         {/* Form Fields */}
-        <form onSubmit={hdlCreateActivity}>
+        <form onSubmit={(e)=>hdlCreateActivity(e)}>
 
           <div className="flex gap-3 pb-4">
             {/* Public Badge / Privacy */}
@@ -123,7 +128,7 @@ function ShowCreate() {
 
 
           <div className="py-8">
-            <button className="w-full py-4 rounded-full bg-primary text-white font-bold text-lg shadow-[0_8px_32px_rgba(168,49,0,0.24)] active:scale-95 transition-all">
+            <button className="w-full py-4 rounded-full bg-linear-to-r from-primary to-secondary text-white font-bold text-lg shadow-[0_8px_32px_rgba(168,49,0,0.24)] active:scale-95 transition-all">
               Create Activity
             </button>
           </div>

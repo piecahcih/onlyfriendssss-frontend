@@ -16,7 +16,7 @@ import InsideChat from "../pages/chat/InsideChat";
 import Welcome from "../pages/Welcome";
 import Friendlist from "../pages/Friends/Friendlist";
 import NonavLayout from "../layouts/NonavLayout";
-import Aija from "../pages/Aija";
+import ActivityDetails from "../pages/ActivityDetails";
 
 const guestRouter = createBrowserRouter([
   {
@@ -47,7 +47,7 @@ const guestRouter = createBrowserRouter([
   },
   {
     path: "*",
-    element: <Navigate to = '/'/>
+    element: <Navigate to='/' />
   },
 ]);
 
@@ -57,20 +57,12 @@ const userRouter = createBrowserRouter([
     element: <UserLayout />,
     children: [
       {
-        index: true,
+        path: "lddiscover",
         element: <LDDiscover />,
-      },
-      {
-        path: "welcome",
-        element: <Welcome />,
       },
       {
         path: "activities",
         element: <Activities />,
-      },
-      {
-        path: "ai",
-        element: <Aija />,
       },
       {
         path: "profile",
@@ -87,6 +79,10 @@ const userRouter = createBrowserRouter([
     element: <NonavLayout />,
     children: [
       {
+        index: true,
+        element: <Welcome />,
+      },
+      {
         path: "chat/:name",
         element: <InsideChat />,
       },
@@ -102,11 +98,15 @@ const userRouter = createBrowserRouter([
         path: "create-showcreate",
         element: <ShowCreate />,
       },
+      {
+        path: "activity-details",
+        element: <ActivityDetails />,
+      },
     ],
   },
   {
     path: "*",
-    element: <Navigate to = '/'/>
+    element: <Navigate to='/' />
   },
 ]);
 

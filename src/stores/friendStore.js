@@ -5,7 +5,7 @@ import {
   SendFriendRequestApi,
   UnfriendApi,
 } from "../api/mainApi";
-import { createJSONStorage } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 const useFriendStore = create(persist((set, get) => ({
       friends: [],
@@ -15,6 +15,7 @@ const useFriendStore = create(persist((set, get) => ({
       getFriends: async () => {
         try {
           const res = await GetFriendListApi();
+          console.log("backend res", res.data);
           set({
             friends: res.data.friends || [],
             requests: res.data.requests || [],
@@ -25,7 +26,7 @@ const useFriendStore = create(persist((set, get) => ({
       },
 
       //ขอเป็นเพื่อน
-      requestFriends: async (targetId) => {
+      requestFriend: async (targetId) => {
         try {
           const res = await SendFriendRequestApi(targetId);
           return res;
@@ -35,7 +36,7 @@ const useFriendStore = create(persist((set, get) => ({
       },
 
       //รับคำขอเพื่อน
-      acceptFriends: async () => {
+      acceptFriend: async (id) => {
         try {
           const res = await AcceptFriendApi(id);
           await get().getFriends();
@@ -46,17 +47,22 @@ const useFriendStore = create(persist((set, get) => ({
       },
 
       //ลบเพื่อน
-      unFriendship: async () => {
+      unFriendship: async (id) => {
         try {
           const res = await UnfriendApi(id);
           await get().getFriends();
           return res;
         } catch (error) {
-          console.error("Unfriend error:", err);
+          console.error("Unfriend error:", error);
         }
       },
       clearFriendStore: () => set({ friends: [], requests: [] }),
-      
-    }),{ name: "olfssssState", storage: createJSONStorage(() => localStorage) },),);
+    }),
+    {
+      name: "olfssssFriendState",
+      storage: createJSONStorage(() => localStorage),
+    },
+  ),
+);
 
 export default useFriendStore;
