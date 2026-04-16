@@ -33,7 +33,8 @@ function ActivityDetails() {
    }, [actid, getActivityById]);
 
   const hdlGoBack = () => {
-    navigate(-1);
+    navigate('/activities');
+    // navigate(-1);
   };
 
   if (loading) {
@@ -48,9 +49,9 @@ function ActivityDetails() {
        if (!currentActivity) {
          return (
            <div className="min-h-screen bg-base-200 flex flex-col items-center justify-center p-6 text-center">
-             <h2 className="text-2xl font-bold text-neutral-content mb-4">ไม่พบข้อมูลกิจกรรม</h2>
+             <h2 className="text-2xl font-bold text-neutral-content mb-4">No activities found</h2>
              <button onClick={hdlGoBack} className="btn btn-primary rounded-full px-8 text-white">
-               กลับไปหน้าเดิม
+               back to activities page
              </button>
            </div>
          );
@@ -71,7 +72,7 @@ function ActivityDetails() {
    
       const hdlJoin = async () => {
         if (!storeUser) {
-          alert("กรุณาเข้าสู่ระบบก่อนเข้าร่วมกิจกรรม");
+          alert("Please Log in before join any activity");
           return;
         }
         try {
@@ -79,13 +80,13 @@ function ActivityDetails() {
           // เรียก API สำหรับ Join (ใช้ Instance mainApi โดยตรงตามเงื่อนไขห้ามแก้ไฟล์อื่น)
           await mainApi.post(`/activity/join/${actid}`);
    
-          alert("เข้าร่วมกิจกรรมสำเร็จ! 🎉");
+          alert("Waiting to be approved");
    
           // ดึงข้อมูลกิจกรรมใหม่เพื่ออัปเดตรายชื่อผู้เข้าร่วมและจำนวนที่ว่าง
           await getActivityById(actid);
         } catch (error) {
           console.error("Join Error:", error);
-          const errorMsg = error.response?.data?.message || "ไม่สามารถเข้าร่วมกิจกรรมได้ในขณะนี้";
+          const errorMsg = error.response?.data?.message || "Activity Unavailable";
           alert(errorMsg);
         } finally {
           setLoadingJoin(false);
@@ -110,16 +111,16 @@ function ActivityDetails() {
 
       <main className="max-w-2xl mx-auto px-6 space-y-6">
         {/* Tags */}
-        <div className="flex flex-wrap gap-ๅ">
-            <div className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white shadow-sm text-xs font-bold">
+        <div className="flex flex-wrap gap-2.5">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white shadow-sm text-xs font-bold">
                 
                 {currentActivity.isPublic ? " 🌎 Public  " : " 🔒 Private "}
             </div>
-            <div className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white shadow-sm text-xs font-bold">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white shadow-sm text-xs font-bold">
                 <span className="text-lg">📍</span>
                 1km
             </div>
-            <div className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-primary/10 text-primary shadow-sm text-xs font-bold border border-primary/20">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 text-primary shadow-sm text-xs font-bold border border-primary/20">
                 <span>{currentActivity.categoryIcon || "✨"}</span>
                  {currentActivity.category}
             </div>
@@ -152,7 +153,7 @@ function ActivityDetails() {
                 />
               </div>
               <div>
-                <p className="text-[10px] text-on-surface/40 font-medium">@ host by</p>
+                <p className="text-[10px] text-on-surface/40 font-medium">HOSTED BY</p>
                 <h4 className="font-bold text-sm">{currentActivity.host?.username}</h4>
               </div>
             </div>

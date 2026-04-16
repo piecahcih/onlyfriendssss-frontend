@@ -33,19 +33,27 @@ function CreateActivity() {
     { id: "TRAVEL", title: "Travel", icon: "✈️" },
   ];
 
+  const [title, setTitle] = useState("")
+  const hdlTitle = (value) => {
+    setTitle(value)
+  }
+  
   const [description, setDescription] = useState("")
+  const hdlDescription = (value) => {
+    setDescription(value)
+  }
 
   const user = useUserStore((st) => st.user);
   const Adata = {
     hostId: user.id,
-    isPublic: true,
+    isPublic: groupStatus,
     coverPhoto:
       "https:res.cloudinary.com/piecahcih/image/upload/v1774345102/1amannlIMG1_kf4hqs.webp",
     placeId: 1,
-    title: "title",
+    title: title,
     eventStartTime: new Date("2027-09-19T13:00:00"),
     category: selectedCategory,
-    description: "description",
+    description: description,
   };
 
   // if(eventEndTime){
@@ -117,6 +125,8 @@ function CreateActivity() {
                 className="w-full pl-14 pr-6 py-3 rounded-full bg-white border-none ring-2 ring-[#e09c99]/20 focus:ring-[#a83100] focus:ring-2 transition-all outline-none text-neutral placeholder:text-[#834c4b]/40"
                 placeholder="Morning Run in the Park"
                 type="text"
+                value= {title}
+                onChange={(e)=>hdlTitle(e.target.value)}
               />
             </div>
           </div>
@@ -139,7 +149,7 @@ function CreateActivity() {
           </section>
 
           {/* Location */}
-          <div className="space-y-2">
+          <div>
             <label className={lblTitleStyle}>Location</label>
 
             <button
@@ -160,63 +170,23 @@ function CreateActivity() {
           </div>
 
           {/* Date & Time Row */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className={lblTitleStyle}>Start Date</label>
-              <div className="relative">
-                <span className="absolute left-5 top-1/2 -translate-y-1/2 text-xl">
-                  📅
-                </span>
-                <input
-                  className="w-full pl-14 pr-4 py-3 rounded-full bg-white border-none ring-2 ring-[#e09c99]/20 focus:ring-[#a83100] transition-all outline-none text-neutral text-sm"
-                  placeholder="Oct 24, 2023"
-                  type="text"
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <label className={lblTitleStyle}>Time</label>
-              <div className="relative">
-                <span className="absolute left-5 top-1/2 -translate-y-1/2 text-xl">
-                  🕒
-                </span>
-                <input
-                  className="w-full pl-14 pr-4 py-3 rounded-full bg-white border-none ring-2 ring-[#e09c99]/20 focus:ring-[#a83100] transition-all outline-none text-neutral text-sm"
-                  placeholder="08:30 AM"
-                  type="text"
-                />
-              </div>
+          <div>
+            <label className={lblTitleStyle}>Pick a Time</label>
+            <div className="relative">
+                  <span className="absolute left-5 top-1/2 -translate-y-1/2 text-xl">
+                    📅
+                  </span>
+                  <input
+                    className="w-full pl-14 pr-4 py-3 rounded-full bg-white border-none ring-2 ring-[#e09c99]/20 focus:ring-[#a83100] transition-all outline-none text-neutral text-sm"
+                    placeholder="Oct 24, 2023"
+                    type="datetime-local"
+                  />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className={lblTitleStyle}>End Date</label>
-              <div className="relative">
-                <span className="absolute left-5 top-1/2 -translate-y-1/2 text-xl">
-                  📅
-                </span>
-                <input
-                  className="w-full pl-14 pr-4 py-3 rounded-full bg-white border-none ring-2 ring-[#e09c99]/20 focus:ring-[#a83100] transition-all outline-none text-neutral text-sm"
-                  placeholder="Oct 24, 2023"
-                  type="text"
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <label className={lblTitleStyle}>Time</label>
-              <div className="relative">
-                <span className="absolute left-5 top-1/2 -translate-y-1/2 text-xl">
-                  🕒
-                </span>
-                <input
-                  className="w-full pl-14 pr-4 py-3 rounded-full bg-white border-none ring-2 ring-[#e09c99]/20 focus:ring-[#a83100] transition-all outline-none text-neutral text-sm"
-                  placeholder="08:30 AM"
-                  type="text"
-                />
-              </div>
-            </div>
-          </div>
+
+
+
 
           {/* Category Chips */}
           <div className="space-y-3">
@@ -255,6 +225,8 @@ function CreateActivity() {
                 className="w-full pl-14 pr-6 py-5 rounded-2xl bg-white border-none ring-2 ring-[#e09c99]/20 focus:ring-[#a83100] transition-all outline-none text-neutral placeholder:text-[#834c4b]/40 resize-none"
                 placeholder={description||"Tell us more about the activity, what to bring, and expectations..."}
                 rows="4"
+                value= {description}
+                onChange={(e)=>hdlDescription(e.target.value)}
               ></textarea>
             </div>
           </div>

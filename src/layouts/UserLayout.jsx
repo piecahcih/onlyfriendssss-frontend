@@ -1,8 +1,18 @@
-import React from "react";
+import { useEffect } from "react";
 import NavBar from "../components/componentlayout/NavBar";
-import { Outlet } from "react-router";
+import { Outlet, useLocation } from "react-router";
 
 function UserLayout() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  }, [pathname]);
+
   return (
     <div>
       <Outlet />
