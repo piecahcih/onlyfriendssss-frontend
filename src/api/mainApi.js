@@ -50,7 +50,7 @@ export const UnfriendApi = async (friendshipId) =>
 export const getProfileApi = () => mainApi.get("/account/profile");
 
 // แก้ไขข้อมูลตัวเอง (username, bio, gender, etc.)
-export const editProfileApi = (body) => mainApi.patch("/account/profile", body);
+export const editProfileApi = (formData) => mainApi.patch("/account/profile", formData,);
 
 
 
