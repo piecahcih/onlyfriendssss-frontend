@@ -5,7 +5,7 @@ import useUserStore from "../../stores/userStore"
 
 function NavBar() {
     const user = useUserStore(st=>st.user)
-    
+    console.log(user)
   return (
     <div className='h-[78px] bg-primary flex justify-between pt-4 px-5'>
         <NavLink to ='/' className="flex flex-col items-center text-white w-[50px]">

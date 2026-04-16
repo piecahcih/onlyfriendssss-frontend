@@ -35,7 +35,7 @@ const Profile = () => {
     try {
       const response = await getProfileApi();
       const data = response.data.user?.data || response.data.user || response.data;
-      console.log("Gender from API:", data.gender)
+      console.log("Gender from API:", data)
       
       setProfileData(data);
       setEditForm(data);
