@@ -57,7 +57,8 @@ export const editProfileApi = (formData) => mainApi.patch("/account/profile", fo
 ////////ACTIVITIES
 export const getAllCurrentActivitiesApi = () => mainApi.get("/activity")
 export const getAllActivitiesApi = () => mainApi.get("/activity/all")
-export const getAllActivitiesCreatedByThisAccountApi = () => mainApi.get("/activity/my-activities")
+export const getAllFinishedActivitiesOnThisAccountApi = () => mainApi.get("/activity/my-memories")
+export const getAllActivitiesCreatedByThisAccountApi = () => mainApi.get("/activity/my-created-activities")
 export const getAllActivitiesJoinedByThisAccountApi = () => mainApi.get("/activity/my-joined-activities")
 export const getActivityByIdApi = (activityid) => mainApi.get(`/activity/${activityid}`)
 export const getActivityByCategoryApi = (category) => mainApi.get(`/activity/category/${category}`)

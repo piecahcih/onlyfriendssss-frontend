@@ -9,6 +9,8 @@ import {
   CloseIcon,
   CameraIcon,
   EditIcon,
+  HeartLineIcon,
+  HeartIcon,
 } from "../icons";
 import { NavLink } from "react-router";
 import {
@@ -16,6 +18,8 @@ import {
   SendFriendRequestApi,
   editProfileApi,
 } from "../api/mainApi";
+
+import MyActivityTab from "../components/profile/MyActivityTab";
 
 const BACKEND_URL = "http://localhost:3999";
 
@@ -25,13 +29,11 @@ const Profile = () => {
   const logout = useUserStore((state) => state.logout);
 
   const [profileData, setProfileData] = useState(null);
-  const [activeTab, setActiveTab] = useState("Joined");
   const [isEditing, setIsEditing] = useState(false);
   const [settingForm, setSettingForm] = useState(false);
   const [editForm, setEditForm] = useState({});
   const [previewImage, setPreviewImage] = useState(null);
 
-  const tabs = ["Joined", "Created", "Memory"];
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -78,7 +80,7 @@ const Profile = () => {
 
       const response = await editProfileApi(formData);
 
-      const updatedUser = response.data?.data;
+      const updatedUser = response.data.user;
 
       if (updatedUser.profileImg) {
         updatedUser.profileImg = `${updatedUser.profileImg}?t=${Date.now()}`;
@@ -174,7 +176,7 @@ const Profile = () => {
             >
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl bai-jamjuree-bold text-neutral-focus">
-                  แก้ไขโปรไฟล์
+                  Edit Profile
                 </h2>
                 <button
                   onClick={() => setIsEditing(false)}
@@ -210,13 +212,13 @@ const Profile = () => {
                     accept="image/*"
                   />
                   <p className="text-[10px] bai-jamjuree-medium text-gray-400 mt-2 uppercase">
-                    แตะที่รูปเพื่อเปลี่ยน
+                    Tap to change photo
                   </p>
                 </div>
 
                 <div>
                   <label className="block text-sm bai-jamjuree-semibold text-gray-500 mb-1.5 ml-1">
-                    ชื่อผู้ใช้
+                    Username
                   </label>
                   <input
                     name="username"
@@ -229,7 +231,7 @@ const Profile = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm bai-jamjuree-semibold text-gray-500 mb-1.5 ml-1">
-                      ชื่อจริง
+                      First Name
                     </label>
                     <input
                       name="firstName"
@@ -240,7 +242,7 @@ const Profile = () => {
                   </div>
                   <div>
                     <label className="block text-sm bai-jamjuree-semibold text-gray-500 mb-1.5 ml-1">
-                      นามสกุล
+                      Last Name
                     </label>
                     <input
                       name="lastName"
@@ -253,7 +255,7 @@ const Profile = () => {
 
                 <div>
                   <label className="block text-sm bai-jamjuree-semibold text-gray-500 mb-1.5 ml-1">
-                    เพศ
+                    Gender
                   </label>
                   <select
                     name="gender"
@@ -261,15 +263,15 @@ const Profile = () => {
                     onChange={handleChange}
                     className="w-full px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20"
                   >
-                    <option value="MALE">ชาย</option>
-                    <option value="FEMALE">หญิง</option>
-                    <option value="OTHER">อื่นๆ</option>
+                    <option value="MALE">MALE</option>
+                    <option value="FEMALE">FEMALE</option>
+                    <option value="OTHER">OTHER</option>
                   </select>
                 </div>
 
                 <div>
                   <label className="block text-sm bai-jamjuree-semibold text-gray-500 mb-1.5 ml-1">
-                    แนะนำตัวเอง
+                    Bio
                   </label>
                   <textarea
                     name="bio"
@@ -284,7 +286,7 @@ const Profile = () => {
                   type="submit"
                   className="w-full py-4 bg-primary text-white rounded-2xl bai-jamjuree-bold shadow-lg shadow-primary/30 active:scale-95 transition-all mt-4"
                 >
-                  บันทึกการเปลี่ยนแปลง
+                  SAVE
                 </button>
               </form>
             </motion.div>
@@ -312,7 +314,7 @@ const Profile = () => {
             >
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl bai-jamjuree-bold text-neutral-focus">
-                  ตั้งค่า
+                  Settings
                 </h2>
                 <button
                   onClick={() => setSettingForm(false)}
@@ -326,9 +328,11 @@ const Profile = () => {
                   onClick={hdlLogout}
                   className="font-medium text-neutral-focus"
                 >
-                  ออกจากระบบ
+                  Log out
                 </button>
-                <button className="font-medium text-error">ลบบัญชี</button>
+                <button className="font-medium text-error">
+                  Delete Account
+                </button>
               </div>
             </motion.div>
           </>
@@ -336,11 +340,9 @@ const Profile = () => {
       </AnimatePresence>
 
       {/* --- HEADER --- */}
-      <div className="pt-12 pb-4 text-center relative flex items-center justify-center">
-        <h1 className="text-xl bai-jamjuree-bold text-neutral-focus">
-          PROFILE
-        </h1>
-        <div className="absolute right-6 top-11 flex gap-2">
+      <div className="pt-8 pb-4 text-center relative flex items-center justify-center">
+        {/* <h1 className="text-xl bai-jamjuree-bold text-neutral-focus">PROFILE</h1> */}
+        <div className="absolute right-6 top-4 flex gap-2">
           <button
             onClick={handleEditOpen}
             className="p-2 bg-white rounded-full shadow-sm text-primary active:scale-90 transition-all"
@@ -359,14 +361,14 @@ const Profile = () => {
       {/* --- PROFILE INFO --- */}
       <div className="px-6 flex flex-col">
         <div className="flex items-center w-full gap-4 mb-6">
-          <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-white shadow-md flex-shrink-0 bg-white">
+          <div className="w-28 h-28 rounded-full overflow-hidden shadow-md flex-shrink-0 bg-white">
             <ProfilePic imgSrc={getFullImgPath(profileData?.profileImg)} />
           </div>
           <div className="flex-1 flex flex-col">
             <h2 className="text-xl bai-jamjuree-bold text-neutral mb-2">
               {profileData?.username}
             </h2>
-            <div className="bg-primary w-full rounded-[30px] py-4 flex justify-around text-white shadow-lg">
+            <div className="bg-primary w-full rounded-[30px] py-3 flex justify-around text-white shadow-lg">
               <div className="flex flex-col items-center border-r border-white/30 flex-1">
                 <span className="text-lg bai-jamjuree-bold">
                   {profileData?.trustScore || 0}
@@ -398,12 +400,11 @@ const Profile = () => {
           </div>
         </div>
 
-        <button
+        {/* <button
           onClick={handleRequestFriend}
-          className="bg-secondary text-white w-full py-3 rounded-2xl bai-jamjuree-semibold mb-6 shadow-md active:scale-95 transition-transform"
-        >
+          className="bg-secondary text-white w-full py-3 rounded-2xl bai-jamjuree-semibold mb-6 shadow-md active:scale-95 transition-transform">
           {profileData.isFriend ? "Friend ✔" : "Request to be Friend +"}
-        </button>
+        </button> */}
 
         <div className="w-full text-left space-y-2 mb-6">
           <div className="flex justify-between items-start">
@@ -423,108 +424,7 @@ const Profile = () => {
         </div>
       </div>
 
-      {/* --- TABS --- */}
-      <div className="flex border-b border-gray-200 mb-6 relative px-4">
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`flex-1 py-3 text-lg bai-jamjuree-bold transition-all relative z-10 ${activeTab === tab ? "text-primary" : "text-neutral opacity-60"}`}
-          >
-            {tab}
-            {activeTab === tab && (
-              <motion.div
-                layoutId="activeTab"
-                className="absolute bottom-0 left-0 right-0 h-1 bg-primary"
-                transition={{ type: "spring", stiffness: 500, damping: 30 }}
-              />
-            )}
-          </button>
-        ))}
-      </div>
-
-      {/* --- ACTIVITY CONTENT --- */}
-      <div className="px-4 flex-1">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.2 }}
-          >
-            {activeTab === "Joined" && (
-              <div className="bg-white rounded-[45px] overflow-hidden shadow-sm mb-6 border border-gray-100">
-                <div className="relative h-64">
-                  <img
-                    src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Yoga"
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute top-4 left-4 flex gap-2">
-                    <span className="bg-[#8b5cf6]/90 text-white px-4 py-1.5 rounded-full text-xs bai-jamjuree-semibold">
-                      Featured Host
-                    </span>
-                    <span className="bg-secondary/90 text-white px-4 py-1.5 rounded-full text-xs bai-jamjuree-semibold">
-                      3 spots left
-                    </span>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl bai-jamjuree-bold text-neutral-focus mb-4">
-                    Golden Hour Sunset Yoga
-                  </h3>
-                  <div className="space-y-3 mb-6">
-                    <div className="flex items-center gap-3 text-neutral/70">
-                      <CalendarIcon className="w-5 h-5 text-primary" />
-                      <span className="text-sm bai-jamjuree-medium">
-                        Tomorrow, 06:30 PM
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3 text-neutral/70">
-                      <LocationIcon className="w-5 h-5 text-primary" />
-                      <span className="text-sm bai-jamjuree-medium">
-                        Pier 14, Waterfront Park
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center border-t border-gray-100 pt-4">
-                    <div className="flex -space-x-2">
-                      {[1, 2, 3].map((i) => (
-                        <div
-                          key={i}
-                          className="w-10 h-10 rounded-full border-2 border-white overflow-hidden bg-gray-200"
-                        >
-                          <img
-                            src={`https://i.pravatar.cc/100?img=${i + 10}`}
-                            alt="user"
-                          />
-                        </div>
-                      ))}
-                      <div className="w-10 h-10 rounded-full border-2 border-white bg-secondary flex items-center justify-center text-white text-xs bai-jamjuree-bold">
-                        +12
-                      </div>
-                    </div>
-                    <span className="text-secondary bai-jamjuree-medium text-sm">
-                      Going
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
-            {activeTab === "Created" && (
-              <div className="p-10 text-center text-neutral opacity-40 bai-jamjuree-medium">
-                No events created yet.
-              </div>
-            )}
-            {activeTab === "Memory" && (
-              <div className="p-10 text-center text-neutral opacity-40 bai-jamjuree-medium">
-                No memories shared yet.
-              </div>
-            )}
-          </motion.div>
-        </AnimatePresence>
-      </div>
+      <MyActivityTab />
     </div>
   );
 };
