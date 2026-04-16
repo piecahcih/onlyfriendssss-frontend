@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { changeActivityStatusApi, createActivityApi, deleteActivityByIdApi, editActivityByIdApi, getActivityByCategoryApi, getActivityByIdApi, getAllActivitiesApi, getAllActivitiesCreatedByThisAccountApi, getAllCurrentActivitiesApi } from "../api/mainApi";
+import { changeActivityStatusApi, createActivityApi, deleteActivityByIdApi, editActivityByIdApi, getActivityByCategoryApi, getActivityByIdApi, getAllActivitiesApi, getAllActivitiesCreatedByThisAccountApi, getAllActivitiesJoinedByThisAccountApi, getAllCurrentActivitiesApi, getAllFinishedActivitiesOnThisAccountApi } from "../api/mainApi";
 
 const useActivityStore = create(persist((set,get)=>({
   activities: [],
@@ -17,8 +17,16 @@ const useActivityStore = create(persist((set,get)=>({
     const res = await getAllActivitiesApi()
     set({ activities:res.data.activities })
   },
+  getAllFinishedActivitiesOnThisAccount: async () => {
+    const res = await getAllFinishedActivitiesOnThisAccountApi()
+    set({ activities:res.data.activities })
+  },
   getAllActivitiesCreatedByThisAccount: async () => {
     const res = await getAllActivitiesCreatedByThisAccountApi()
+    set({ activities:res.data.activities })
+  },
+  getAllActivitiesJoinedByThisAccount: async () => {
+    const res = await getAllActivitiesJoinedByThisAccountApi()
     set({ activities:res.data.activities })
   },
   getActivityById: async (activityid) => {
