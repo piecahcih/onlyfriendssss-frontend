@@ -17,7 +17,6 @@ import Welcome from "../pages/Welcome";
 import Friendlist from "../pages/Friends/Friendlist";
 import NonavLayout from "../layouts/NonavLayout";
 import ActivityDetails from "../pages/ActivityDetails";
-// import LDD2 from "../pages/LLD2";
 
 const guestRouter = createBrowserRouter([
   {
@@ -57,10 +56,6 @@ const userRouter = createBrowserRouter([
     path: "/",
     element: <UserLayout />,
     children: [
-      // {
-      //   index: true,
-      //   element: <LDD2 />,
-      // },
       {
         path: "lddiscover",
         element: <LDDiscover />,
