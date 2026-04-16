@@ -8,9 +8,9 @@ import "mapbox-gl/dist/mapbox-gl.css";
 function LDDiscover() {
   const mapRef = useRef();
   const mapContainerRef = useRef();
+
   useEffect(() => {
-    mapboxgl.accessToken =
-      "pk.eyJ1IjoiaWFtYmVuIiwiYSI6ImNtbzBmaWFhZTA3cmsyeW85eHhpOXQxdGcifQ.HOpVteb2fW2U-gN61K0_ew";
+    mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
       center: [100.53499383276497, 13.758571505785834],
