@@ -4,6 +4,7 @@ import { changeActivityStatusApi, createActivityApi, deleteActivityByIdApi, edit
 
 const useActivityStore = create(persist((set,get)=>({
   activities: [],
+  currentActivity: null,
   creatingActivity: {},
   setCreatingActivity: (data) => {
     console.log('data:', data)
@@ -23,7 +24,7 @@ const useActivityStore = create(persist((set,get)=>({
   },
   getActivityById: async (activityid) => {
     const res = await getActivityByIdApi(activityid)
-    set({ activities:res.data.activities })
+    set({ currentActivity: res.data.activities || res.data })
   },
   getActivityByCategory: async (category) => {
     const res = await getActivityByCategoryApi(category)
