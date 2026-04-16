@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
-import { SearchIcon, MicIcon, Notification } from '../icons'
+import { SearchIcon, MicIcon, Notification, CalendarIcon, LocationIcon, HeartIcon, HeartLineIcon } from '../icons'
 import mockActImg from '../assets/mockActImg.jpg'
 import defaultProfile from '../assets/default-profilepic.jpg'
 import useActivityStore from '../stores/activitiesStore';
 import {format} from 'date-fns'
 import NotificationModal from '../components/NotificationModal';
 import { NavLink } from 'react-router';
+import { motion } from 'framer-motion'
 
 function Activities() {
     const [selectedCategory, setSelectedCategory] = useState("all");
@@ -35,6 +36,12 @@ function Activities() {
         : activities.filter(act => act.category === selectedCategory.toUpperCase());
 
     const [notiOpen, setNotiOpen] = useState(false)
+
+    const [haveLike, setHaveLike] = useState(false)
+    const hdlLikeClick = async (e) => {
+        e.preventDefault()
+        e.stopPropagation() 
+    }
 
     return (
         <div className="min-h-screen bg-base-200 pb-24">
@@ -92,7 +99,7 @@ function Activities() {
                           <NavLink to={`/activity-details?actid=${activity.id}`} key={activity.id} className="block" >
                             <div className="bg-white rounded-[35px] overflow-hidden shadow-[0_12px_32px_rgba(78,33,32,0.04)] hover:shadow-[0_12px_48px_rgba(78,33,32,0.08)] transition-all duration-300">
                             
-                                <div className="relative h-48 w-full overflow-hidden">
+                                <div className="relative h-50 w-full overflow-hidden">
                                     <img 
                                         src={activity?.coverPhoto} 
                                         alt={activity.title} 
@@ -108,9 +115,12 @@ function Activities() {
                                             {activity.category}
                                         </div>
                                     </div>
-                                    <button className="absolute bottom-4 right-4 p-3 rounded-full bg-white text-primary shadow-lg active:scale-90 transition-transform">
-                                        <SearchIcon className="w-5" />
-                                    </button>
+
+                                    <motion.button whileTap={{ scale: 1.2, transition: { duration: 0.2 } }} onClick={hdlLikeClick} className="absolute bottom-4 right-4 p-2 rounded-full bg-white text-primary shadow-lg active:scale-90 transition-transform">
+                                    {haveLike ? <HeartIcon className="h-[28px] ml-auto"/>
+                                    : <HeartLineIcon  className="h-[28px] ml-auto text-neutral opacity-80"/> }
+                                    </motion.button>
+
                                 </div>
 
                                 <div className="p-6 space-y-4">
@@ -122,11 +132,11 @@ function Activities() {
 
                                     <div className="flex flex-col gap-2.5">
                                         <div className="flex items-center gap-3 text-on-surface/60">
-                                            <span className="text-xl">📅</span>
+                                            <CalendarIcon className='w-4.5 text-primary' />
                                             <span className="text-sm font-medium">{format(new Date(activity.eventStartTime), 'eee, dd MMM yyyy • p')}</span>
                                         </div>
                                         <div className="flex items-center gap-3 text-on-surface/60">
-                                            <span className="text-xl">📍</span>
+                                            <LocationIcon className='w-4.5 text-primary'/>
                                             <span className="text-sm font-medium">{activity.place?.placeName}</span>
                                         </div>
                                     </div>
