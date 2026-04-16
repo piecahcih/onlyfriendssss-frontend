@@ -1,3 +1,21 @@
+
+export function WelcomeIcon(props) {
+  return (
+    <svg
+      width="80"
+      height="80"
+      viewBox="0 0 100 100"
+      className="text-black"
+      {...props}
+    >
+      <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="4" />
+      <circle cx="35" cy="40" r="4" fill="currentColor" />
+      <circle cx="65" cy="40" r="4" fill="currentColor" />
+      <path d="M30 65 Q50 80 70 65" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function SearchIcon(props) {
   return (
     <svg
@@ -186,7 +204,7 @@ export function LocationIcon(props) {
         d="M32 0C18.746 0 8 10.746 8 24c0 5.219 1.711 10.008 4.555 13.93.051.094.059.199.117.289l16 24a4.001 4.001 0 006.656 0l16-24c.059-.09.066-.195.117-.289C54.289 34.008 56 29.219 56 24 56 10.746 45.254 0 32 0zm0 32a8 8 0 110-16 8 8 0 010 16z"
       />
     </svg>
-  )    
+  )
 }
 
 export function MicIcon(props) {

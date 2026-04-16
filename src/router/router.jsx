@@ -62,12 +62,8 @@ const userRouter = createBrowserRouter([
       //   element: <LDD2 />,
       // },
       {
-        index: true,
+        path: "lddiscover",
         element: <LDDiscover />,
-      },
-      {
-        path: "welcome",
-        element: <Welcome />,
       },
       {
         path: "activities",
@@ -87,6 +83,10 @@ const userRouter = createBrowserRouter([
     path: "/",
     element: <NonavLayout />,
     children: [
+      {
+        index: true,
+        element: <Welcome />,
+      },
       {
         path: "chat/:name",
         element: <InsideChat />,

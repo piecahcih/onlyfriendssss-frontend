@@ -8,7 +8,7 @@ function NavBar() {
     
   return (
     <div className='h-[78px] bg-primary flex justify-between pt-4 px-5'>
-        <NavLink to ='/' className="flex flex-col items-center text-white w-[50px]">
+        <NavLink to ='/lddiscover' className="flex flex-col items-center text-white w-[50px]">
             <DiscoveryIcon className="w-7"/>
             <p className="text-[bai-jamjuree-semibold] text-[12px]">Discover</p>
         </NavLink>
