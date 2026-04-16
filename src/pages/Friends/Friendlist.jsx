@@ -1,45 +1,84 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 import { SearchIcon } from "../../icons";
 import defaultProfile from "../../assets/default-profilepic.jpg";
 import useFriendStore from "../../stores/friendStore";
+import { toast } from "react-toastify";
 
 function Friendlist() {
+  const navigate = useNavigate();
+
+  const hdlGoBack = () => {
+    navigate(-1);
+  };
   const [activeTab, setActiveTab] = useState("friends");
   const [searchTerm, setSearchTerm] = useState("");
 
-  // ดึงข้อมูลและฟังก์ชันจาก Store
-  const { friends, requests, getFriends, acceptFriend, removeFriendship } =
+  const { friends, requests, getFriends, acceptFriend, unFriendship } =
     useFriendStore();
 
-  // ดึงข้อมูลใหม่ทุกครั้งที่เปิดหน้า
   useEffect(() => {
     getFriends();
   }, []);
+  console.log("สถานะ Friends ใน Store:", friends);
+  console.log("สถานะ Requests ใน Store:", requests);
 
-  // Handler สำหรับรับเพื่อน
   const handleAccept = async (id) => {
-    await acceptFriend(id);
-  };
-
-  // Handler สำหรับลบเพื่อน / ปฏิเสธคำขอ
-  const handleDelete = async (id, name) => {
-    if (window.confirm(`Are you sure you want to proceed with ${name}?`)) {
-      await removeFriendship(id);
+    try {
+      await acceptFriend(id);
+      await getFriends(); // Refresh รายชื่อ
+      toast.success("Accepted friend request!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to accept");
     }
   };
 
-  // กรองรายชื่อเพื่อนตามช่อง Search
+  const handleDelete = async (id, name) => {
+    if (window.confirm(`Are you sure you want to proceed with ${name}?`)) {
+      try {
+        await unFriendship(id);
+        await getFriends(); // Refresh รายชื่อ
+        toast.success(`Removed ${name} from the list`);
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to remove");
+      }
+    }
+  };
+
   const filteredFriends = friends.filter((item) =>
-    item.friend?.username?.toLowerCase().includes(searchTerm.toLowerCase()),
+    item.username?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
     <div className="min-h-screen bg-base-200 pb-24">
       {/* Header & Search */}
       <div className="bg-white px-5 pt-8 pb-4 shadow-sm sticky top-0 z-10">
-        <h1 className="text-secondary text-2xl font-bold bai-jamjuree-bold">
-          Your friendssss
-        </h1>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => hdlGoBack()}
+            className="btn btn-ghost btn-circle btn-sm text-secondary"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15.75 19.5L8.25 12l7.5-7.5"
+              />
+            </svg>
+          </button>
+          <h1 className="text-secondary text-2xl font-bold bai-jamjuree-bold">
+            Your friendssss
+          </h1>
+        </div>
 
         <div className="mt-4 relative">
           <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
@@ -82,31 +121,24 @@ function Friendlist() {
       {/* Content Area */}
       <div className="px-5 mt-4">
         {activeTab === "friends" ? (
-          /* --- ฝั่งซ้าย: My Friends --- */
           <div className="space-y-3">
-            <p className="text-xs font-bold text-base-content/40 uppercase pl-2">
-              All Friends
-            </p>
-
             {filteredFriends.length > 0 ? (
               filteredFriends.map((item) => (
                 <div
-                  key={item.id}
+                  key={item.friendshipId}
                   className="bg-white p-4 rounded-2xl shadow-sm flex items-center justify-between border border-transparent hover:border-primary/10 transition-all"
                 >
                   <div className="flex items-center space-x-3">
                     <div className="avatar online">
                       <div className="w-12 rounded-full border border-primary/10">
                         <img
-                          src={item.friend?.profileImg || defaultProfile}
+                          src={item.profileImg || defaultProfile}
                           alt="user"
                         />
                       </div>
                     </div>
                     <div>
-                      <h3 className="font-semibold text-sm">
-                        {item.friend?.username}
-                      </h3>
+                      <h3 className="font-semibold text-sm">{item.username}</h3>
                       <p className="text-xs text-success">Online</p>
                     </div>
                   </div>
@@ -145,7 +177,7 @@ function Friendlist() {
                       <li>
                         <a
                           onClick={() =>
-                            handleDelete(item.id, item.friend?.username)
+                            handleDelete(item.friendshipId, item.username)
                           }
                           className="text-sm text-error"
                         >
@@ -163,11 +195,7 @@ function Friendlist() {
             )}
           </div>
         ) : (
-          /* --- ฝั่งขวา: Friend Requests --- */
           <div className="space-y-3">
-            <p className="text-xs font-bold text-base-content/40 uppercase pl-2">
-              Pending Invitations
-            </p>
             {requests.length > 0 ? (
               requests.map((item) => (
                 <div
