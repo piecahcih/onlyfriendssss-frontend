@@ -3,7 +3,7 @@ import useUserStore from '../stores/userStore'
 import { Link } from 'react-router'
 import { AnimatePresence, motion } from 'framer-motion'
 import Premium from '../components/ads/Premium'
-import { WelcomeIcon } from '../icons'
+import { CloseIcon, WelcomeIcon } from '../icons'
 
 function Welcome() {
   const user = useUserStore(state => state.user)
@@ -20,7 +20,7 @@ function Welcome() {
 
         <div className="flex-1 flex flex-col items-center text-center">
           <div className="mb-6">
-          <WelcomeIcon/>
+            <WelcomeIcon />
           </div>
 
           <h1 className="text-3xl font-black leading-tight mb-2 tracking-tight">
@@ -80,6 +80,12 @@ function Welcome() {
                 className="fixed bottom-0 left-0 right-0 bg-white z-[101] rounded-t-[40px] p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
 
                 <div className="text-center mt-4 mb-">
+                  <div className='text-end'>
+                    <button onClick={() => setSettingForm(false)} className="text-end p-2 rounded-full hover:bg-gray-200 transition-colors">
+                      <CloseIcon className="w-6 h-6 text-gray-500" />
+                    </button>
+                  </div>
+
                   <h1 className="text-[#FF7B4C] text-3xl font-black mb-6 tracking-tight">
                     onlyfriendssss
                   </h1>

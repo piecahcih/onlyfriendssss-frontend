@@ -94,7 +94,7 @@ function Activities() {
                             
                                 <div className="relative h-48 w-full overflow-hidden">
                                     <img 
-                                        src={activity.coverPhoto} 
+                                        src={activity?.coverPhoto} 
                                         alt={activity.title} 
                                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                                     />
@@ -150,7 +150,7 @@ function Activities() {
                                         
                                         <div className="flex flex-col items-end">
                                             <span className="text-[10px] text-on-surface/40 font-bold uppercase tracking-wider">Hosted by</span>
-                                            <span className="text-sm font-bold">{activity.host.username}</span>
+                                            <span className="text-sm font-bold">{activity?.host?.username}</span>
                                         </div>
                                     </div>
                                 </div>
