@@ -31,7 +31,6 @@ function LDDiscover() {
     { id: "food", title: "Foodies", icon: "🍱" },
     { id: "travel", title: "Travel", icon: "✈️" },
   ];
-
   const [notiOpen, setNotiOpen] = useState(false);
 
   return (
@@ -45,7 +44,7 @@ function LDDiscover() {
 
       <main className="absolute inset-0 z-10 pt-8 px-6 pointer-events-none">
         <div className="max-w-2xl mx-auto space-y-4">
-          {/* Search Bar Section */}
+          {/* Search Bar  */}
           <div className="flex items-center justify-between gap-3 pointer-events-auto">
             <div className="relative flex-1 group">
               <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
