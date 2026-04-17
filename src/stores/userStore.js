@@ -23,14 +23,10 @@ const useUserStore = create(persist((set, get) => ({
 
       setUser: (userData) => set({ user: userData }),
 
-
-      
-
-      // 1. ดึงข้อมูล Profile และอัปเดตลง Store
       getProfile: async () => {
         try {
           const res = await getProfileApi();
-          // ปรับการเข้าถึง data ตามโครงสร้าง API ของคุณ
+
           const userData = res.data.user || res.data; 
           set({ user: userData });
           return res;
@@ -40,11 +36,10 @@ const useUserStore = create(persist((set, get) => ({
         }
       },
 
-      // 2. แก้ไขข้อมูล Profile (รับเป็น formData สำหรับรูปภาพ)
       updateProfile: async (formData) => {
         try {
           const res = await editProfileApi(formData);
-          // อัปเดตข้อมูล user ใน store ทันทีหลังจากแก้สำเร็จ
+
           const updatedUser = res.data.data || res.data.user || res.data;
           set({ user: updatedUser });
           return res;
@@ -54,11 +49,10 @@ const useUserStore = create(persist((set, get) => ({
         }
       },
 
-      // 3. ลบบัญชีตัวเอง
       deleteProfile: async () => {
         try {
           const res = await deleteProfileApi();
-          // เมื่อลบบัญชีสำเร็จ ให้ทำการ logout ออกจากระบบทันที
+
           get().logout(); 
           return res;
         } catch (error) {
