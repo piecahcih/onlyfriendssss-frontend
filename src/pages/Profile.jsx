@@ -90,11 +90,11 @@ const Profile = () => {
 
       fetchUserProfile();
       setIsEditing(false);
-      setPreviewImage(null);
-      alert("บันทึกข้อมูลสำเร็จ!");
+      setPreviewImage(null); 
+      alert("Data Saved Success!");
     } catch (error) {
       console.error(error);
-      alert(error.response?.data?.message || "เกิดข้อผิดพลาดในการบันทึก");
+      alert(error.response?.data?.message || "Failed");
     }
   };
 
@@ -107,7 +107,7 @@ const Profile = () => {
     const file = e.target.files[0];
     if (file) {
       if (file.size > 2 * 1024 * 1024) {
-        alert("ขนาดไฟล์ใหญ่เกินไป (จำกัด 2MB)");
+        alert("File size is too large (limit 2MB)");
         return;
       }
       setEditForm((prev) => ({ ...prev, profileImg: file }));
@@ -124,9 +124,9 @@ const Profile = () => {
   const handleRequestFriend = async () => {
     try {
       await SendFriendRequestApi(profileData.id);
-      alert("ส่งคำขอเป็นเพื่อนแล้ว!");
+      alert("Success!");
     } catch (error) {
-      alert(error.response?.data?.message || "ไม่สามารถส่งคำขอได้");
+      alert(error.response?.data?.message || "Failed");
     }
   };
 
@@ -412,13 +412,9 @@ const Profile = () => {
               {profileData?.bio || "No bio available"}
             </p>
             <span className="text-[10px] px-2 py-1 bg-gray-100 rounded-md text-gray-400 font-bold uppercase tracking-wider">
-              {profileData?.gender === "MALE"
-                ? "ชาย"
-                : profileData?.gender === "FEMALE"
-                  ? "หญิง"
-                  : profileData?.gender === "OTHER"
-                    ? "อื่นๆ"
-                    : "N/A"}
+              {profileData?.gender === "MALE" ? "MALE" :
+               profileData?.gender === "FEMALE" ? "FEMALE" :
+               profileData?.gender === "OTHER" ? "OTHER" : "N/A"}
             </span>
           </div>
         </div>
