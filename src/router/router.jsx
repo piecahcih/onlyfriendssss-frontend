@@ -47,7 +47,7 @@ const guestRouter = createBrowserRouter([
   },
   {
     path: "*",
-    element: <Navigate to='/' />
+    element: <Navigate to="/" />,
   },
 ]);
 
@@ -106,7 +106,7 @@ const userRouter = createBrowserRouter([
   },
   {
     path: "*",
-    element: <Navigate to='/' />
+    element: <Navigate to="/" />,
   },
 ]);
 
