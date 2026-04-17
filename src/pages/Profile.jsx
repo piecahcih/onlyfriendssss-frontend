@@ -79,7 +79,6 @@ const Profile = () => {
       }
 
       const response = await editProfileApi(formData);
-
       const updatedUser = response.data.data;
 
       if (updatedUser.profileImg) {
