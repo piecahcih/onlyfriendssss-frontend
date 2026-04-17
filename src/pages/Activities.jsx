@@ -18,13 +18,14 @@ function Activities() {
         { id: "food", title: "Foodies", icon: "🍱" },
         { id: "travel", title: "Travel", icon: "✈️" }
     ];
-    
-    const [searchText, setSearchText] = useState("");
-    const [suggestOpen, setSuggestOpen] = useState(false);
 
     const activities = useActivityStore(st=>st.activities)
     const getAllCurrentActivities = useActivityStore(st=>st.getAllCurrentActivities)
     const getActivityByCategory = useActivityStore(st=>st.getActivityByCategory)
+    
+    const [searchText, setSearchText] = useState("");
+    const [suggestOpen, setSuggestOpen] = useState(false);
+
 
     useEffect(()=>{
         selectedCategory === 'all' ? getAllCurrentActivities()
@@ -59,9 +60,10 @@ function Activities() {
     const [haveLike, setHaveLike] = useState(false)
     const hdlLikeClick = async (e) => {
         e.preventDefault()
-        e.stopPropagation() 
+        e.stopPropagation()
     }
 
+   
 
     return (
         <div className="min-h-screen bg-base-200 pb-24">

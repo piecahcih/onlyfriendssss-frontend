@@ -5,7 +5,7 @@ import useUserStore from "../stores/userStore";
 import {
   LocationIcon,
   SettingIcon,
-  CalendarIcon,
+  // CalendarIcon,
   CloseIcon,
   CameraIcon,
   EditIcon,
@@ -17,6 +17,7 @@ import {
   getProfileApi,
   SendFriendRequestApi,
   editProfileApi,
+  deleteProfileApi,
 } from "../api/mainApi";
 
 import MyActivityTab from "../components/profile/MyActivityTab";
@@ -27,6 +28,9 @@ const Profile = () => {
   const storeUser = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
   const logout = useUserStore((state) => state.logout);
+  const getProfile = useUserStore((state) => state.getProfile);
+  const updateProfile = useUserStore((state) => state.updateProfile);
+  const deleteProfile = useUserStore((state) => state.deleteProfile);
 
   const [profileData, setProfileData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -42,7 +46,7 @@ const Profile = () => {
 
   const fetchUserProfile = async () => {
     try {
-      const response = await getProfileApi();
+      const response = await getProfile();
       const data =
         response.data.user?.data || response.data.user || response.data;
       console.log("Gender from API:", data);
@@ -78,7 +82,7 @@ const Profile = () => {
         formData.append("profileImg", editForm.profileImg);
       }
 
-      const response = await editProfileApi(formData);
+      const response = await updateProfile(formData);
       const updatedUser = response.data.data;
 
       if (updatedUser.profileImg) {
@@ -117,6 +121,20 @@ const Profile = () => {
       reader.readAsDataURL(file);
     }
   };
+
+   const hdlDeleteAccount = async () => {                                                                          
+  if (window.confirm("คุณแน่ใจหรือไม่ว่าต้องการลบบัญชี? การกระทำนี้ไม่สามารถย้อนกลับได้")) {                                   
+     try {                                                                                                       
+       await deleteProfile();                                                                                 
+       alert("ลบบัญชีของคุณเรียบร้อยแล้ว");                                                                            
+      logout();                                                                                                 
+      navigate("/");                                                                                            
+     } catch (error) {                                                                                           
+       console.error("Delete Account Error:", error);                                                            
+       alert(error.response?.data?.message || "ไม่สามารถลบบัญชีได้");                                                
+     }                                                                                                           
+   }                                                                                                             
+  }; 
 
   const triggerFileInput = () => fileInputRef.current.click();
 
@@ -329,7 +347,10 @@ const Profile = () => {
                 >
                   Log out
                 </button>
-                <button className="font-medium text-error">
+                <button 
+                onClick={hdlDeleteAccount}
+                className="font-medium text-error hover:opacity-70 transition-all"
+                >
                   Delete Account
                 </button>
               </div>
