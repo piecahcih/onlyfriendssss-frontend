@@ -60,7 +60,6 @@ function CreateActivity() {
   //   Adata.eventEndTime = eventEndTime
   // }
 
-  // const { coverPhoto,category,title,description,eventStartTime,eventEndTime,placeId } = req.body
 
   const hdlPreCreateActivity = (e, Adata) => {
     e.preventDefault();
@@ -131,7 +130,7 @@ function CreateActivity() {
             </div>
           </div>
 
-          {/* Hero Section/Image Upload */}
+          {/* Image Upload */}
           <section className="relative group">
             <h3 className={lblTitleStyle}>Add Cover Photo</h3>
             <div className="w-full h-40 rounded-2xl overflow-hidden bg-base-300 relative">
