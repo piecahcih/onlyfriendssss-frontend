@@ -12,7 +12,7 @@ function CreateActivity() {
     navigate(-1);
   };
 
-  const [groupStatus, setGroupStatus] = useState(true); //always be public as default
+  const [groupStatus, setGroupStatus] = useState(true);
   const hdlPrivacyStatus = () => {
     setGroupStatus(!groupStatus);
   };

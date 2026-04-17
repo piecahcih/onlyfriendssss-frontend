@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { LeftIcon, LocationIcon, PhotoIcon } from '../../icons'
+import { LeftIcon, LocationIcon } from '../../icons'
 import { useNavigate } from 'react-router'
 import MockingMap from '../../assets/mockingmap.png'
 import mockActImg from '../../assets/mockActImg.jpg'
 import Swal from 'sweetalert2'
 import useActivityStore from '../../stores/activitiesStore'
+import { format } from 'date-fns'
 
 function ShowCreate() {
     const navigate = useNavigate()
@@ -13,18 +14,13 @@ function ShowCreate() {
     const hdlGoBack = () => {
         navigate(-1)
     }
-
-    const [groupStatus, setGroupStatus] = useState(true)//always be public as default
-    const hdlPrivacyStatus = () => {
-        setGroupStatus(!groupStatus)
-    }
-
+    
     const creatingActivity = useActivityStore(st=>st.creatingActivity)
     const hdlCreateActivity = async (e) => {
       e.preventDefault()
       console.log('creatingActivity', creatingActivity)
       await useActivityStore.getState().createActivity(creatingActivity)
-
+      
       navigate('/')
       Swal.fire({
         title: '<h2 class="text-[24px] font-bold text-neutral leading-tight">Activity Created Successfully</h2>',
@@ -33,8 +29,22 @@ function ShowCreate() {
         padding: '1em',  
       });
     }
+    
+    const [groupStatus, setGroupStatus] = useState(true)
+    const hdlPrivacyStatus = () => {
+      setGroupStatus(creatingActivity.isPublic)
+    }
 
-    const lblTitleStyle = "text-[18px] font-bold text-neutral"
+    const categoryList = [
+      { id: "HEALTH", title: "Health", icon: "💪" },
+      { id: "ENTERTAINMENT", title: "Entertainment", icon: "🎭" },
+      { id: "ART", title: "Art", icon: "🎨" },
+      { id: "FOOD", title: "Food", icon: "🍱" },
+      { id: "TRAVEL", title: "Travel", icon: "✈️" },
+    ];
+    const selectedCategory = categoryList.find(cat => cat.id === creatingActivity.category)
+
+
   return (
     <div className="min-h-screen bg-base-200 text-neutral">
         
@@ -78,30 +88,31 @@ function ShowCreate() {
 
             {/* Category */}
             <h3 className="px-4 py-1.5 w-fit rounded-3xl text-[14px] font-medium flex items-center gap-2 border border-secondary text-neutral shadow-md">
-              <span className='text-[16px]'>💪</span> Health
+              <span className='text-[16px]'>{selectedCategory.icon}</span> {selectedCategory.title}
             </h3>
           </div>
 
           {/*Image*/}
           <div className="w-full h-40 rounded-2xl overflow-hidden bg-base-300 relative border-2 border-[#e09c99]/20">
-            <img src={mockActImg} alt="activityIMG"  />
+            <img src={creatingActivity.coverPhoto} alt="activityIMG"  />
           </div>
 
           {/* Activity Name */}
           <div className="mt-2">
             <label className="text-[22px] font-bold text-neutral">
-              Activity Name
+              {creatingActivity.title}
             </label>
           </div>
 
           {/* Date & Time Row */}
           <h3 className="">
-            <span className=" text-xl">📅</span> Sun, 12 Apr 2026, 17:00
+            <span className=" text-xl">📅</span> {format(new Date(creatingActivity.eventStartTime), 'eee, dd MMM yyyy, HH:mm')}
+            {format(new Date(creatingActivity.eventStartTime), '- eee, dd MMM yyyy, HH:mm')}
           </h3>
           
 
           {/* Notes */}
-          <p className="font-light my-5">Tell us more about the activity, what to bring, and expectations</p>
+          <p className="font-light my-5">{creatingActivity.description}</p>
 
           {/* Location */}
           <h3 className="w-full flex items-center my-2.5">
