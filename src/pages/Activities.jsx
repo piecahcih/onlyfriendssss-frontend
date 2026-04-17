@@ -43,6 +43,17 @@ function Activities() {
         e.stopPropagation() 
     }
 
+    const [searchText, setSearchText] = useState("");
+    const [suggestOpen, setSuggestOpen] = useState(false);
+
+    const activitySuggestions = Array.isArray(activities) ? activities.filter(act => 
+        act.title.toLowerCase().includes(searchText.toLowerCase())
+    ).slice(0, 3) : [];
+
+    const locationSuggestions = Array.isArray(activities) ? activities.filter(act => 
+        act.place?.placeName?.toLowerCase().includes(searchText.toLowerCase())
+    ).slice(0, 3) : [];
+
     return (
         <div className="min-h-screen bg-base-200 pb-24">
             <main className="pt-8 px-6 max-w-2xl mx-auto">
@@ -57,6 +68,57 @@ function Activities() {
                             placeholder="Find your vibe..."
                             type="text"
                         />
+
+                        {/* Suggestions Modal */}
+                        {suggestOpen && searchText.length > 0 && (activitySuggestions.length > 0 || locationSuggestions.length > 0) && (
+                            <div className="absolute top-full left-0 right-0 mt-3 bg-white rounded-[30px] shadow-2xl z-50 overflow-hidden border border-primary/5 max-h-[500px] overflow-y-auto">
+                                {activitySuggestions.length > 0 && (
+                                    <>
+                                        <div className="px-6 py-3 text-[10px] font-black text-primary/50 uppercase tracking-widest bg-primary/5">
+                                            Activities
+                                        </div>
+                                        {activitySuggestions.map((act) => (
+                                            <div 
+                                                key={`act-${act.id}`} 
+                                                onClick={() => {
+                                                    setSearchText(act.title);
+                                                    setSuggestOpen(false);
+                                                }}
+                                                className="px-6 py-4 hover:bg-primary/5 cursor-pointer flex items-center gap-4 border-b border-gray-50 transition-colors">
+                                        
+                                                <div className="flex flex-col">
+                                                    <span className="text-on-surface font-bold text-sm">{act.title}</span>
+                                                    <span className="text-[9px] text-on-surface/40 uppercase font-black">{act.category}</span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </>
+                                )}
+
+                                {locationSuggestions.length > 0 && (
+                                    <>
+                                        <div className="px-6 py-3 text-[10px] font-black text-primary/50 uppercase tracking-widest bg-primary/5 border-t border-gray-50">
+                                            Locations
+                                        </div>
+                                        {locationSuggestions.map((act) => (
+                                            <div 
+                                                key={`loc-${act.id}`} 
+                                                onClick={() => {
+                                                    setSearchText(act.place?.placeName);
+                                                    setSuggestOpen(false);
+                                                }}
+                                                className="px-6 py-4 hover:bg-primary/5 cursor-pointer flex items-center gap-4 border-b border-gray-50 last:border-none transition-colors">
+                                                <div className="flex flex-col">
+                                                    <span className="text-on-surface font-bold text-sm">{act.place?.placeName}</span>
+                                                    <span className="text-[9px] text-on-surface/40 uppercase font-black">In: {act.title}</span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </>
+                                )}
+                            </div>
+                        )}
+
                         <div className="absolute inset-y-0 right-5 flex items-center pointer-events-none">
                             <MicIcon className="w-6 text-on-surface/40" />
                         </div>
@@ -66,6 +128,7 @@ function Activities() {
                         <span className="absolute top-2 right-2 w-5 h-5 bg-primary flex items-center justify-center text-[10px] font-bold text-white border-2 border-white rounded-full">1</span>
                     </button>
                 </div>
+
 
 
                 {/* Categories Horizontal Scroll */}
