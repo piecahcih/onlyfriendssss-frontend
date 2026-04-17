@@ -3,29 +3,19 @@ import { motion, AnimatePresence } from "framer-motion";
 import ProfilePic from "../components/profile/ProfilePic";
 import useUserStore from "../stores/userStore";
 import {
-  LocationIcon,
   SettingIcon,
-  // CalendarIcon,
   CloseIcon,
   CameraIcon,
   EditIcon,
-  HeartLineIcon,
-  HeartIcon,
 } from "../icons";
 import { NavLink } from "react-router";
-import {
-  getProfileApi,
-  SendFriendRequestApi,
-  editProfileApi,
-  deleteProfileApi,
-} from "../api/mainApi";
 
 import MyActivityTab from "../components/profile/MyActivityTab";
 
 const BACKEND_URL = "http://localhost:3999";
 
 const Profile = () => {
-  const storeUser = useUserStore((state) => state.user);
+  const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
   const logout = useUserStore((state) => state.logout);
   const getProfile = useUserStore((state) => state.getProfile);
@@ -138,29 +128,17 @@ const Profile = () => {
 
   const triggerFileInput = () => fileInputRef.current.click();
 
-  const handleRequestFriend = async () => {
-    try {
-      await SendFriendRequestApi(profileData.id);
-      alert("Success!");
-    } catch (error) {
-      alert(error.response?.data?.message || "Failed");
-    }
-  };
-
   const getFullImgPath = (path) => {
-    if (!path) return "/default-avatar.png"; // ใส่รูป Default ถ้าไม่มีข้อมูล
+    if (!path) return "/default-avatar.png"; 
 
-    // ถ้าเป็น File Object (กรณีเพิ่งเลือกรูป) หรือ Base64 ให้คืนค่าเดิม
     if (typeof path !== "string" || path.startsWith("data:")) {
       return path;
     }
 
-    // ถ้าเป็น URL เต็มอยู่แล้ว (เช่นจาก Google Login)
     if (path.startsWith("http")) {
       return path;
     }
 
-    // 3. ถ้าเป็น path จาก backend
     return `${BACKEND_URL}${path}`;
   };
 
@@ -361,7 +339,6 @@ const Profile = () => {
 
       {/* --- HEADER --- */}
       <div className="pt-8 pb-4 text-center relative flex items-center justify-center">
-        {/* <h1 className="text-xl bai-jamjuree-bold text-neutral-focus">PROFILE</h1> */}
         <div className="absolute right-6 top-4 flex gap-2">
           <button
             onClick={handleEditOpen}
