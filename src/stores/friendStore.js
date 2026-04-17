@@ -7,9 +7,7 @@ import {
 } from "../api/mainApi";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-const useFriendStore = create(
-  persist(
-    (set, get) => ({
+const useFriendStore = create(persist((set, get) => ({
       friends: [],
       requests: [],
 
