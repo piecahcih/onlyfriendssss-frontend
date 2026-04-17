@@ -18,6 +18,9 @@ function Activities() {
         { id: "food", title: "Foodies", icon: "🍱" },
         { id: "travel", title: "Travel", icon: "✈️" }
     ];
+    
+    const [searchText, setSearchText] = useState("");
+    const [suggestOpen, setSuggestOpen] = useState(false);
 
     const activities = useActivityStore(st=>st.activities)
     const getAllCurrentActivities = useActivityStore(st=>st.getAllCurrentActivities)
@@ -30,10 +33,26 @@ function Activities() {
         console.log('activities', activities)
     },[selectedCategory])
 
+    const activitySuggestions = Array.isArray(activities) ? activities.filter(act => 
+        act.title.toLowerCase().includes(searchText.toLowerCase())
+    ).slice(0, 3) : [];
 
-    const filteredActivities = selectedCategory === "all" 
+    const locationSuggestions = Array.isArray(activities) ? activities.filter(act => 
+        act.place?.placeName?.toLowerCase().includes(searchText.toLowerCase())
+    ).slice(0, 3) : [];
+
+    // const filteredActivities = selectedCategory === "all" 
+    //     ? activities 
+    //     : activities.filter(act => act.category === selectedCategory.toUpperCase());
+
+    const filteredActivities = (Array.isArray(activities) ? (selectedCategory === "all"
         ? activities 
-        : activities.filter(act => act.category === selectedCategory.toUpperCase());
+        : activities.filter(act => act.category === selectedCategory.toUpperCase()))
+        : [])
+        .filter(act => 
+            act.title.toLowerCase().includes(searchText.toLowerCase()) || 
+            act.place?.placeName?.toLowerCase().includes(searchText.toLowerCase())
+        );
 
     const [notiOpen, setNotiOpen] = useState(false)
 
@@ -43,16 +62,6 @@ function Activities() {
         e.stopPropagation() 
     }
 
-    const [searchText, setSearchText] = useState("");
-    const [suggestOpen, setSuggestOpen] = useState(false);
-
-    const activitySuggestions = Array.isArray(activities) ? activities.filter(act => 
-        act.title.toLowerCase().includes(searchText.toLowerCase())
-    ).slice(0, 3) : [];
-
-    const locationSuggestions = Array.isArray(activities) ? activities.filter(act => 
-        act.place?.placeName?.toLowerCase().includes(searchText.toLowerCase())
-    ).slice(0, 3) : [];
 
     return (
         <div className="min-h-screen bg-base-200 pb-24">
@@ -67,6 +76,10 @@ function Activities() {
                             className="w-full bg-white border-none outline-none ring-2 ring-[#e09c99]/20 focus:ring-primary py-3 pl-14 pr-14 rounded-full font-body text-lg shadow-[0_4px_24px_rgba(78,33,32,0.04)] transition-all placeholder:text-on-surface/40"
                             placeholder="Find your vibe..."
                             type="text"
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                            onFocus={() => setSuggestOpen(true)}
+                            onBlur={() => setTimeout(() => setSuggestOpen(false), 200)}
                         />
 
                         {/* Suggestions Modal */}
