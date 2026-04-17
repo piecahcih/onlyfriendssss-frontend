@@ -1,5 +1,12 @@
 import { NavLink, useNavigate } from "react-router";
-import { AppleLogo, FacebookLogo, GoogleLogo } from "../../icons";
+import {
+  AppleLogo,
+  EyeIcon,
+  EyeSlashIcon,
+  FacebookLogo,
+  GoogleLogo,
+  WelcomeIcon,
+} from "../../icons";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../../validators/schema";
@@ -7,11 +14,14 @@ import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../../utils/firebase";
 import useUserStore from "../../stores/userStore";
 import { toast } from "react-toastify";
+import { useState } from "react";
 
 function Login() {
   const login = useUserStore((state) => state.login);
   const loginWithGoogle = useUserStore((state) => state.loginWithGoogle);
   const navigate = useNavigate();
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const { register, handleSubmit } = useForm({
     resolver: zodResolver(loginSchema),
@@ -76,12 +86,27 @@ function Login() {
               </div>
               <div className="flex flex-col gap-1.5">
                 <h3 className="bai-jamjuree-semibold">Password</h3>
-                <input
-                  type="password"
-                  placeholder="Password"
-                  {...register("password")}
-                  className={inpStyle}
-                />
+
+                <div className="relative w-full">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    {...register("password")}
+                    className={`${inpStyle} pr-12 w-full`}
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600 flex items-center"
+                  >
+                    {showPassword ? (
+                      <EyeIcon className="w-5 h-5" />
+                    ) : (
+                      <EyeSlashIcon className="w-5 h-5" />
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
             <div className="flex">
