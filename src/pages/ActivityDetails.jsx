@@ -198,7 +198,7 @@ function ActivityDetails() {
                         {currentActivity.place?.placeName}
                     </h5>
                     <p className="text-xs text-on-surface/50 font-medium truncate mb-1">
-                        {currentActivity.place?.address || "ดูตำแหน่งในแผนที่"}
+                        {currentActivity.place?.address || "See Map"}
                     </p>
                     <a 
                         href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(currentActivity.place?.placeName)}`}
@@ -269,13 +269,13 @@ function ActivityDetails() {
           <span className="loading loading-spinner"></span>
         ) : isJoined ? (
           <>
-            <span className="text-2xl">✔</span> เข้าร่วมแล้ว
+            <span className="text-2xl">✔</span> Joined
          </>
         ) : isFull ? (
-          "เต็มแล้ว"
+          "Full"
         ) : (
           <>
-            <span className="text-2xl">👋</span> เข้าร่วมกิจกรรม
+            <span className="text-2xl">👋</span> JOIN
           </>
         )}
         </button>
