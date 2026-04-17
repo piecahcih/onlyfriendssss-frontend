@@ -48,9 +48,9 @@ function ActivityDetails() {
        if (!currentActivity) {
          return (
            <div className="min-h-screen bg-base-200 flex flex-col items-center justify-center p-6 text-center">
-             <h2 className="text-2xl font-bold text-neutral-content mb-4">ไม่พบข้อมูลกิจกรรม</h2>
+             <h2 className="text-2xl font-bold text-neutral-content mb-4">No Activity Found</h2>
              <button onClick={hdlGoBack} className="btn btn-primary rounded-full px-8 text-white">
-               กลับไปหน้าเดิม
+               Go Back
              </button>
            </div>
          );
@@ -71,7 +71,7 @@ function ActivityDetails() {
    
       const hdlJoin = async () => {
         if (!storeUser) {
-          alert("กรุณาเข้าสู่ระบบก่อนเข้าร่วมกิจกรรม");
+          alert("Please Log In Before Join Activity");
           return;
         }
         try {
@@ -79,13 +79,13 @@ function ActivityDetails() {
           // เรียก API สำหรับ Join (ใช้ Instance mainApi โดยตรงตามเงื่อนไขห้ามแก้ไฟล์อื่น)
           await mainApi.post(`/activity/join/${actid}`);
    
-          alert("เข้าร่วมกิจกรรมสำเร็จ! 🎉");
+          alert("Success 🎉");
    
           // ดึงข้อมูลกิจกรรมใหม่เพื่ออัปเดตรายชื่อผู้เข้าร่วมและจำนวนที่ว่าง
           await getActivityById(actid);
         } catch (error) {
           console.error("Join Error:", error);
-          const errorMsg = error.response?.data?.message || "ไม่สามารถเข้าร่วมกิจกรรมได้ในขณะนี้";
+          const errorMsg = error.response?.data?.message || "Activity Unable";
           alert(errorMsg);
         } finally {
           setLoadingJoin(false);
@@ -197,7 +197,7 @@ function ActivityDetails() {
                         {currentActivity.place?.placeName}
                     </h5>
                     <p className="text-xs text-on-surface/50 font-medium truncate mb-1">
-                        {currentActivity.place?.address || "ดูตำแหน่งในแผนที่"}
+                        {currentActivity.place?.address || "See Map"}
                     </p>
                     <a 
                         href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(currentActivity.place?.placeName)}`}
@@ -268,13 +268,13 @@ function ActivityDetails() {
           <span className="loading loading-spinner"></span>
         ) : isJoined ? (
           <>
-            <span className="text-2xl">✔</span> เข้าร่วมแล้ว
+            <span className="text-2xl">✔</span> Joined
          </>
         ) : isFull ? (
-          "เต็มแล้ว"
+          "Full"
         ) : (
           <>
-            <span className="text-2xl">👋</span> เข้าร่วมกิจกรรม
+            <span className="text-2xl">👋</span> JOIN
           </>
         )}
         </button>
