@@ -17,6 +17,7 @@ import Welcome from "../pages/Welcome";
 import Friendlist from "../pages/Friends/Friendlist";
 import NonavLayout from "../layouts/NonavLayout";
 import ActivityDetails from "../pages/ActivityDetails";
+import LocationReview from "../pages/reviews/LocationReview";
 
 const guestRouter = createBrowserRouter([
   {
@@ -63,6 +64,10 @@ const userRouter = createBrowserRouter([
       {
         path: "activities",
         element: <Activities />,
+      },
+      {
+        path: "reviews-location",
+        element: <LocationReview />,
       },
       {
         path: "profile",

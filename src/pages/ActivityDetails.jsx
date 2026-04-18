@@ -137,11 +137,10 @@ function ActivityDetails() {
         
 
         {/* Title & Host */}
-        <div className="space-y-4">
+        <div className="space-y-2">
           <h1 className="text-3xl font-black text-on-surface leading-tight">
             {currentActivity.title}
           </h1>
-          {/* <p className="text-on-surface/60 font-medium">{activity.place?.placeName}</p> */}
 
           <div>
             <div className="flex items-center gap-3">
@@ -159,17 +158,16 @@ function ActivityDetails() {
             </div>
            
           </div>
+          {/* Description */}
+              <p className="text-on-surface/80 leading-relaxed font-medium">
+                  {currentActivity.description || "No description provided."}
+              </p>
+
+              <p className="text-[11px] text-on-surface/30 font-light uppercase tracking-wider">
+                  Created {format(new Date(currentActivity.createdAt), 'dd MMM yyyy')}
+              </p>
         </div>
 
-        {/* Description */}
-        <div className="space-y-2">
-            <p className="text-on-surface/80 leading-relaxed font-medium">
-                {currentActivity.description || "No description provided."}
-            </p>
-            <p className="text-[11px] text-on-surface/30 font-bold uppercase tracking-wider pt-2">
-                Created {format(new Date(currentActivity.createdAt || Date.now()), 'dd MMM yyyy')}
-            </p>
-        </div>
 
         {/* Info Cards */}
         <div className="grid grid-cols-1 gap-4">
@@ -178,13 +176,26 @@ function ActivityDetails() {
                 <div className="p-3 bg-primary/10 rounded-2xl text-primary">
                     <CalendarIcon className="w-7 h-7" />
                 </div>
-                <div className="flex-1">
-                    <h5 className="font-bold text-sm text-on-surface">
-                        {currentActivity.eventStartTime ? format(new Date(currentActivity.eventStartTime), 'eee, dd MMM yyyy') : '-'}
-                    </h5>
-                    <p className="text-xs text-on-surface/50 font-medium">
-                         {currentActivity.eventStartTime ? format(new Date(currentActivity.eventStartTime), 'p') : '-'}
-                    </p>
+                <div className="flex items-center gap-6">
+                  <div>
+                      <h5 className="font-bold text-sm text-on-surface">
+                          {currentActivity.eventStartTime ? format(new Date(currentActivity.eventStartTime), 'eee, dd MMM yyyy') : '-'}
+                      </h5>
+                      <p className="text-xs text-on-surface/50 font-medium">
+                          {currentActivity.eventStartTime ? format(new Date(currentActivity.eventStartTime), 'p') : '-'}
+                      </p>
+                  </div>
+                  <p>-</p>
+                  {currentActivity.eventEndTime && (
+                    <div>
+                        <h5 className="font-bold text-sm text-on-surface">
+                            {format(new Date(currentActivity.eventEndTime), 'eee, dd MMM yyyy')}
+                        </h5>
+                        <p className="text-xs text-on-surface/50 font-medium">
+                            {format(new Date(currentActivity.eventEndTime), 'p')}
+                        </p>
+                    </div>
+                  )}
                 </div>
             </div>
 
