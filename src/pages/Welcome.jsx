@@ -1,15 +1,21 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import useUserStore from '../stores/userStore'
 import { Link } from 'react-router'
 import { AnimatePresence, motion } from 'framer-motion'
 import Premium from '../components/ads/Premium'
 import { CloseIcon, WelcomeIcon } from '../icons'
+import { toast } from 'react-toastify'
 
 function Welcome() {
   const user = useUserStore(state => state.user)
-  console.log(user)
-
   const [settingForm, setSettingForm] = useState(false)
+
+  useEffect(() => {
+    if (user) {
+      toast.success('Login Success')
+    }
+  }, [])
+
   const handleSettingOpen = () => {
     setSettingForm(true);
   }
@@ -52,6 +58,9 @@ function Welcome() {
               </div>
             </div>
           </Link>
+          <p className="text-gray-600 text-md font-medium m-4">
+            Click on the account to continue
+          </p>
 
         </div>
 
