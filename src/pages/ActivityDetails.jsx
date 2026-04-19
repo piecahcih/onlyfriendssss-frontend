@@ -20,6 +20,16 @@ function ActivityDetails() {
   const [loading, setLoading] = useState(true);
   const [loadingJoin, setLoadingJoin] = useState(false);
 
+  const categoryList = [
+    { id: "HEALTH", title: "Health & Wellness", icon: "💪" },
+    { id: "ENTERTAINMENT", title: "Chill & Hangout", icon: "🎭" },
+    { id: "ART", title: "Creative", icon: "🎨" },
+    { id: "FOOD", title: "Foodies", icon: "🍱" },
+    { id: "TRAVEL", title: "Travel", icon: "✈️" },
+  ];
+
+  const matchedCategory = categoryList.find((cat) => cat.id === currentActivity.category)
+
   useEffect(() => {
      if (actid) {
       console.log(currentActivity)
@@ -46,52 +56,63 @@ function ActivityDetails() {
   }
 
   // ถ้าโหลดเสร็จแล้วแต่ไม่มีข้อมูล
-       if (!currentActivity) {
-         return (
-           <div className="min-h-screen bg-base-200 flex flex-col items-center justify-center p-6 text-center">
-             <h2 className="text-2xl font-bold text-neutral-content mb-4">No activities found</h2>
-             <button onClick={hdlGoBack} className="btn btn-primary rounded-full px-8 text-white">
-               back to activities page
-             </button>
-           </div>
-         );
-       }
+  if (!currentActivity) {
+    return (
+      <div className="min-h-screen bg-base-200 flex flex-col items-center justify-center p-6 text-center">
+        <h2 className="text-2xl font-bold text-neutral-content mb-4">No activities found</h2>
+        <button onClick={hdlGoBack} className="btn btn-primary rounded-full px-8 text-white">
+          back to activities page
+        </button>
+      </div>
+    );
+  }
 
-  // --- การคำนวณสถานะ "เต็ม" ---
-      const maxParticipants = Number(currentActivity?.maxParticipants) || 0;
-      const currentAttendees = Number(currentActivity?._count?.attendees) || 0;
-      const spotsLeft = maxParticipants - currentAttendees;
-    
-      // จะถือว่าเต็มก็ต่อเมื่อมีการระบุจำนวนคนสูงสุดไว้ ( > 0) และจำนวนคนเข้าร่วมเท่ากับหรือมากกว่านั้น
-     const isFull = maxParticipants > 0 && spotsLeft <= 0;
-   
-      // ตรวจสอบว่าผู้ใช้ปัจจุบันเข้าร่วมหรือยัง
-      const isJoined = currentActivity.attendees?.some(
-        (item) => (item.userId || item.user?.id) === storeUser?.id
-      );
-   
-      const hdlJoin = async () => {
-        if (!storeUser) {
-          alert("Please Log in before join any activity");
-          return;
-        }
-        try {
-          setLoadingJoin(true);
-          // เรียก API สำหรับ Join (ใช้ Instance mainApi โดยตรงตามเงื่อนไขห้ามแก้ไฟล์อื่น)
-          await mainApi.post(`/activity/join/${actid}`);
-   
-          alert("Waiting to be approved");
-   
-          // ดึงข้อมูลกิจกรรมใหม่เพื่ออัปเดตรายชื่อผู้เข้าร่วมและจำนวนที่ว่าง
-          await getActivityById(actid);
-        } catch (error) {
-          console.error("Join Error:", error);
-          const errorMsg = error.response?.data?.message || "Activity Unavailable";
-          alert(errorMsg);
-        } finally {
-          setLoadingJoin(false);
-        }
-      }
+  // 1. กรองเฉพาะคนที่เป็นผู้เข้าร่วมจริง (APPROVED)
+  const approvedAttendees = currentActivity.joinRequests?.filter(req => req.status === 'APPROVED') || [];
+  const attendeesCount = approvedAttendees.length;
+
+  // 2. คำนวณที่ว่างที่เหลือจริง
+  const maxParticipants = Number(currentActivity?.maxParticipants) || 0;
+  const spotsLeft = maxParticipants - attendeesCount;
+  const isFull = maxParticipants > 0 && spotsLeft <= 0;
+
+  // 3. เช็คว่าเรา (User) จอยหรือยัง
+  const isJoined = approvedAttendees.some(
+    (item) => (item.userId || item.user?.id) === storeUser?.id
+  );
+
+  // 4. ฟังก์ชันช่วยจัดการ URL รูปภาพให้โชว์ติดทน
+  const getFullImgPath = (path) => {
+    if (!path) return defaultProfile;
+    if (typeof path !== 'string' || path.startsWith('data:') || path.startsWith('http')) {
+      return path;
+    }
+    return `${BACKEND_URL}${path}`;
+  };
+
+  const hdlJoin = async () => {
+    if (!storeUser) {
+      alert("Please Log in before join any activity");
+      return;
+    }
+    try {
+      setLoadingJoin(true);
+      // เรียก API สำหรับ Join (ใช้ Instance mainApi โดยตรงตามเงื่อนไขห้ามแก้ไฟล์อื่น)
+      await mainApi.post(`/activity/join/${actid}`);
+
+      alert("Waiting to be approved");
+
+      // ดึงข้อมูลกิจกรรมใหม่เพื่ออัปเดตรายชื่อผู้เข้าร่วมและจำนวนที่ว่าง
+      await getActivityById(actid);
+    } catch (error) {
+      console.error("Join Error:", error);
+      const errorMsg = error.response?.data?.message || "Activity Unavailable";
+      alert(errorMsg);
+    } finally {
+      setLoadingJoin(false);
+    }
+  }
+
 
   return (
     <div className="min-h-screen bg-base-200 text-neutral pb-28">
@@ -121,7 +142,7 @@ function ActivityDetails() {
                 1km
             </div>
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 text-primary shadow-sm text-xs font-bold border border-primary/20">
-                <span>{currentActivity.categoryIcon || "✨"}</span>
+                <span>{matchedCategory.icon}</span>
                  {currentActivity.category}
             </div>
         </div>
@@ -185,16 +206,18 @@ function ActivityDetails() {
                           {currentActivity.eventStartTime ? format(new Date(currentActivity.eventStartTime), 'p') : '-'}
                       </p>
                   </div>
-                  <p>-</p>
                   {currentActivity.eventEndTime && (
-                    <div>
-                        <h5 className="font-bold text-sm text-on-surface">
-                            {format(new Date(currentActivity.eventEndTime), 'eee, dd MMM yyyy')}
-                        </h5>
-                        <p className="text-xs text-on-surface/50 font-medium">
-                            {format(new Date(currentActivity.eventEndTime), 'p')}
-                        </p>
-                    </div>
+                    <>
+                      <p>-</p>
+                      <div>
+                          <h5 className="font-bold text-sm text-on-surface">
+                              {format(new Date(currentActivity.eventEndTime), 'eee, dd MMM yyyy')}
+                          </h5>
+                          <p className="text-xs text-on-surface/50 font-medium">
+                              {format(new Date(currentActivity.eventEndTime), 'p')}
+                          </p>
+                      </div>
+                    </>
                   )}
                 </div>
             </div>
@@ -274,17 +297,17 @@ function ActivityDetails() {
         disabled={loadingJoin || isJoined || isFull}
         className={`w-full max-w-2xl flex items-center justify-center gap-3 px-8 py-4 rounded-[25px] font-black text-xl  active:scale-95 transition-all border-b-4
           ${isJoined
-              ? "bg-success text-white border-success-content cursor-default opacity-90 shadow-none"
-              : isFull
-                  ? "bg-neutral text-white border-neutral-content opacity-50 cursor-not-allowed"
-                  : "bg-primary text-white border-primary-focus hover:shadow-[0_12px_32px_rgba(252,81,0,0.4)] hover:-translate-y-0.5"
+            ? "bg-linear-to-r from-success to-secondary text-white"
+            : isFull
+              ? "bg-neutral text-white border-neutral-content opacity-50 cursor-not-allowed"
+              : "bg-linear-to-r from-primary to-secondary text-white border-primary-focus hover:scale-[1.05]"
           }`}
       >
         {loadingJoin ? (
           <span className="loading loading-spinner"></span>
         ) : isJoined ? (
           <>
-            <span className="text-2xl">✔</span> Joined
+            <span className="text-2xl">✔</span> JOINED
          </>
         ) : isFull ? (
           "Full"
