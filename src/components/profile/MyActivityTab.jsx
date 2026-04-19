@@ -171,7 +171,7 @@ function MyActivityTab() {
                         {activeTab === "Created" && (activities.length > 0 ? (
                             <div className="space-y-8">
                                 {activities.map((activity) => (
-                                    <NavLink to={`/activity-details?actid=${activity.id}`} key={activity.id} className="block" >
+                                    <NavLink to={`/edit-activity-details?actid=${activity.id}`} key={activity.id} className="block" >
                                         <div className="bg-white rounded-[35px] overflow-hidden shadow-[0_12px_32px_rgba(78,33,32,0.04)] hover:shadow-[0_12px_48px_rgba(78,33,32,0.08)] transition-all duration-300">
 
                                             <div className="relative h-50 w-full overflow-hidden">
@@ -256,8 +256,7 @@ function MyActivityTab() {
                                                     </div>
 
                                                     <div className="flex flex-col items-end">
-                                                        <span className="text-[10px] text-on-surface/40 font-bold uppercase tracking-wider">Hosted by</span>
-                                                        <span className="text-sm font-bold text-primary">{activity.host?.username}</span>
+                                                            <button type="button" onClick={'love'}>Edit</button>
                                                     </div>
                                                 </div>
                                             </div>
