@@ -37,7 +37,7 @@ function Activities() {
     const activitySuggestions = Array.isArray(activities) ? activities.filter(act =>
         act.title.toLowerCase().includes(searchText.toLowerCase())
     ).slice(0, 3) : [];
-    
+
     const location = [...new Set(activities.map(act => act.place?.placeName))]
 
     const locationSuggestions = Array.isArray(activities) ? location.filter(placeName => 
@@ -118,7 +118,7 @@ function Activities() {
                                             Locations
                                         </div>
                                         {locationSuggestions.map((placeName) => (
-                                            <div 
+                                            <div
                                                 key={`loc-${placeName.id}`} 
                                                 onClick={() => {
                                                     setSearchText(placeName);
