@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { LeftIcon, PhotoIcon } from "../../icons";
 import { useNavigate } from "react-router";
-import MapModal from "../../components/MapModal";
+import MapModal from "../../components/map/MapModal";
 import useActivityStore from "../../stores/activitiesStore";
 import useUserStore from "../../stores/userStore";
+import Swal from "sweetalert2";
 
 function CreateActivity() {
   const navigate = useNavigate();
@@ -18,18 +19,18 @@ function CreateActivity() {
   };
 
   const [isMapOpen, setIsMapOpen] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState("");
-  const hdlConfirmLocation = () => {
-    setSelectedLocation("Benchakitti Park, Bangkok");
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const hdlConfirmLocation = (addressData) => {
+    setSelectedLocation(addressData);
     setIsMapOpen(false);
   };
 
   const [selectedCategory, setSelectedCategory] = useState("HEALTH");
   const categoryList = [
-    { id: "HEALTH", title: "Health", icon: "💪" },
-    { id: "ENTERTAINMENT", title: "Entertainment", icon: "🎭" },
-    { id: "ART", title: "Art", icon: "🎨" },
-    { id: "FOOD", title: "Food", icon: "🍱" },
+    { id: "HEALTH", title: "Health & Wellness", icon: "💪" },
+    { id: "ENTERTAINMENT", title: "Chill & Hangout", icon: "🎭" },
+    { id: "ART", title: "Creative", icon: "🎨" },
+    { id: "FOOD", title: "Foodies", icon: "🍱" },
     { id: "TRAVEL", title: "Travel", icon: "✈️" },
   ];
 
@@ -71,7 +72,11 @@ function CreateActivity() {
     // hostId: user.id,
     isPublic: groupStatus,
     coverPhoto: file,
-    placeId: 1,
+    // placeId: 1,
+    placeName: selectedLocation?.placeName,
+    address: selectedLocation?.address,
+    latitude: selectedLocation?.latitude,
+    longitude: selectedLocation?.longitude,
     title: title,
     eventStartTime: new Date(eventStartTime),
     ...(eventEndTime && { eventEndTime: new Date(eventEndTime) }),
@@ -83,10 +88,26 @@ function CreateActivity() {
 
   const hdlPreCreateActivity = (e, Adata) => {
     e.preventDefault();
-    useActivityStore.getState().setCreatingActivity(Adata);
-    // console.log('Adata', Adata)
 
-    navigate("/create-showcreate");
+    if (!Adata.title || !Adata.coverPhoto || !Adata.address || !Adata.description || !eventStartTime) {
+      Swal.fire({
+        title: '<h2 class="text-[20px] font-bold text-neutral leading-tight">Please input all fields</h2>',
+        confirmButtonColor: "#FC5100",
+        width: '300px',  
+        padding: '1em',  
+      });
+
+      return
+    }
+
+    try {
+      useActivityStore.getState().setCreatingActivity(Adata);
+      // console.log('Adata', Adata)
+  
+      navigate("/create-showcreate");   
+    } catch (error) {
+        console.error("Local state error:", error)
+    }
   };
 
   const lblTitleStyle = "text-[18px] font-bold text-neutral";
@@ -186,7 +207,7 @@ function CreateActivity() {
 
               <div className="w-full pl-14 pr-6 py-3 rounded-full bg-white text-left ring-2 ring-[#e09c99]/20 group-hover:ring-[#e09c99]/40 group-focus:ring-[#a83100] transition-all text-neutral placeholder:text-[#834c4b]/40">
                 <span className="text-[#834c4b]/40">
-                  {selectedLocation || "Select a location"}
+                  {selectedLocation?.placeName || "Select a location"}
                 </span>
               </div>
             </button>
@@ -287,7 +308,7 @@ function CreateActivity() {
           </div>
 
           <div className="pt-4 pb-12">
-            <button className="w-full py-4 rounded-full bg-linear-to-r from-primary to-secondary text-white font-bold text-lg shadow-[0_8px_32px_rgba(168,49,0,0.24)] active:scale-95 transition-all">
+            <button className="w-full py-4 rounded-full bg-linear-to-r from-primary to-secondary text-white font-bold text-lg shadow-[0_8px_32px_rgba(168,49,0,0.24)] active:scale-95 transition-all hover:scale-[1.05]">
               Create Activity
             </button>
           </div>
