@@ -3,7 +3,7 @@ import { SearchIcon, MicIcon, Notification, CalendarIcon, LocationIcon, HeartIco
 import mockActImg from '../assets/mockActImg.jpg'
 import defaultProfile from '../assets/default-profilepic.jpg'
 import useActivityStore from '../stores/activitiesStore';
-import {format} from 'date-fns'
+import { format } from 'date-fns'
 import NotificationModal from '../components/NotificationModal';
 import { NavLink } from 'react-router';
 import { motion } from 'framer-motion'
@@ -19,22 +19,22 @@ function Activities() {
         { id: "travel", title: "Travel", icon: "✈️" }
     ];
 
-    const activities = useActivityStore(st=>st.activities)
-    const getAllCurrentActivities = useActivityStore(st=>st.getAllCurrentActivities)
-    const getActivityByCategory = useActivityStore(st=>st.getActivityByCategory)
-    
+    const activities = useActivityStore(st => st.activities)
+    const getAllCurrentActivities = useActivityStore(st => st.getAllCurrentActivities)
+    const getActivityByCategory = useActivityStore(st => st.getActivityByCategory)
+
     const [searchText, setSearchText] = useState("");
     const [suggestOpen, setSuggestOpen] = useState(false);
 
 
-    useEffect(()=>{
+    useEffect(() => {
         selectedCategory === 'all' ? getAllCurrentActivities()
-        :getActivityByCategory(selectedCategory);
+            : getActivityByCategory(selectedCategory);
         // console.log('selectedCategory:', selectedCategory)
         console.log('activities', activities)
-    },[selectedCategory])
+    }, [selectedCategory])
 
-    const activitySuggestions = Array.isArray(activities) ? activities.filter(act => 
+    const activitySuggestions = Array.isArray(activities) ? activities.filter(act =>
         act.title.toLowerCase().includes(searchText.toLowerCase())
     ).slice(0, 3) : [];
     
@@ -49,11 +49,11 @@ function Activities() {
     //     : activities.filter(act => act.category === selectedCategory.toUpperCase());
 
     const filteredActivities = (Array.isArray(activities) ? (selectedCategory === "all"
-        ? activities 
+        ? activities
         : activities.filter(act => act.category === selectedCategory.toUpperCase()))
         : [])
-        .filter(act => 
-            act.title.toLowerCase().includes(searchText.toLowerCase()) || 
+        .filter(act =>
+            act.title.toLowerCase().includes(searchText.toLowerCase()) ||
             act.place?.placeName?.toLowerCase().includes(searchText.toLowerCase())
         );
 
@@ -65,7 +65,7 @@ function Activities() {
         e.stopPropagation()
     }
 
-   
+
 
     return (
         <div className="min-h-screen bg-base-200 pb-24">
@@ -95,14 +95,14 @@ function Activities() {
                                             Activities
                                         </div>
                                         {activitySuggestions.map((act) => (
-                                            <div 
-                                                key={`act-${act.id}`} 
+                                            <div
+                                                key={`act-${act.id}`}
                                                 onClick={() => {
                                                     setSearchText(act.title);
                                                     setSuggestOpen(false);
                                                 }}
                                                 className="px-6 py-4 hover:bg-primary/5 cursor-pointer flex items-center gap-4 border-b border-gray-50 transition-colors">
-                                        
+
                                                 <div className="flex flex-col">
                                                     <span className="text-on-surface font-bold text-sm">{act.title}</span>
                                                     <span className="text-[9px] text-on-surface/40 uppercase font-black">{act.category}</span>
@@ -139,7 +139,7 @@ function Activities() {
                             <MicIcon className="w-6 text-on-surface/40" />
                         </div>
                     </div>
-                    <button type='button' onClick={()=>setNotiOpen(true)} className="relative p-4 w-fit h rounded-full bg-white ring-2 ring-[#e09c99]/20 shadow-sm active:scale-95 transition-all">
+                    <button type='button' onClick={() => setNotiOpen(true)} className="relative p-4 w-fit h rounded-full bg-white ring-2 ring-[#e09c99]/20 shadow-sm active:scale-95 transition-all">
                         <Notification className="w-6 h-6" />
                         <span className="absolute top-2 right-2 w-5 h-5 bg-primary flex items-center justify-center text-[10px] font-bold text-white border-2 border-white rounded-full">1</span>
                     </button>
@@ -155,8 +155,8 @@ function Activities() {
                                 key={cat.id}
                                 onClick={() => setSelectedCategory(cat.id)}
                                 className={`shrink-0 px-5 py-1.5 rounded-3xl font-medium text-sm flex items-center gap-2 transition-all duration-300 active:scale-95
-                                    ${selectedCategory === cat.id 
-                                        ? "bg-primary text-white shadow-[0_8px_12px_rgba(252,81,0,0.3)]" 
+                                    ${selectedCategory === cat.id
+                                        ? "bg-primary text-white shadow-[0_8px_12px_rgba(252,81,0,0.3)]"
                                         : "bg-white text-on-surface/60 hover:bg-white/80 shadow-sm"}`}
                             >
                                 <span className="text-lg">{cat.icon}</span>
@@ -175,83 +175,105 @@ function Activities() {
 
                     <div className="space-y-8">
                         {filteredActivities.map((activity) => (
-                          <NavLink to={`/activity-details?actid=${activity.id}`} key={activity.id} className="block" >
-                            <div className="bg-white rounded-[35px] overflow-hidden shadow-[0_12px_32px_rgba(78,33,32,0.04)] hover:shadow-[0_12px_48px_rgba(78,33,32,0.08)] transition-all duration-300">
-                            
-                                <div className="relative h-50 w-full overflow-hidden">
-                                    <img 
-                                        src={activity?.coverPhoto} 
-                                        alt={activity.title} 
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                                    />
-                                    <div className="absolute top-4 left-4 flex gap-2">
-                                        <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-[12px] font-bold text-on-surface">
-                                            <span>{activity.isPublic ? "🌎" : "🔒"}</span>
-                                            {activity.isPublic ? "Public" : "Private"}
-                                        </div>
-                                        <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-primary/90 backdrop-blur-sm text-[12px] font-bold text-white">
-                                            <span>{activity.categoryIcon}</span>
-                                            {activity.category}
-                                        </div>
-                                    </div>
+                            <NavLink to={`/activity-details?actid=${activity.id}`} key={activity.id} className="block" >
+                                <div className="bg-white rounded-[35px] overflow-hidden shadow-[0_12px_32px_rgba(78,33,32,0.04)] hover:shadow-[0_12px_48px_rgba(78,33,32,0.08)] transition-all duration-300">
 
-                                    <motion.button whileTap={{ scale: 1.2, transition: { duration: 0.2 } }} onClick={hdlLikeClick} className="absolute bottom-4 right-4 p-2 rounded-full bg-white text-primary shadow-lg active:scale-90 transition-transform">
-                                    {haveLike ? <HeartIcon className="h-[28px] ml-auto"/>
-                                    : <HeartLineIcon  className="h-[28px] ml-auto text-neutral opacity-80"/> }
-                                    </motion.button>
-
-                                </div>
-
-                                <div className="p-6 space-y-4">
-                                    <div>
-                                        <h3 className="font-headline font-bold text-2xl text-on-surface group-hover:text-primary transition-colors">
-                                            {activity.title}
-                                        </h3>
-                                    </div>
-
-                                    <div className="flex flex-col gap-2.5">
-                                        <div className="flex items-center gap-3 text-on-surface/60">
-                                            <CalendarIcon className='w-4.5 text-primary' />
-                                            <span className="text-sm font-medium">{format(new Date(activity.eventStartTime), 'eee, dd MMM yyyy • p')}</span>
-                                        </div>
-                                        <div className="flex items-center gap-3 text-on-surface/60">
-                                            <LocationIcon className='w-4.5 text-primary'/>
-                                            <span className="text-sm font-medium">{activity.place?.placeName}</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="pt-4 flex items-center justify-between border-t border-surface-container-low">
-                                        <div className="flex items-center gap-3">
-                                            <div className="flex -space-x-3.5 items-center">
-                                                {[...Array(3)].map((_, i) => (
-                                                    <img 
-                                                        key={i}
-                                                        src={defaultProfile} 
-                                                        className="w-10 h-10 rounded-full border-2 border-white object-cover" 
-                                                        alt="attendee" 
-                                                    />
-                                                ))}
-                                                <div className=" w-10 h-6 rounded-full bg-[#ffccb5] border-2 border-white bg-surface-container-high flex items-center justify-center text-[12px] font-bold text-on-surface/60">
-                                                    19
-                                                </div>
+                                    <div className="relative h-50 w-full overflow-hidden">
+                                        <img
+                                            src={activity?.coverPhoto}
+                                            alt={activity.title}
+                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                        />
+                                        <div className="absolute top-4 left-4 flex gap-2">
+                                            <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-[12px] font-bold text-on-surface">
+                                                <span>{activity.isPublic ? "🌎" : "🔒"}</span>
+                                                {activity.isPublic ? "Public" : "Private"}
+                                            </div>
+                                            <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-primary/90 backdrop-blur-sm text-[12px] font-bold text-white">
+                                                <span>{activity.categoryIcon}</span>
+                                                {activity.category}
                                             </div>
                                         </div>
-                                        
-                                        <div className="flex flex-col items-end">
-                                            <span className="text-[10px] text-on-surface/40 font-bold uppercase tracking-wider">Hosted by</span>
-                                            <span className="text-sm font-bold">{activity?.host?.username}</span>
+
+                                        <motion.button whileTap={{ scale: 1.2, transition: { duration: 0.2 } }} onClick={hdlLikeClick} className="absolute bottom-4 right-4 p-2 rounded-full bg-white text-primary shadow-lg active:scale-90 transition-transform">
+                                            {haveLike ? <HeartIcon className="h-[28px] ml-auto" />
+                                                : <HeartLineIcon className="h-[28px] ml-auto text-neutral opacity-80" />}
+                                        </motion.button>
+
+                                    </div>
+
+                                    <div className="p-6 space-y-4">
+                                        <div>
+                                            <h3 className="font-headline font-bold text-2xl text-on-surface group-hover:text-primary transition-colors">
+                                                {activity.title}
+                                            </h3>
+                                        </div>
+
+                                        <div className="flex flex-col gap-2.5">
+                                            <div className="flex items-center gap-3 text-on-surface/60">
+                                                <CalendarIcon className='w-4.5 text-primary' />
+                                                <span className="text-sm font-medium">{format(new Date(activity.eventStartTime), 'eee, dd MMM yyyy • p')}</span>
+                                            </div>
+                                            <div className="flex items-center gap-3 text-on-surface/60">
+                                                <LocationIcon className='w-4.5 text-primary' />
+                                                <span className="text-sm font-medium">{activity.place?.placeName}</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="pt-4 flex items-center justify-between border-t border-surface-container-low">
+                                            <div className="flex items-center gap-3">
+                                                <div className="flex -space-x-3.5 items-center">
+                                                    {(activity.joinRequests?.filter(req => req.status === 'APPROVED') || [])
+                                                        .slice(0, 3)
+                                                        .map((attendee, i) => (
+                                                            <img
+                                                                key={attendee.id || i}
+                                                                src={attendee.user?.profileImg ? (attendee.user.profileImg.startsWith('http') ? attendee.user.profileImg : `http://localhost:3999${attendee.user.profileImg}`) : defaultProfile}
+                                                                className="w-10 h-10 rounded-full border-2 border-white object-cover shadow-sm"
+                                                                alt="attendee"
+                                                            />
+                                                        ))}
+                                                    {(() => {
+                                                        const approvedCount = activity.joinRequests?.filter(req => req.status === 'APPROVED').length || 0;
+
+                                                        if (approvedCount > 3) {
+                                                            return (
+                                                                <div className=" h-5 px-3 rounded-full bg-[#ffccb5] border-2 border-white flex items-center justify-center text-[11px] font-black text-primary shadow-sm">
+                                                                    +{approvedCount - 3}
+                                                                </div>
+                                                            );
+                                                        } else if (approvedCount > 0) {
+                                                            return (
+                                                                <div className=" px-3 h-5 rounded-full bg-[#ffccb5] border-2 border-white flex items-center justify-center text-[11px] font-black text-primary shadow-sm">
+                                                                    {approvedCount}
+                                                                </div>
+                                                            );
+                                                        } else {
+                                                            return (
+                                                                <span className="text-[10px] font-bold text-on-surface/30 uppercase pl-2 leading-none">
+                                                                    No attendees yet
+                                                                </span>
+                                                            );
+                                                        }
+                                                    })()}
+                                                </div>
+                                            </div>
+
+                                            <div className="flex flex-col items-end">
+                                                <span className="text-[10px] text-on-surface/40 font-bold uppercase tracking-wider">Hosted by</span>
+                                                <span className="text-sm font-bold text-primary">{activity.host?.username}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                          </NavLink> 
+                            </NavLink>
                         ))}
                     </div>
                 </section>
 
 
             </main>
-            <NotificationModal isOpen={notiOpen} onClose={()=>setNotiOpen(false)} />
+            <NotificationModal isOpen={notiOpen} onClose={() => setNotiOpen(false)} />
         </div>
     )
 }
