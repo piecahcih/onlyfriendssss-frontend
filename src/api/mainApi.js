@@ -77,4 +77,4 @@ export const deleteWishlist = (activityId) => mainApi.delete(`/wishlist/${activi
 
 
 
-export default mainApi;
+export default mainApi
