@@ -225,42 +225,46 @@ function ActivityDetails() {
 
         {/* Participants */}
         <div className="bg-white p-6 rounded-[30px] shadow-sm border border-primary/5 space-y-4">
-            <div className="flex items-center justify-between">
-                <div className="flex items-baseline gap-2">
-                    <span className="text-lg font-black text-on-surface">
-                         {currentActivity._count?.attendees || 0}/{currentActivity.maxParticipants} Will go
-                    </span>
-                    <span className="text-sm font-bold text-primary">• {spotsLeft > 0 ? `${spotsLeft} spots left` : "Full"}</span>
-                </div>
-                <button className="text-primary font-bold text-xs hover:underline transition-all">See All</button>
+          <div className="flex items-center justify-between">
+            <div className="flex items-baseline gap-2">
+              <span className="text-lg font-black text-on-surface">
+                {attendeesCount}/{maxParticipants > 0 ? maxParticipants : "∞"} Will go
+              </span>
+              <span className="text-sm font-bold text-primary">
+                • {maxParticipants > 0
+                  ? (spotsLeft > 0 ? `${spotsLeft} spots left` : "Full")
+                  : "Unlimited"}
+              </span>
             </div>
+            <button className="text-primary font-bold text-xs hover:underline transition-all">See All</button>
+          </div>
 
-            <div className="flex items-center gap-4 overflow-x-auto pb-2 scrollbar-hide">
-                <button className="shrink-0 w-12 h-12 rounded-full border-2 border-dashed border-primary/30 flex items-center justify-center text-primary text-2xl font-light hover:bg-primary/5 active:scale-95 transition-all">
-                    +
-                </button>
-                 {currentActivity.attendees?.map((item, idx) => (
-                    <div key={idx} className="shrink-0 text-center space-y-1">
-                        <div className="relative">
-                            <img 
-                                src={item.user?.profileImg || defaultProfile} 
-                                className="w-12 h-12 rounded-full border-2 border-white shadow-sm object-cover" 
-                                alt="avatar" 
-                            />
-                        </div>
-                        <p className="text-[10px] font-bold text-on-surface/60 max-w-[48px] truncate">
-                            {item.user?.username}
-                        </p>
-                    </div>
-                ))}
-                {/* Fallback mock attendees if list is empty for UI testing */}
-                {/* {(!activity.attendees || activity.attendees.length === 0) && [...Array(3)].map((_, i) => (
-                    <div key={i} className="shrink-0 text-center space-y-1 opacity-50">
-                        <img src={defaultProfile} className="w-12 h-12 rounded-full border-2 border-white shadow-sm object-cover" alt="mock" />
-                        <p className="text-[10px] font-bold text-on-surface/40">User {i+1}</p>
-                    </div>
-                ))} */}
-            </div>
+          <div className="flex items-center gap-4 overflow-x-auto pb-2 scrollbar-hide">
+            <button className="shrink-0 w-12 h-12 rounded-full border-2 border-dashed border-primary/30 flex items-center justify-center text-primary text-2xl font-light hover:bg-primary/5 active:scale-95 transition-all">
+              +
+            </button>
+            {approvedAttendees.map((item, idx) => (
+              <div key={idx} className="shrink-0 text-center space-y-1">
+                <div className="relative">
+                  <img
+                    src={getFullImgPath(item.user?.profileImg)}
+                    className="w-12 h-12 rounded-full border-2 border-white shadow-sm object-cover"
+                    alt="avatar"
+                  />
+                </div>
+                <p className="text-[10px] font-bold text-on-surface/60 max-w-[48px] truncate">
+                  {item.user?.username || "User"}
+                </p>
+              </div>
+            ))}
+
+            {attendeesCount === 0 && (
+              <span className="text-[10px] font-bold text-on-surface/30 uppercase pl-2">
+                Be the first to join
+              </span>
+            )}
+
+          </div>
         </div>
       </main>
 
