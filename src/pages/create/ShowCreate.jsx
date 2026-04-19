@@ -16,10 +16,30 @@ function ShowCreate() {
     }
     
     const creatingActivity = useActivityStore(st=>st.creatingActivity)
+    // console.log('creatingActivity', creatingActivity)
+
+
     const hdlCreateActivity = async (e) => {
       e.preventDefault()
-      console.log('creatingActivity', creatingActivity)
-      await useActivityStore.getState().createActivity(creatingActivity)
+
+      const formData = new FormData();
+
+      formData.append("title", creatingActivity.title);
+      formData.append("description", creatingActivity.description);
+      formData.append("category", creatingActivity.category);
+      formData.append("placeId", creatingActivity.placeId);
+      formData.append("isPublic", creatingActivity.isPublic);
+      formData.append("eventStartTime", creatingActivity.eventStartTime.toISOString());
+
+      if (creatingActivity.eventEndTime) {
+          formData.append("eventEndTime", creatingActivity.eventEndTime.toISOString());
+      }
+
+      if (creatingActivity.coverPhoto) {
+          formData.append("coverPhoto", creatingActivity.coverPhoto); 
+      }
+
+      await useActivityStore.getState().createActivity(formData)
       
       navigate('/')
       Swal.fire({
@@ -94,7 +114,7 @@ function ShowCreate() {
 
           {/*Image*/}
           <div className="w-full h-40 rounded-2xl overflow-hidden bg-base-300 relative border-2 border-[#e09c99]/20">
-            <img src={creatingActivity.coverPhoto} alt="activityIMG"  />
+            <img src={creatingActivity.blob} alt="activityIMG" className='w-full object-contain' />
           </div>
 
           {/* Activity Name */}
@@ -107,7 +127,7 @@ function ShowCreate() {
           {/* Date & Time Row */}
           <h3 className="">
             <span className=" text-xl">📅</span> {format(new Date(creatingActivity.eventStartTime), 'eee, dd MMM yyyy, HH:mm')}
-            {format(new Date(creatingActivity.eventStartTime), '- eee, dd MMM yyyy, HH:mm')}
+            {format(new Date(creatingActivity.eventEndTime), '- eee, dd MMM yyyy, HH:mm')}
           </h3>
           
 

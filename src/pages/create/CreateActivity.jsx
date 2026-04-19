@@ -43,28 +43,48 @@ function CreateActivity() {
     setDescription(value)
   }
 
-  const user = useUserStore((st) => st.user);
+  const [file, setFile] = useState(null)
+  const [preview, setPreview] = useState(null)
+
+  const hdlActivityImage = (e) => {
+    const selectFile = e.target.files[0]
+    if (selectFile) {
+      if (preview) {
+        URL.revokeObjectURL(preview)
+      }
+      const newPreviewUrl = URL.createObjectURL(selectFile);
+
+    setFile(selectFile)
+    // console.log('selectFile', selectFile)
+    // console.log('File', file)
+    setPreview(newPreviewUrl)
+    // console.log('newPreviewUrl', newPreviewUrl)
+    }
+  }
+
+  const [eventStartTime, setEventStartTime] = useState("");
+  const [eventEndTime, setEventEndTime] = useState("");
+  const [hasEndTime, setHasEndTime] = useState(false);
+
+  // const user = useUserStore((st) => st.user);
   const Adata = {
-    hostId: user.id,
+    // hostId: user.id,
     isPublic: groupStatus,
-    coverPhoto:
-      "https:res.cloudinary.com/piecahcih/image/upload/v1774345102/1amannlIMG1_kf4hqs.webp",
+    coverPhoto: file,
     placeId: 1,
     title: title,
-    eventStartTime: new Date("2027-09-19T13:00:00"),
+    eventStartTime: new Date(eventStartTime),
+    ...(eventEndTime && { eventEndTime: new Date(eventEndTime) }),
     category: selectedCategory,
     description: description,
+    blob: preview
   };
 
-  // if(eventEndTime){
-  //   Adata.eventEndTime = eventEndTime
-  // }
-
-  // const { coverPhoto,category,title,description,eventStartTime,eventEndTime,placeId } = req.body
 
   const hdlPreCreateActivity = (e, Adata) => {
     e.preventDefault();
     useActivityStore.getState().setCreatingActivity(Adata);
+    // console.log('Adata', Adata)
 
     navigate("/create-showcreate");
   };
@@ -131,19 +151,23 @@ function CreateActivity() {
             </div>
           </div>
 
-          {/* Hero Section/Image Upload */}
+          {/* Image Upload */}
           <section className="relative group">
             <h3 className={lblTitleStyle}>Add Cover Photo</h3>
             <div className="w-full h-40 rounded-2xl overflow-hidden bg-base-300 relative">
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#fcdfd4]/50 backdrop-blur-sm transition-all group-hover:backdrop-blur-none">
-                <div
-                  onClick={() => document.getElementById("fileInput").click()}
-                  className="absolute inset-0 flex flex-col items-center justify-center border-2 border-[#e09c99]/20 rounded-2xl transition-opacity duration-300"
-                >
-                  <PhotoIcon className="text-white w-10 h-10" />
-                </div>
-                <input type="file" id="fileInput" className="hidden" />
-                {/* onChange={hdlFileChange} */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#e8dcd8]/50 backdrop-blur-sm transition-all group-hover:backdrop-blur-none">
+                {preview ? (
+                  <img src={preview} alt="preview image" className="w-full" />
+                ):(
+                  <div
+                    onClick={() => document.getElementById("fileInput").click()}
+                    className="absolute inset-0 flex flex-col items-center justify-center border-2 border-[#e09c99]/20 rounded-2xl transition-opacity duration-300"
+                  >
+                    <PhotoIcon className="text-white w-10 h-10" />
+                  </div>
+                )}
+
+                <input type="file" id="fileInput" className="hidden" onChange={hdlActivityImage} /> 
               </div>
             </div>
           </section>
@@ -151,7 +175,6 @@ function CreateActivity() {
           {/* Location */}
           <div>
             <label className={lblTitleStyle}>Location</label>
-
             <button
               type="button"
               onClick={() => setIsMapOpen(true)}
@@ -178,10 +201,42 @@ function CreateActivity() {
                   </span>
                   <input
                     className="w-full pl-14 pr-4 py-3 rounded-full bg-white border-none ring-2 ring-[#e09c99]/20 focus:ring-[#a83100] transition-all outline-none text-neutral text-sm"
-                    placeholder="Oct 24, 2023"
                     type="datetime-local"
+                    value={eventStartTime}
+                    onChange={(e) => setEventStartTime(e.target.value) }
                   />
             </div>
+
+            {!hasEndTime ? (
+              <button type='button' onClick={()=>setHasEndTime(true)} 
+                className="w-full flex justify-end px-2.5 py-1 text-[12px] text-[#a83100] opacity-60 hover:opacity-100">
+                + Add End Date & Time
+              </button>
+            ):(
+              <div className="">
+                {/* <label className={lblTitleStyle}>End Date & Time</label> */}
+                <div className="relative mt-2">
+                  <span className="absolute left-5 top-1/2 -translate-y-1/2 text-xl pointer-events-none">🏁</span>
+                  <input
+                    type="datetime-local"
+                    value={eventEndTime}
+                    onChange={(e) => setEventEndTime(e.target.value)}
+                    min={eventStartTime} 
+                    className="w-full pl-14 pr-4 py-3 rounded-full bg-white border-none ring-2 ring-[#e09c99]/20 focus:ring-[#a83100] transition-all outline-none text-neutral text-sm"
+                  />
+                </div>
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      setHasEndTime(false)
+                      setEventEndTime("")
+                    }}
+                    className="w-full px-2.5 py-1 flex justify-end text-[12px] text-[#a83100] opacity-60 hover:opacity-100"
+                  >
+                    Remove ✕
+                  </button>
+              </div>              
+            )}
           </div>
 
 

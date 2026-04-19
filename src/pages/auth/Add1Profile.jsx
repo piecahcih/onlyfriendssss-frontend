@@ -36,7 +36,7 @@ function Add1Profile() {
       const newPreviewUrl = URL.createObjectURL(selectFile);
 
       setFile(selectFile)
-      setPreview(newPreviewUrl)
+    setPreview(newPreviewUrl)
     }
   }
 

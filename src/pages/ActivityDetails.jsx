@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { LeftIcon, LocationIcon, CalendarIcon } from "../icons";
 import useActivityStore from "../stores/activitiesStore";
-import useUserStore from "../stores/userStore";
-import mainApi from "../api/mainApi";
+import useUserStore from "../stores/userStore"; 
+import mainApi from "../api/mainApi"; 
 import { format } from "date-fns";
 import defaultProfile from "../assets/default-profilepic.jpg";
 
@@ -15,24 +15,32 @@ function ActivityDetails() {
   // const activities = useActivityStore((st) => st.activities);
   const currentActivity = useActivityStore((st) => st.currentActivity);
   const getActivityById = useActivityStore((st) => st.getActivityById);
-  const storeUser = useUserStore((state) => state.user);
-
+  const storeUser = useUserStore((state) => state.user); 
+  
   const [loading, setLoading] = useState(true);
   const [loadingJoin, setLoadingJoin] = useState(false);
 
+  const categoryList = [
+    { id: "HEALTH", title: "Health & Wellness", icon: "💪" },
+    { id: "ENTERTAINMENT", title: "Chill & Hangout", icon: "🎭" },
+    { id: "ART", title: "Creative", icon: "🎨" },
+    { id: "FOOD", title: "Foodies", icon: "🍱" },
+    { id: "TRAVEL", title: "Travel", icon: "✈️" },
+  ];
 
+  const matchedCategory = categoryList.find((cat) => cat.id === currentActivity.category)
 
   useEffect(() => {
-    if (actid) {
+     if (actid) {
       console.log(currentActivity)
-      const loadData = async () => {
-        setLoading(true);
-        await getActivityById(actid);
-        setLoading(false);
-      };
-      loadData();
-    }
-  }, [actid, getActivityById]);
+       const loadData = async () => {
+         setLoading(true);
+         await getActivityById(actid);
+         setLoading(false);
+       };
+       loadData();
+     }
+   }, [actid, getActivityById]);
 
   const hdlGoBack = () => {
     navigate('/activities');
@@ -105,6 +113,7 @@ function ActivityDetails() {
     }
   }
 
+
   return (
     <div className="min-h-screen bg-base-200 text-neutral pb-28">
       {/* TopAppBar */}
@@ -116,51 +125,50 @@ function ActivityDetails() {
         >
           <LeftIcon className="w-8 h-8" />
         </button>
-
-        <button className="text-2xl font-bold text-neutral">•••</button>
-
+        
+             <button className="text-2xl font-bold text-neutral">•••</button>
+        
       </header>
 
       <main className="max-w-2xl mx-auto px-6 space-y-6">
         {/* Tags */}
         <div className="flex flex-wrap gap-2.5">
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white shadow-sm text-xs font-bold">
-
-            {currentActivity.isPublic ? " 🌎 Public  " : " 🔒 Private "}
-          </div>
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white shadow-sm text-xs font-bold">
-            <span className="text-lg">📍</span>
-            1km
-          </div>
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 text-primary shadow-sm text-xs font-bold border border-primary/20">
-            <span>{currentActivity.categoryIcon || "✨"}</span>
-            {currentActivity.category}
-          </div>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white shadow-sm text-xs font-bold">
+                
+                {currentActivity.isPublic ? " 🌎 Public  " : " 🔒 Private "}
+            </div>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white shadow-sm text-xs font-bold">
+                <span className="text-lg">📍</span>
+                1km
+            </div>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 text-primary shadow-sm text-xs font-bold border border-primary/20">
+                <span>{matchedCategory.icon}</span>
+                 {currentActivity.category}
+            </div>
         </div>
         {/* Cover Photo */}
         <div className="relative w-full h-40 rounded-[15px] overflow-hidden shadow-lg">
-          <img
-            src={currentActivity.coverPhoto}
-            alt={currentActivity.title}
-            className="w-full h-full object-cover"
-          />
+            <img 
+                src={currentActivity.coverPhoto}
+                alt={currentActivity.title}
+                className="w-full h-full object-cover"
+            />
         </div>
 
-
+        
 
         {/* Title & Host */}
-        <div className="space-y-4">
+        <div className="space-y-2">
           <h1 className="text-3xl font-black text-on-surface leading-tight">
             {currentActivity.title}
           </h1>
-          {/* <p className="text-on-surface/60 font-medium">{activity.place?.placeName}</p> */}
 
           <div>
             <div className="flex items-center gap-3">
               <div className="relative">
                 <img
-                  src={currentActivity.host?.profileImg || defaultProfile}
-                  alt="host"
+                   src={currentActivity.host?.profileImg || defaultProfile}
+                   alt="host"
                   className="w-12 h-12 rounded-full object-cover border-2 border-primary/20"
                 />
               </div>
@@ -169,59 +177,73 @@ function ActivityDetails() {
                 <h4 className="font-bold text-sm">{currentActivity.host?.username}</h4>
               </div>
             </div>
-
+           
           </div>
+          {/* Description */}
+              <p className="text-on-surface/80 leading-relaxed font-medium">
+                  {currentActivity.description || "No description provided."}
+              </p>
+
+              <p className="text-[11px] text-on-surface/30 font-light uppercase tracking-wider">
+                  Created {format(new Date(currentActivity.createdAt), 'dd MMM yyyy')}
+              </p>
         </div>
 
-        {/* Description */}
-        <div className="space-y-2">
-          <p className="text-on-surface/80 leading-relaxed font-medium">
-            {currentActivity.description || "No description provided."}
-          </p>
-          <p className="text-[11px] text-on-surface/30 font-bold uppercase tracking-wider pt-2">
-            Created {format(new Date(currentActivity.createdAt || Date.now()), 'dd MMM yyyy')}
-          </p>
-        </div>
 
         {/* Info Cards */}
         <div className="grid grid-cols-1 gap-4">
-          {/* Time Card */}
-          <div className="flex items-center gap-4 bg-white p-5 rounded-[30px] shadow-sm border border-primary/5">
-            <div className="p-3 bg-primary/10 rounded-2xl text-primary">
-              <CalendarIcon className="w-7 h-7" />
+            {/* Time Card */}
+            <div className="flex items-center gap-4 bg-white p-5 rounded-[30px] shadow-sm border border-primary/5">
+                <div className="p-3 bg-primary/10 rounded-2xl text-primary">
+                    <CalendarIcon className="w-7 h-7" />
+                </div>
+                <div className="flex items-center gap-6">
+                  <div>
+                      <h5 className="font-bold text-sm text-on-surface">
+                          {currentActivity.eventStartTime ? format(new Date(currentActivity.eventStartTime), 'eee, dd MMM yyyy') : '-'}
+                      </h5>
+                      <p className="text-xs text-on-surface/50 font-medium">
+                          {currentActivity.eventStartTime ? format(new Date(currentActivity.eventStartTime), 'p') : '-'}
+                      </p>
+                  </div>
+                  {currentActivity.eventEndTime && (
+                    <>
+                      <p>-</p>
+                      <div>
+                          <h5 className="font-bold text-sm text-on-surface">
+                              {format(new Date(currentActivity.eventEndTime), 'eee, dd MMM yyyy')}
+                          </h5>
+                          <p className="text-xs text-on-surface/50 font-medium">
+                              {format(new Date(currentActivity.eventEndTime), 'p')}
+                          </p>
+                      </div>
+                    </>
+                  )}
+                </div>
             </div>
-            <div className="flex-1">
-              <h5 className="font-bold text-sm text-on-surface">
-                {currentActivity.eventStartTime ? format(new Date(currentActivity.eventStartTime), 'eee, dd MMM yyyy') : '-'}
-              </h5>
-              <p className="text-xs text-on-surface/50 font-medium">
-                {currentActivity.eventStartTime ? format(new Date(currentActivity.eventStartTime), 'p') : '-'}
-              </p>
-            </div>
-          </div>
 
-          {/* Location Card */}
-          <div className="flex items-center gap-4 bg-white p-5 rounded-[30px] shadow-sm border border-primary/5">
-            <div className="p-3 bg-primary/10 rounded-2xl text-primary">
-              <LocationIcon className="w-7 h-7" />
+            {/* Location Card */}
+            <div className="flex items-center gap-4 bg-white p-5 rounded-[30px] shadow-sm border border-primary/5">
+                <div className="p-3 bg-primary/10 rounded-2xl text-primary">
+                    <LocationIcon className="w-7 h-7" />
+                </div>
+                <div className="flex-1 overflow-hidden">
+                    <h5 className="font-bold text-sm text-on-surface truncate">
+                        {currentActivity.place?.placeName}
+                    </h5>
+                    <p className="text-xs text-on-surface/50 font-medium truncate mb-1">
+                        {currentActivity.place?.address || "See Map"}
+                    </p>
+                    <a 
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(currentActivity.place?.placeName)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary text-[11px] font-bold hover:underline"
+                    >
+                        Open with Google Maps
+                    </a>
+                </div>
             </div>
-            <div className="flex-1 overflow-hidden">
-              <h5 className="font-bold text-sm text-on-surface truncate">
-                {currentActivity.place?.placeName}
-              </h5>
-              <p className="text-xs text-on-surface/50 font-medium truncate mb-1">
-                {currentActivity.place?.address || "See Map"}
-              </p>
-              <a
-                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(currentActivity.place?.placeName)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary text-[11px] font-bold hover:underline"
-              >
-                Open with Google Maps
-              </a>
-            </div>
-          </div>
         </div>
 
         {/* Participants */}
@@ -272,28 +294,28 @@ function ActivityDetails() {
       {/* Action Footer */}
       <div className="fixed bottom-0 left-0 w-full p-6 z-40 bg-linear-to-t from-base-200 via-base-200 to-transparent">
         <button onClick={hdlJoin}
-          disabled={loadingJoin || isJoined || isFull}
-          className={`w-full max-w-2xl flex items-center justify-center gap-3 px-8 py-4 rounded-[25px] font-black text-xl  active:scale-95 transition-all border-b-4
+        disabled={loadingJoin || isJoined || isFull}
+        className={`w-full max-w-2xl flex items-center justify-center gap-3 px-8 py-4 rounded-[25px] font-black text-xl  active:scale-95 transition-all border-b-4
           ${isJoined
-              ? "bg-success text-white border-success-content cursor-default opacity-90 shadow-none"
-              : isFull
-                ? "bg-neutral text-white border-neutral-content opacity-50 cursor-not-allowed"
-                : "bg-primary text-white border-primary-focus hover:shadow-[0_12px_32px_rgba(252,81,0,0.4)] hover:-translate-y-0.5"
-            }`}
-        >
-          {loadingJoin ? (
-            <span className="loading loading-spinner"></span>
-          ) : isJoined ? (
-            <>
-              <span className="text-2xl">✔</span> Joined
-            </>
-          ) : isFull ? (
-            "Full"
-          ) : (
-            <>
-              <span className="text-2xl">👋</span> JOIN
-            </>
-          )}
+            ? "bg-linear-to-r from-success to-secondary text-white"
+            : isFull
+              ? "bg-neutral text-white border-neutral-content opacity-50 cursor-not-allowed"
+              : "bg-linear-to-r from-primary to-secondary text-white border-primary-focus hover:scale-[1.05]"
+          }`}
+      >
+        {loadingJoin ? (
+          <span className="loading loading-spinner"></span>
+        ) : isJoined ? (
+          <>
+            <span className="text-2xl">✔</span> JOINED
+         </>
+        ) : isFull ? (
+          "Full"
+        ) : (
+          <>
+            <span className="text-2xl">👋</span> JOIN
+          </>
+        )}
         </button>
       </div>
     </div>
