@@ -23,33 +23,37 @@ function ShowCreate() {
     // console.log('creatingActivity', creatingActivity)
 
 
-    const hdlCreateActivity = async (e) => {
+const hdlCreateActivity = async (e) => {
       e.preventDefault()
       setIsCreating(true)
       try {
         const formData = new FormData();
-  
+
         formData.append("title", creatingActivity.title);
         formData.append("description", creatingActivity.description);
         formData.append("category", creatingActivity.category);
-        formData.append("maxParticipants", creatingActivity.maxParticipants);
+        formData.append("placeId", creatingActivity.placeId);
         formData.append("placeName", creatingActivity.placeName || "");
         formData.append("address", creatingActivity.address || "");
         formData.append("latitude", creatingActivity.latitude);
         formData.append("longitude", creatingActivity.longitude);
         formData.append("isPublic", creatingActivity.isPublic);
         formData.append("eventStartTime", new Date(creatingActivity.eventStartTime).toISOString());
-  
+
         if (creatingActivity.eventEndTime) {
-            formData.append("eventStartTime", new Date(creatingActivity.eventStartTime).toISOString());
+            formData.append("eventEndTime", new Date(creatingActivity.eventEndTime).toISOString());
         }
-  
+
+        if (creatingActivity.maxParticipants) {
+            formData.append("maxParticipants", creatingActivity.maxParticipants);
+        }
+
         if (creatingActivity.coverPhoto) {
             formData.append("coverPhoto", creatingActivity.coverPhoto); 
         }
-  
+
         await useActivityStore.getState().createActivity(formData)
-        
+
         navigate('/')
         Swal.fire({
           title: '<h2 class="text-[24px] font-bold text-neutral leading-tight">Activity Created Successfully</h2>',
