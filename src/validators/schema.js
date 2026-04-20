@@ -13,15 +13,6 @@ export const registerSchema = z
       .refine((val) => emailRegex.test(val), "Email is required"),
     password: z.string().min(6, "Password must be morethan 6 characters"),
     confirmPassword: z.string().min(2, "Confirm password is required"),
-    // firstName: z
-    //   .string()
-    //   .trim()
-    //   .min(3, "firstname must be at least 3 characters"),
-    // lastName: z
-    //   .string()
-    //   .trim()
-    //   .min(3, "lasttname must be at least 3 characters"),
-    // role: z.enum(["USER", "ADMIN"]).optional().default("USER"),
   })
   .refine((inp) => inp.password === inp.confirmPassword, {
     message: "Password do not match",
@@ -38,6 +29,29 @@ export const loginSchema = z
       .refine((val) => emailRegex.test(val), {
         message: "Email invalid",
       }),
-    password: z.string().min(3, "Password must be least 3 characters"),
+    password: z.string().min(6, "Password must be least 6 characters"),
     rememberMe: z.boolean().optional()
   })
+
+export const addProfile = z.object({
+  username: z
+    .string()
+    .trim()
+    .min(4, "Username must be at least 4 characters"),
+  firstName: z
+    .string()
+    .trim()
+    .min(3, "Firstname must be at least 3 characters"),
+  lastName: z
+    .string()
+    .trim()
+    .min(3, "Lastname must be at least 3 characters"),
+  gender: z
+    .enum(["MALE", "FEMALE", "OTHER"], {
+      errorMap: () => ({ message: "Please select your gender" }),
+    }),
+  bio: z
+    .string()
+    .max(200, "Bio must not exceed 200 characters")
+    .optional(),
+})

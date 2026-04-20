@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from 'react-router'
-import { AppleLogo, FacebookLogo, GoogleLogo } from '../../icons'
+import { AppleLogo, EyeIcon, EyeSlashIcon, FacebookLogo, GoogleLogo } from '../../icons'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { registerSchema } from '../../validators/schema'
@@ -8,31 +8,40 @@ import { signInWithPopup } from 'firebase/auth'
 import { toast } from 'react-toastify'
 import { googleProvider, auth } from '../../utils/firebase'
 import useUserStore from '../../stores/userStore'
+import { useState } from 'react'
 
 function Register() {
   const loginWithGoogle = useUserStore((state) => state.loginWithGoogle)
+  const setRegisteringUser = useUserStore((state) => state.setRegisteringUser)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+  const navigate = useNavigate()
 
   const { register, handleSubmit, formState } = useForm({
     resolver: zodResolver(registerSchema),
     mode: "onSubmit",
     defaultValues: {
-      email: '', password: '', confirmPassword: ''
+      email: '',
+      password: '',
+      confirmPassword: ''
     }
   })
   const { errors, isSubmitting, isValid } = formState
-
-  const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     try {
       await new Promise(resolve => setTimeout(resolve, 2000))
       const resp = await registerApi(data)
-      const newUser = resp.data.user
-      // console.log(resp)
-      toast.success('Register Success')
-      navigate('/add-profile', { state: { newUser } }) // ส่งข้อมูล newUser ไปด้วย
+      setRegisteringUser(resp.data.user)
+      // console.log(resp.data.message)
+      toast.success(resp.data.message)
+      setTimeout(() => {
+        navigate('/add-profile')
+      }, 1500)
     } catch (error) {
       const errMsg = error.response?.data.message || error.message
+      console.log(error.response?.data)
       toast.error(errMsg)
     }
   }
@@ -49,7 +58,7 @@ function Register() {
       navigate('/')
     } catch (error) {
       console.error('Google Login Error', error)
-      toast.error("เกิดข้อผิดพลาดในการเข้าสู่ระบบด้วย Google")
+      toast.error("Google login failed. Please try again.")
     }
   }
 
@@ -66,19 +75,50 @@ function Register() {
             <div className="flex flex-col gap-2.5">
               <div className="flex flex-col gap-1.5">
                 <h3 className='bai-jamjuree-semibold'>Email</h3>
-                <input type="text" placeholder="Email" {...register('email')}
+                <input type="email" placeholder="Email" {...register('email')}
                   className={inpStyle} />
+                <p className="text-sm text-error">{errors.email?.message}</p>
+
               </div>
-              <div className="flex flex-col gap-1.5">
+              <div className="relative flex flex-col gap-1.5">
                 <h3 className='bai-jamjuree-semibold'>Password</h3>
-                <input type="password" placeholder="Password" {...register('password')}
-                  className={inpStyle} />
+
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  {...register('password')}
+                  className={`${inpStyle} pr-12`}
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-2 top-[50px] -translate-y-1/2 w-10 h-10 flex items-center justify-center cursor-pointer text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  {showPassword ? (<EyeIcon className="w-5 h-5" />) : (<EyeSlashIcon className="w-5 h-5" />)}
+                </button>
+                <p className="text-sm text-error">{errors.password?.message}</p>
               </div>
-              <div className="flex flex-col gap-1.5">
+              <div className="relative flex flex-col gap-1.5">
                 <h3 className='bai-jamjuree-semibold'>Confirm Password</h3>
-                <input type="password" placeholder="Confirm Password" {...register('confirmPassword')}
-                  className={inpStyle} />
+
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="Confirm Password"
+                  {...register('confirmPassword')}
+                  className={`${inpStyle} pr-12`}
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-2 top-[50px] -translate-y-1/2 w-10 h-10 flex items-center justify-center cursor-pointer text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  {showConfirmPassword ? (<EyeIcon className="w-5 h-5" />) : (<EyeSlashIcon className="w-5 h-5" />)}
+                </button>
+                <p className="text-sm text-error">{errors.confirmPassword?.message}</p>
               </div>
+
             </div>
 
             <button

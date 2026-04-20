@@ -7,6 +7,7 @@ import { format } from 'date-fns'
 import NotificationModal from '../components/NotificationModal';
 import { NavLink } from 'react-router';
 import { motion } from 'framer-motion'
+import Wishlist from '../components/profile/Wishlist';
 
 function Activities() {
     const [selectedCategory, setSelectedCategory] = useState("all");
@@ -178,22 +179,7 @@ function Activities() {
                             <NavLink to={`/activity-details?actid=${activity.id}`} key={activity.id} className="block" >
                                 <div className="bg-white rounded-[35px] overflow-hidden shadow-[0_12px_32px_rgba(78,33,32,0.04)] hover:shadow-[0_12px_48px_rgba(78,33,32,0.08)] transition-all duration-300">
 
-                                    <div className="relative h-50 w-full overflow-hidden">
-                                        <img
-                                            src={activity?.coverPhoto}
-                                            alt={activity.title}
-                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                        />
-                                        <div className="absolute top-4 left-4 flex gap-2">
-                                            <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-[12px] font-bold text-on-surface">
-                                                <span>{activity.isPublic ? "🌎" : "🔒"}</span>
-                                                {activity.isPublic ? "Public" : "Private"}
-                                            </div>
-                                            <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-primary/90 backdrop-blur-sm text-[12px] font-bold text-white">
-                                                <span>{activity.categoryIcon}</span>
-                                                {activity.category}
-                                            </div>
-                                        </div>
+                                    <Wishlist activityId={activity.id} />
 
                                         <motion.button whileTap={{ scale: 1.2, transition: { duration: 0.2 } }} onClick={hdlLikeClick} className="absolute bottom-4 right-4 p-2 rounded-full bg-white text-primary shadow-lg active:scale-90 transition-transform">
                                             {haveLike ? <HeartIcon className="h-[28px] ml-auto" />
