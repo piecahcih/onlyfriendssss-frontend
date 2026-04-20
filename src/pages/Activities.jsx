@@ -1,22 +1,3 @@
-<<<<<<< HEAD
-import { useEffect, useState } from "react";
-import {
-  SearchIcon,
-  MicIcon,
-  Notification,
-  CalendarIcon,
-  LocationIcon,
-  HeartIcon,
-  HeartLineIcon,
-} from "../icons";
-import mockActImg from "../assets/mockActImg.jpg";
-import defaultProfile from "../assets/default-profilepic.jpg";
-import useActivityStore from "../stores/activitiesStore";
-import { format } from "date-fns";
-import NotificationModal from "../components/NotificationModal";
-import { NavLink } from "react-router";
-import { motion } from "framer-motion";
-=======
 import { useEffect, useState } from 'react'
 import { SearchIcon, MicIcon, Notification, CalendarIcon, LocationIcon } from '../icons'
 import defaultProfile from '../assets/default-profilepic.jpg'
@@ -25,8 +6,6 @@ import { format } from 'date-fns'
 import NotificationModal from '../components/NotificationModal';
 import { NavLink } from 'react-router';
 import Wishlist from '../components/profile/Wishlist';
-
->>>>>>> satu
 
 function Activities() {
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -70,36 +49,6 @@ function Activities() {
     e.stopPropagation();
   };
 
-<<<<<<< HEAD
-  return (
-    <div className="min-h-screen bg-base-200 pb-24">
-      <main className="pt-8 px-6 max-w-2xl mx-auto">
-        {/* Search Bar Section */}
-        <div className="flex items-center justify-between gap-2">
-          <div className="relative group">
-            <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-              <SearchIcon className="w-5 text-on-surface/40" />
-            </div>
-            <input
-              className="w-full bg-white border-none outline-none ring-2 ring-[#e09c99]/20 focus:ring-primary py-3 pl-14 pr-14 rounded-full font-body text-lg shadow-[0_4px_24px_rgba(78,33,32,0.04)] transition-all placeholder:text-on-surface/40"
-              placeholder="Find your vibe..."
-              type="text"
-            />
-            <div className="absolute inset-y-0 right-5 flex items-center pointer-events-none">
-              <MicIcon className="w-6 text-on-surface/40" />
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={() => setNotiOpen(true)}
-            className="relative p-4 w-fit h rounded-full bg-white ring-2 ring-[#e09c99]/20 shadow-sm active:scale-95 transition-all"
-          >
-            <Notification className="w-6 h-6" />
-            <span className="absolute top-2 right-2 w-5 h-5 bg-primary flex items-center justify-center text-[10px] font-bold text-white border-2 border-white rounded-full">
-              1
-            </span>
-          </button>
-=======
 
 
     return (
@@ -306,7 +255,6 @@ function Activities() {
 
             </main>
             <NotificationModal isOpen={notiOpen} onClose={() => setNotiOpen(false)} />
->>>>>>> satu
         </div>
 
         {/* Categories Horizontal Scroll */}
@@ -375,7 +323,7 @@ function Activities() {
                         <HeartLineIcon className="h-[28px] ml-auto text-neutral opacity-80" />
                       )}
                     </motion.button>
-                  </div>
+                                    </div>
 
                   <div className="p-6 space-y-4">
                     <div>
