@@ -57,6 +57,9 @@ function Activities() {
             act.place?.placeName?.toLowerCase().includes(searchText.toLowerCase())
         );
 
+    const [notiOpen, setNotiOpen] = useState(false)
+
+
 
 
     return (
