@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import useActivityStore from "../../stores/activitiesStore";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import { format } from "date-fns";
 import defaultProfile from '../../assets/default-profilepic.jpg'
 import { CalendarIcon, LocationIcon } from "../../icons";
@@ -9,6 +9,7 @@ import Wishlist from "./Wishlist";
 import WishlistAll from "./WishlistAll";
 
 function MyActivityTab() {
+    const navigate = useNavigate()
   const tabs = ["Joined", "Created", "Memory", "❤︎"];
   const [activeTab, setActiveTab] = useState("Joined");
 
@@ -33,10 +34,11 @@ function MyActivityTab() {
     // console.log('activities', activities)
   }, [activeTab])
 
-  const [haveLike, setHaveLike] = useState(false)
-  const hdlLikeClick = async (e) => {
+
+  const hdlEdit = async (e,actid) => {
     e.preventDefault()
     e.stopPropagation()
+    navigate(`/edit-activity-details?actid=${actid}`)
   }
 
   return (
@@ -251,7 +253,7 @@ function MyActivityTab() {
                                                     </div>
 
                                                     <div className="flex flex-col items-end">
-                                                            <button type="button" onClick={'love'}>Edit</button>
+                                                            <button type="button" onClick={(e)=>hdlEdit(e,activity.id)}>Edit</button>
                                                     </div>
                                                 </div>
                       </div>
