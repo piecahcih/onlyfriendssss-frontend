@@ -66,6 +66,7 @@ function CreateActivity() {
   const [eventStartTime, setEventStartTime] = useState("");
   const [eventEndTime, setEventEndTime] = useState("");
   const [hasEndTime, setHasEndTime] = useState(false);
+  const [maxParticipants, setMaxParticipants] = useState(0);
 
   // const user = useUserStore((st) => st.user);
   const Adata = {
@@ -80,6 +81,7 @@ function CreateActivity() {
     title: title,
     eventStartTime: new Date(eventStartTime),
     ...(eventEndTime && { eventEndTime: new Date(eventEndTime) }),
+    ...(maxParticipants && { maxParticipants: maxParticipants }),
     category: selectedCategory,
     description: description,
     blob: preview
@@ -260,6 +262,19 @@ function CreateActivity() {
             )}
           </div>
 
+          {/* maxParticipants */}
+          <div className="flex items-center gap-4">
+            <label className={lblTitleStyle}>Max Participant <span className="font-light">(optional)</span></label>
+              <input
+                className="w-11 h-8 pl-4 rounded-full bg-white border-none ring-2 ring-[#e09c99]/20 focus:ring-[#a83100] focus:ring-2 transition-all outline-none text-neutral placeholder:text-[#834c4b]/40"
+                placeholder="5"
+                type="text"
+                value= {maxParticipants}
+                onChange={(e)=>setMaxParticipants(e.target.value)}
+              />
+              {/* <p>{maxParticipants}</p>
+              <p>{typeof maxParticipants}</p> */}
+          </div>
 
 
 

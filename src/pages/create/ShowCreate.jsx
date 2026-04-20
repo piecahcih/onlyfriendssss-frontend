@@ -60,8 +60,7 @@ function ShowCreate() {
         
       } catch (error) {
         setIsCreating(false)
-        const errMsg = error.response?.data?.message || "Create activity error"
-        console.error(errMsg)
+        console.error(error)
       }
 
     }
