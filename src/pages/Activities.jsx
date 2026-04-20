@@ -49,8 +49,6 @@ function Activities() {
     e.stopPropagation();
   };
 
-
-
     return (
         <div className="min-h-screen bg-base-200 pb-24">
             <main className="pt-8 px-6 max-w-2xl mx-auto">
@@ -103,7 +101,7 @@ function Activities() {
                                         </div>
                                         {locationSuggestions.map((placeName) => (
                                             <div
-                                                key={`loc-${placeName.id}`} 
+                                                key={`loc-${placeName.id}`}
                                                 onClick={() => {
                                                     setSearchText(placeName);
                                                     setSuggestOpen(false);
@@ -128,8 +126,6 @@ function Activities() {
                         <span className="absolute top-2 right-2 w-5 h-5 bg-primary flex items-center justify-center text-[10px] font-bold text-white border-2 border-white rounded-full">1</span>
                     </button>
                 </div>
-
-
 
                 {/* Categories Horizontal Scroll */}
                 <section className="space-y-4 my-4">
@@ -251,7 +247,6 @@ function Activities() {
                         ))}
                     </div>
                 </section>
-
 
             </main>
             <NotificationModal isOpen={notiOpen} onClose={() => setNotiOpen(false)} />
