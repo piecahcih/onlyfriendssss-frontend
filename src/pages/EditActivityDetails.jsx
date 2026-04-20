@@ -3,7 +3,6 @@ import { useNavigate, useSearchParams } from "react-router";
 import { LeftIcon, LocationIcon, CalendarIcon } from "../icons";
 import useActivityStore from "../stores/activitiesStore";
 import useUserStore from "../stores/userStore"; 
-import mainApi from "../api/mainApi"; 
 import { format } from "date-fns";
 import defaultProfile from "../assets/default-profilepic.jpg";
 import { DeleteSwal } from "../components/swal/DeleteAlert";
@@ -93,8 +92,8 @@ function EditActivityDetails() {
   };
 
   const hdlDelete = () => {
-    console.log('mockdel')
-
+    useActivityStore.getState().deleteActivityById(actid)
+    navigate('/profile')
   };
 
   return (

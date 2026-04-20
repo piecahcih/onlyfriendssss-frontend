@@ -9,7 +9,7 @@ const useActivityStore = create(persist((set,get)=>({
   setCreatingActivity: (data) => {
     console.log('data:', data)
     set({ creatingActivity: data })
-  } , 
+  }, 
   getAllCurrentActivities: async () => {
     const res = await getAllCurrentActivitiesApi()
     set({ activities:res.data.activities })
@@ -74,8 +74,9 @@ const useActivityStore = create(persist((set,get)=>({
     set({ activities:res.data.activities })
   },
   deleteActivityById: async (activityid) => {
-    const res = await deleteActivityByIdApi(activityid)
-    return res
+    await deleteActivityByIdApi(activityid)
+    const res = await get().getAllCurrentActivities()
+    set({ activities:res.data.activities })
   },
 
 }), { name: 'OFsssActivityState', storage: createJSONStorage(() => localStorage) }))

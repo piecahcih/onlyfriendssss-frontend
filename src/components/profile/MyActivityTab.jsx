@@ -171,7 +171,7 @@ function MyActivityTab() {
             {activeTab === "Created" && (activities.length > 0 ? (
               <div className="space-y-8">
                 {activities.map((activity) => (
-                  <NavLink to={`/edit-activity-details?actid=${activity.id}`} key={activity.id} className="block" >
+                  <NavLink to={`/activity-details?actid=${activity.id}`} key={activity.id} className="block" >
                     <div className="bg-white rounded-[35px] overflow-hidden shadow-[0_12px_32px_rgba(78,33,32,0.04)] hover:shadow-[0_12px_48px_rgba(78,33,32,0.08)] transition-all duration-300">
 
                       <div className="relative h-50 w-full overflow-hidden">
