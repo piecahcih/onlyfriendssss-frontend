@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LeftIcon, PhotoIcon } from "../../icons";
 import { useNavigate } from "react-router";
 import MapModal from "../../components/map/MapModal";
 import useActivityStore from "../../stores/activitiesStore";
-import useUserStore from "../../stores/userStore";
 import Swal from "sweetalert2";
 
 function CreateActivity() {
@@ -68,12 +67,10 @@ function CreateActivity() {
   const [hasEndTime, setHasEndTime] = useState(false);
   const [maxParticipants, setMaxParticipants] = useState(0);
 
-  // const user = useUserStore((st) => st.user);
+
   const Adata = {
-    // hostId: user.id,
     isPublic: groupStatus,
     coverPhoto: file,
-    // placeId: 1,
     placeName: selectedLocation?.placeName,
     address: selectedLocation?.address,
     latitude: selectedLocation?.latitude,
@@ -102,6 +99,17 @@ function CreateActivity() {
       return
     }
 
+    if (new Date(eventStartTime) < new Date()) {
+      Swal.fire({
+        title: '<h2 class="text-[20px] font-bold text-neutral leading-tight">Please don\'t select date before today</h2>',
+        confirmButtonColor: "#FC5100",
+        width: '300px',  
+        padding: '1em',  
+      });
+
+      return
+    }
+
     try {
       useActivityStore.getState().setCreatingActivity(Adata);
       // console.log('Adata', Adata)
@@ -111,6 +119,9 @@ function CreateActivity() {
         console.error("Local state error:", error)
     }
   };
+
+  // const creatingActivity = useActivityStore(st=>st.creatingActivity)
+
 
   const lblTitleStyle = "text-[18px] font-bold text-neutral";
   return (
@@ -169,6 +180,7 @@ function CreateActivity() {
                 placeholder="Morning Run in the Park"
                 type="text"
                 value= {title}
+                // value= {creatingActivity.title||title}
                 onChange={(e)=>hdlTitle(e.target.value)}
               />
             </div>
@@ -263,7 +275,7 @@ function CreateActivity() {
           </div>
 
           {/* maxParticipants */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 -mt-3">
             <label className={lblTitleStyle}>Max Participant <span className="font-light">(optional)</span></label>
               <input
                 className="w-11 h-8 pl-4 rounded-full bg-white border-none ring-2 ring-[#e09c99]/20 focus:ring-[#a83100] focus:ring-2 transition-all outline-none text-neutral placeholder:text-[#834c4b]/40"
@@ -280,11 +292,11 @@ function CreateActivity() {
 
 
           {/* Category Chips */}
-          <div className="space-y-3">
+          <div>
             <label className={lblTitleStyle}>
               <span>🏷️</span> Category{" "}
             </label>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 mt-1.5">
               {categoryList.map((cat) => {
                 const isSelected = selectedCategory === cat.id;
                 return (
@@ -292,7 +304,7 @@ function CreateActivity() {
                     key={cat.id}
                     type="button"
                     onClick={() => setSelectedCategory(cat.id)}
-                    className={`px-4 py-1.5 rounded-3xl text-[14px] font-medium flex items-center gap-2 transition-all duration-200 active:scale-95
+                    className={`px-3 py-1.5 rounded-3xl text-[14px] font-medium flex items-center gap-2 transition-all duration-200 active:scale-95
                         ${
                           isSelected
                             ? "bg-secondary text-white shadow-md"

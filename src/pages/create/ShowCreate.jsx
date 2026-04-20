@@ -32,7 +32,7 @@ function ShowCreate() {
         formData.append("title", creatingActivity.title);
         formData.append("description", creatingActivity.description);
         formData.append("category", creatingActivity.category);
-        formData.append("placeId", creatingActivity.placeId);
+        formData.append("maxParticipants", creatingActivity.maxParticipants);
         formData.append("placeName", creatingActivity.placeName || "");
         formData.append("address", creatingActivity.address || "");
         formData.append("latitude", creatingActivity.latitude);
@@ -66,9 +66,6 @@ function ShowCreate() {
     }
     
     const [groupStatus, setGroupStatus] = useState(creatingActivity.isPublic)
-    const hdlPrivacyStatus = () => {
-      // setGroupStatus(creatingActivity.isPublic)
-    }
 
   const categoryList = [
     { id: "HEALTH", title: "Health & Wellness", icon: "💪" },
@@ -105,7 +102,7 @@ function ShowCreate() {
 
           <div className="flex gap-3 pb-4">
             {/* Public Badge / Privacy */}
-              <button type='button' onClick={()=>hdlPrivacyStatus()}>
+              <button type='button' disabled>
                   {groupStatus === true ? 
                       <div className="flex items-center justify-between text-[14px] px-3 py-1 rounded-full bg-secondary w-fit">                        
                           <div className="flex items-center gap-2">
@@ -132,6 +129,7 @@ function ShowCreate() {
             <img src={creatingActivity.blob} alt="activityIMG" className='w-full object-contain' />
           </div>
 
+
           {/* Activity Name */}
           <div className="mt-2">
             <label className="text-[22px] font-bold text-neutral">
@@ -139,18 +137,24 @@ function ShowCreate() {
             </label>
           </div>
 
+
           {/* Date & Time Row */}
           <h3 className="">
             <span className=" text-xl">📅</span> {format(new Date(creatingActivity.eventStartTime), 'eee, dd MMM yyyy, HH:mm')}
             {creatingActivity.eventEndTime && (format(new Date(creatingActivity.eventEndTime), ' - HH:mm'))}
           </h3>
-          
 
+          
           {/* Notes */}
           <p className="font-light my-5 leading-relaxed">{creatingActivity.description}</p>
 
+          {/* maxParticipants */}
+          <p className="font-light my-5 leading-relaxed">
+             {creatingActivity.maxParticipants && (`Max ${creatingActivity.maxParticipants} Participants`)} 
+          </p>
+
           {/* Location Section */}
-          <div className="space-y-4">
+          <div className="space-y-4 mt-5">
             <div className="flex items-start gap-3">
               <span className="text-2xl">📍</span>
               <div className="flex flex-col">
