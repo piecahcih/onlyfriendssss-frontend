@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
-import { LeftIcon, LocationIcon, CalendarIcon } from "../icons";
+import { LeftIcon, LocationIcon, CalendarIcon, ChatIcon } from "../icons";
 import useActivityStore from "../stores/activitiesStore";
 import useUserStore from "../stores/userStore"; 
 import mainApi from "../api/mainApi"; 
@@ -95,12 +95,21 @@ function ActivityDetails() {
       alert("Please Log in before join any activity");
       return;
     }
+    if (isFull) {
+      alert("This activity is already full!");
+      return;
+    }
     try {
       setLoadingJoin(true);
       // เรียก API สำหรับ Join (ใช้ Instance mainApi โดยตรงตามเงื่อนไขห้ามแก้ไฟล์อื่น)
-      await mainApi.post(`/activity/join/${actid}`);
+      const res = await mainApi.post(`/activity/join/${actid}`);
 
-      alert("Waiting to be approved");
+      // เช็คสถานะที่ส่งกลับมาจาก Backend (ถ้า Backend ทำตาม Logic Public/Private)
+      if (res.data.status === "APPROVED") {
+        alert("Joined successfully!");
+      } else {
+        alert("Request sent, waiting for host approval.");
+      }
 
       // ดึงข้อมูลกิจกรรมใหม่เพื่ออัปเดตรายชื่อผู้เข้าร่วมและจำนวนที่ว่าง
       await getActivityById(actid);
@@ -112,8 +121,6 @@ function ActivityDetails() {
       setLoadingJoin(false);
     }
   }
-
-
   return (
     <div className="min-h-screen bg-base-200 text-neutral pb-28">
       {/* TopAppBar */}
@@ -297,23 +304,23 @@ function ActivityDetails() {
         disabled={loadingJoin || isJoined || isFull}
         className={`w-full max-w-2xl flex items-center justify-center gap-3 px-8 py-4 rounded-[25px] font-black text-xl  active:scale-95 transition-all border-b-4
           ${isJoined
-            ? "bg-linear-to-r from-success to-secondary text-white"
-            : isFull
-              ? "bg-neutral text-white border-neutral-content opacity-50 cursor-not-allowed"
-              : "bg-linear-to-r from-primary to-secondary text-white border-primary-focus hover:scale-[1.05]"
-          }`}
+              ? "bg-linear-to-r from-success to-secondary text-white border-success-focus" 
+              : isFull
+                ? "bg-gray-400 text-white border-gray-500 cursor-not-allowed opacity-70" // สไตล์เมื่อเต็ม
+                : "bg-linear-to-r from-primary to-secondary text-white border-primary-focus hover:scale-[1.05]"
+            }`}
       >
         {loadingJoin ? (
           <span className="loading loading-spinner"></span>
         ) : isJoined ? (
           <>
-            <span className="text-2xl">✔</span> JOINED
+            <span className="text-2xl"><ChatIcon className="w-7"/></span> Chat
          </>
         ) : isFull ? (
-          "Full"
+          "ACTIVITY FULL"
         ) : (
           <>
-            <span className="text-2xl">👋</span> JOIN
+            <span className="text-2xl">👋</span> JOIN NOW
           </>
         )}
         </button>
