@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
 @import "tailwindcss";
 @plugin "daisyui";
 
@@ -75,40 +75,64 @@
 }
 
 @theme {
-    --font-sans: "Bai Jamjuree", sans-serif, system-ui, sans-serif;
+  --font-sans: "Bai Jamjuree", sans-serif, system-ui, sans-serif;
 }
 
 @plugin "daisyui/theme" {
-    name: "light";
-    default: true;
+  name: "light";
+  default: true;
 
-    /* Base background and text */  
-    --color-base-100: #f1f1f1;   
-    --color-base-200: #FBF9F6;  /*bg*/ 
-    --color-base-300: #E4E4E4;   /*searchgray*/   
-    --color-base-content: #676767; 
+  /* Base background and text */
+  --color-base-100: #f1f1f1;
+  --color-base-200: #fbf9f6; /*bg*/
+  --color-base-300: #e4e4e4; /*searchgray*/
+  --color-base-content: #676767;
 
-    /* Primary */
-    --color-primary: #FC5100;          
-    --color-primary-focus: #D44A1B;    
-    --color-primary-content: #000000;
+  /* Primary */
+  --color-primary: #fc5100;
+  --color-primary-focus: #d44a1b;
+  --color-primary-content: #000000;
 
-    /* Secondary */
-    --color-secondary: #FF7F50;          
-    --color-secondary-focus: #F59F65;    
-    --color-secondary-content: #ffffff;/*white/search*/
+  /* Secondary */
+  --color-secondary: #ff7f50;
+  --color-secondary-focus: #f59f65;
+  --color-secondary-content: #ffffff; /*white/search*/
 
-    /* Neutral: Gray for secondary/primary text */
-    --color-neutral: #505050;
-    --color-neutral-focus: #000000;
-    --color-neutral-content: #ffffff;
+  /* Neutral: Gray for secondary/primary text */
+  --color-neutral: #505050;
+  --color-neutral-focus: #000000;
+  --color-neutral-content: #ffffff;
 
-    /* Status colors */
-    --color-info: #4285F4;
-    --color-success: #42B72A;
-    --color-warning: #F7B928;
-    --color-error: #CF0000;
+  /* Status colors */
+  --color-info: #4285f4;
+  --color-success: #42b72a;
+  --color-warning: #f7b928;
+  --color-error: #cf0000;
+}
 
+/* ดึงปุ่มควบคุม Mapbox ขึ้นมาจากขอบล่าง 100px เพื่อไม่ให้โดนแถบสีส้มบัง */
+.mapboxgl-ctrl-bottom-right {
+  bottom: 100px !important;
+  right: 10px !important;
+}
 
+/* ถ้าคุณมีปุ่มที่มุมอื่นด้วย (เช่น Attribution) ก็ใช้หลักการเดียวกัน */
+.mapboxgl-ctrl-bottom-left {
+  bottom: 100px !important;
+}
 
+/* 1. สไตล์สำหรับ Marker (กล่องหุ้มรูป) */
+.my-location-marker {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  background-color: white; /* พื้นหลังสีขาวให้รูปเด่น */
+  border-radius: 50%; /* ทรงกลม */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* เงาให้ลอยตัว */
+  border: 3px solid #ff4f00; /* สีส้ม (primary) ของแอปคุณ */
+  cursor: pointer;
+  transition: transform 0.2s ease-out; /* เวลาบินมาให้ขยายเล็กน้อย */
+  z-index: 100; /* อยู่เหนือชั้นอื่นๆ */
 }

@@ -80,7 +80,7 @@ const Profile = () => {
 
       const response = await editProfileApi(formData);
 
-      const updatedUser = response.data.user;
+      const updatedUser = response.data.data;
 
       if (updatedUser.profileImg) {
         updatedUser.profileImg = `${updatedUser.profileImg}?t=${Date.now()}`;
@@ -90,7 +90,7 @@ const Profile = () => {
 
       fetchUserProfile();
       setIsEditing(false);
-      setPreviewImage(null); 
+      setPreviewImage(null);
       alert("Data Saved Success!");
     } catch (error) {
       console.error(error);
@@ -412,9 +412,13 @@ const Profile = () => {
               {profileData?.bio || "No bio available"}
             </p>
             <span className="text-[10px] px-2 py-1 bg-gray-100 rounded-md text-gray-400 font-bold uppercase tracking-wider">
-              {profileData?.gender === "MALE" ? "MALE" :
-               profileData?.gender === "FEMALE" ? "FEMALE" :
-               profileData?.gender === "OTHER" ? "OTHER" : "N/A"}
+              {profileData?.gender === "MALE"
+                ? "MALE"
+                : profileData?.gender === "FEMALE"
+                  ? "FEMALE"
+                  : profileData?.gender === "OTHER"
+                    ? "OTHER"
+                    : "N/A"}
             </span>
           </div>
         </div>
