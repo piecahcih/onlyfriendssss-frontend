@@ -52,6 +52,8 @@ export const getProfileApi = () => mainApi.get("/account/profile");
 // แก้ไขข้อมูลตัวเอง (username, bio, gender, etc.)
 export const editProfileApi = (formData) => mainApi.patch("/account/profile", formData,);
 
+export const deleteProfileApi = (id) => mainApi.delete("/account/profile",id)
+
 
 
 ////////ACTIVITIES

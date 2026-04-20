@@ -2,31 +2,20 @@ import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ProfilePic from "../components/profile/ProfilePic";
 import useUserStore from "../stores/userStore";
-import {
-  LocationIcon,
-  SettingIcon,
-  CalendarIcon,
-  CloseIcon,
-  CameraIcon,
-  EditIcon,
-  HeartLineIcon,
-  HeartIcon,
-} from "../icons";
+import { SettingIcon, CloseIcon, CameraIcon, EditIcon } from "../icons";
 import { NavLink } from "react-router";
-import {
-  getProfileApi,
-  SendFriendRequestApi,
-  editProfileApi,
-} from "../api/mainApi";
 
 import MyActivityTab from "../components/profile/MyActivityTab";
 
 const BACKEND_URL = "http://localhost:3999";
 
 const Profile = () => {
-  const storeUser = useUserStore((state) => state.user);
+  const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
   const logout = useUserStore((state) => state.logout);
+  const getProfile = useUserStore((state) => state.getProfile);
+  const updateProfile = useUserStore((state) => state.updateProfile);
+  const deleteProfile = useUserStore((state) => state.deleteProfile);
 
   const [profileData, setProfileData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -42,7 +31,7 @@ const Profile = () => {
 
   const fetchUserProfile = async () => {
     try {
-      const response = await getProfileApi();
+      const response = await getProfile();
       const data =
         response.data.user?.data || response.data.user || response.data;
       console.log("Gender from API:", data);
@@ -119,31 +108,37 @@ const Profile = () => {
     }
   };
 
-  const triggerFileInput = () => fileInputRef.current.click();
-
-  const handleRequestFriend = async () => {
-    try {
-      await SendFriendRequestApi(profileData.id);
-      alert("Success!");
-    } catch (error) {
-      alert(error.response?.data?.message || "Failed");
+  const hdlDeleteAccount = async () => {
+    if (
+      window.confirm(
+        "คุณแน่ใจหรือไม่ว่าต้องการลบบัญชี? การกระทำนี้ไม่สามารถย้อนกลับได้",
+      )
+    ) {
+      try {
+        await deleteProfile();
+        alert("ลบบัญชีของคุณเรียบร้อยแล้ว");
+        logout();
+        navigate("/");
+      } catch (error) {
+        console.error("Delete Account Error:", error);
+        alert(error.response?.data?.message || "ไม่สามารถลบบัญชีได้");
+      }
     }
   };
 
-  const getFullImgPath = (path) => {
-    if (!path) return "/default-avatar.png"; // ใส่รูป Default ถ้าไม่มีข้อมูล
+  const triggerFileInput = () => fileInputRef.current.click();
 
-    // ถ้าเป็น File Object (กรณีเพิ่งเลือกรูป) หรือ Base64 ให้คืนค่าเดิม
+  const getFullImgPath = (path) => {
+    if (!path) return "/default-avatar.png";
+
     if (typeof path !== "string" || path.startsWith("data:")) {
       return path;
     }
 
-    // ถ้าเป็น URL เต็มอยู่แล้ว (เช่นจาก Google Login)
     if (path.startsWith("http")) {
       return path;
     }
 
-    // 3. ถ้าเป็น path จาก backend
     return `${BACKEND_URL}${path}`;
   };
 
@@ -330,7 +325,10 @@ const Profile = () => {
                 >
                   Log out
                 </button>
-                <button className="font-medium text-error">
+                <button
+                  onClick={hdlDeleteAccount}
+                  className="font-medium text-error hover:opacity-70 transition-all"
+                >
                   Delete Account
                 </button>
               </div>
@@ -341,7 +339,6 @@ const Profile = () => {
 
       {/* --- HEADER --- */}
       <div className="pt-8 pb-4 text-center relative flex items-center justify-center">
-        {/* <h1 className="text-xl bai-jamjuree-bold text-neutral-focus">PROFILE</h1> */}
         <div className="absolute right-6 top-4 flex gap-2">
           <button
             onClick={handleEditOpen}
