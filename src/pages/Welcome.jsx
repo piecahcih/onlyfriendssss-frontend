@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import useUserStore from '../stores/userStore'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { AnimatePresence, motion } from 'framer-motion'
 import Premium from '../components/ads/Premium'
 import { CloseIcon, WelcomeIcon } from '../icons'
@@ -9,6 +9,7 @@ import { toast } from 'react-toastify'
 function Welcome() {
   const user = useUserStore(state => state.user)
   const [settingForm, setSettingForm] = useState(false)
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (user) {
@@ -16,15 +17,16 @@ function Welcome() {
     }
   }, [])
 
-  const handleSettingOpen = () => {
-    setSettingForm(true);
-  }
-
   return (
-    <div className='bg-base-200 min-h-screen'>
+    <div className='bg-base-200 min-h-screen relative'>
+      <Link to='/lddiscover'>
+        <div className='w-8 h-8 absolute right-3 top-2'>
+          <CloseIcon />
+        </div>
+      </Link>
       <div className="flex flex-col items-center justify-between min-h-screen p-6 font-sans">
 
-        <div className="flex-1 flex flex-col items-center text-center">
+        <div className="flex-1 flex flex-col items-center text-center mt-4">
           <div className="mb-6">
             <WelcomeIcon />
           </div>
@@ -65,13 +67,15 @@ function Welcome() {
         </div>
 
         <div className="w-full max-w-sm mt-auto mb-4">
-          <button onClick={handleSettingOpen} className="w-full bg-[#FF7B4C] hover:bg-[#ff6a33] text-white py-4 rounded-full font-bold text-lg transition-colors shadow-lg">
-            Premium
-          </button>
-          <div className="w-32 h-1 bg-black rounded-full mx-auto mt-6 opacity-20"></div>
+          <Link to='/lddiscover'>
+            <button className="w-full bg-[#FF7B4C] hover:bg-[#ff6a33] text-white py-4 rounded-full font-bold text-lg transition-colors shadow-lg">
+              Continue
+            </button>
+            <div className="w-32 h-1 bg-black rounded-full mx-auto mt-6 opacity-20"></div>
+          </Link>
         </div>
 
-        <AnimatePresence>
+        {/* <AnimatSSSSSSSSSSePresence>
           {settingForm && (
             <>
               <motion.div
@@ -110,7 +114,7 @@ function Welcome() {
               </motion.div>
             </>
           )}
-        </AnimatePresence>
+        </AnimatSSSSSSSSSSePresence> */}
 
       </div>
     </div>
