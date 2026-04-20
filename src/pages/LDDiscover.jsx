@@ -8,7 +8,13 @@ import { useActivityMarkers } from "../hooks/useActivityMarkers";
 import useActivityStore from "../stores/activitiesStore";
 import useUserStore from "../stores/userStore";
 import NotificationModal from "../components/NotificationModal";
-import { SearchIcon, Notification, LocationIcon, CalendarIcon } from "../icons";
+import {
+  SearchIcon,
+  Notification,
+  CalendarIcon,
+  YourLocationIcon,
+  MicIcon,
+} from "../icons";
 
 const BACKEND_URL = "http://localhost:3999";
 
@@ -26,32 +32,62 @@ const LDDiscover = () => {
   const user = useUserStore((state) => state.user);
 
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [notiOpen, setNotiOpen] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
-
   const categoryList = [
     { id: "all", title: "All", icon: "✨" },
-    { id: "health", title: "Health", icon: "💪" },
-    { id: "entertainment", title: "Relax", icon: "🎭" },
-    { id: "art", title: "Art", icon: "🎨" },
-    { id: "food", title: "Food", icon: "🍱" },
+    { id: "health", title: "Health & Wellness", icon: "💪" },
+    { id: "entertainment", title: "Chill & Hangout", icon: "🎭" },
+    { id: "art", title: "Creative", icon: "🎨" },
+    { id: "food", title: "Foodies", icon: "🍱" },
     { id: "travel", title: "Travel", icon: "✈️" },
   ];
+  const [isExpanded, setIsExpanded] = useState(false);
 
-  // 1. Fetch Data logic
+  const [searchText, setSearchText] = useState("");
+  const [suggestOpen, setSuggestOpen] = useState(false);
+
   useEffect(() => {
     selectedCategory === "all"
       ? getAllCurrentActivities()
       : getActivityByCategory(selectedCategory);
-  }, [selectedCategory, getAllCurrentActivities, getActivityByCategory]);
+    // console.log("selectedCategory:", selectedCategory);
+    // console.log("activities", activities);
+  }, [selectedCategory]);
 
-  // 2. Filter logic
-  const filteredActivities = activities.filter(
+  const activitySuggestions = Array.isArray(activities)
+    ? activities
+        .filter((act) =>
+          act.title.toLowerCase().includes(searchText.toLowerCase()),
+        )
+        .slice(0, 3)
+    : [];
+
+  const location = [...new Set(activities.map((act) => act.place?.placeName))];
+
+  const locationSuggestions = Array.isArray(activities)
+    ? location
+        .filter((placeName) =>
+          placeName?.toLowerCase().includes(searchText.toLowerCase()),
+        )
+        .slice(0, 3)
+    : [];
+
+  // Filter logic
+  const filteredActivities = (
+    Array.isArray(activities)
+      ? selectedCategory === "all"
+        ? activities
+        : activities.filter(
+            (act) =>
+              act.category?.toLowerCase() === selectedCategory.toLowerCase(),
+          )
+      : []
+  ).filter(
     (act) =>
-      act.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      act.place?.placeName?.toLowerCase().includes(searchQuery.toLowerCase()),
+      act.title.toLowerCase().includes(searchText.toLowerCase()) ||
+      act.place?.placeName?.toLowerCase().includes(searchText.toLowerCase()),
   );
+
+  const [notiOpen, setNotiOpen] = useState(false);
 
   // 3. Using the Hook for Markers
   useActivityMarkers(mapRef, filteredActivities);
@@ -75,54 +111,137 @@ const LDDiscover = () => {
         className="absolute inset-0 z-0 h-full w-full"
       />
 
-      {/* UI Overlay Area */}
-      <div className="absolute top-8 left-0 right-0 px-6 z-20 pointer-events-none">
+      <div className="absolute top-8 left-0 right-0 px-6 z-40 pointer-events-none">
         <div className="max-w-2xl mx-auto space-y-4">
-          <div className="flex gap-3 pointer-events-auto">
+          {/* Search Bar Section */}
+          <div className="flex items-center justify-between gap-3 pointer-events-auto">
             <div className="relative flex-1">
-              <SearchIcon className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 w-5" />
+              {" "}
+              {/* ตัวนี้ทำหน้าที่เป็นจุดยึด (Anchor) ให้ Modal */}
+              <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
+                <SearchIcon className="w-5 text-gray-400" />
+              </div>
               <input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white/95 backdrop-blur-md rounded-full py-3.5 pl-14 pr-12 shadow-xl outline-none border-none ring-1 ring-black/5"
+                className="w-full bg-white/95 backdrop-blur-md border-none outline-none ring-2 ring-primary/10 focus:ring-primary py-3.5 pl-14 pr-14 rounded-full shadow-xl text-gray-700 transition-all placeholder:text-gray-400"
                 placeholder="Find your vibe..."
+                type="text"
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                onFocus={() => setSuggestOpen(true)}
+                onBlur={() => setTimeout(() => setSuggestOpen(false), 200)}
               />
+              <div className="absolute inset-y-0 right-5 flex items-center pointer-events-none">
+                <MicIcon className="w-6 text-gray-400" />
+              </div>
+              {/* Suggestions Modal - แสดงเมื่อมีการพิมพ์และเจอผลลัพธ์ */}
+              {suggestOpen &&
+                searchText.length > 0 &&
+                activitySuggestions.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 mt-3 bg-white rounded-[30px] shadow-2xl z-50 overflow-hidden border border-primary/5 max-h-[400px] overflow-y-auto">
+                    <div className="px-6 py-3 text-[10px] font-black text-primary/50 uppercase tracking-widest bg-primary/5">
+                      Activities
+                    </div>
+                    {activitySuggestions.map((act) => (
+                      <div
+                        key={`act-${act.id}`}
+                        onClick={() => {
+                          setSearchText(act.title);
+                          setSuggestOpen(false);
+                          mapRef.current?.flyTo({
+                            center: [act.place?.longitude, act.place?.latitude],
+                            zoom: 16,
+                          });
+                        }}
+                        className="px-6 py-4 hover:bg-primary/5 cursor-pointer flex items-center gap-4 border-b border-gray-50 transition-colors"
+                      >
+                        <div className="flex flex-col">
+                          <span className="text-gray-800 font-bold text-sm">
+                            {act.title}
+                          </span>
+                          <span className="text-[9px] text-gray-400 uppercase font-black">
+                            {act.category}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                    {locationSuggestions.length > 0 && (
+                      <>
+                        <div className="px-6 py-3 text-[10px] font-black text-primary/50 uppercase tracking-widest bg-primary/5 border-t border-gray-50">
+                          Locations
+                        </div>
+                        {locationSuggestions.map((placeName) => (
+                          <div
+                            key={`loc-${placeName.id}`}
+                            onClick={() => {
+                              setSearchText(placeName);
+                              setSuggestOpen(false);
+                            }}
+                            className="px-6 py-4 hover:bg-primary/5 cursor-pointer flex items-center gap-4 border-b border-gray-50 last:border-none transition-colors"
+                          >
+                            <div className="flex flex-col">
+                              <span className="text-on-surface font-bold text-sm">
+                                {placeName}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </>
+                    )}
+                  </div>
+                )}
             </div>
+
+            {/* ปุ่ม Notification */}
             <button
+              type="button"
               onClick={() => setNotiOpen(true)}
-              className="bg-white/95 backdrop-blur-md p-4 rounded-full shadow-xl"
+              className="relative p-4 rounded-full bg-white/95 backdrop-blur-md shadow-xl active:scale-95 transition-all"
             >
               <Notification className="w-6 h-6 text-gray-600" />
+              <span className="absolute top-2 right-2 w-5 h-5 bg-primary flex items-center justify-center text-[10px] font-bold text-white border-2 border-white rounded-full">
+                1
+              </span>
             </button>
           </div>
-
-          <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar pointer-events-auto">
-            {categoryList.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`shrink-0 px-6 py-2.5 rounded-full font-bold text-sm flex items-center gap-2 transition-all shadow-lg
-                  ${selectedCategory === cat.id ? "bg-primary text-white scale-105" : "bg-white/95 backdrop-blur-md text-gray-600"}`}
-              >
-                <span>{cat.icon}</span> {cat.title}
-              </button>
-            ))}
-          </div>
+          {/* Categories Horizontal Scroll */}
+          <section className="space-y-4 my-4 pointer-events-auto">
+            <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide  scroll-smooth -mx-2 px-2">
+              {categoryList.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => {
+                    setSelectedCategory(cat.id);
+                  }}
+                  className={`shrink-0 px-5 py-1.5 rounded-3xl font-medium text-sm flex items-center gap-2 transition-all duration-300 active:scale-95
+                                    ${
+                                      selectedCategory === cat.id
+                                        ? "bg-primary text-white shadow-[0_8px_12px_rgba(252,81,0,0.3)]"
+                                        : "bg-white text-on-surface/60 hover:bg-white/80 shadow-sm"
+                                    }`}
+                >
+                  <span className="text-lg">{cat.icon}</span>
+                  {cat.title}
+                </button>
+              ))}
+            </div>
+          </section>
         </div>
       </div>
 
+      {/* Location Pin*/}
       <button
         onClick={() => hdlGetCurrentLocation(getFullImgPath(user?.profileImg))}
-        className="absolute bottom-[260px] right-1 z-20 bg-white p-4 rounded-full shadow-2xl border-2 border-primary/20 active:scale-90 transition-all"
+        className="absolute bottom-30 right-3 p-1.5 bg-white rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:bg-gray-50 active:scale-95 transition-all border border-base-200 flex items-center justify-center group"
+        title="Go to current location"
       >
-        <LocationIcon className="w-7 h-7 text-primary" />
+        <YourLocationIcon className="w-7 h-7 text-primary group-hover:rotate-12 transition-transform" />
       </button>
 
       {/* Bottom Sheet UI */}
       <motion.div
-        drag="y"
+        drag='y'
         dragConstraints={{ top: 0, bottom: 0 }}
-        dragElastic={0.1}
+        dragElastic={0.05}
         dragMomentum={false}
         onDragEnd={(_, info) => {
           if (info.offset.y < -50) setIsExpanded(true);
@@ -177,7 +296,7 @@ const LDDiscover = () => {
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-[11px] text-gray-500 mt-1.5 font-medium">
-                    <LocationIcon className="w-3.5 text-primary" />
+                    <YourLocationIcon className="w-3.5 text-primary" />
                     <span className="line-clamp-1">
                       {act.place?.placeName || "Location N/A"}
                     </span>

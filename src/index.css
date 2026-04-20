@@ -112,7 +112,7 @@
 
 /* ดึงปุ่มควบคุม Mapbox ขึ้นมาจากขอบล่าง 100px เพื่อไม่ให้โดนแถบสีส้มบัง */
 .mapboxgl-ctrl-bottom-right {
-  bottom: 100px !important;
+  bottom: 120px !important;
   right: 10px !important;
 }
 

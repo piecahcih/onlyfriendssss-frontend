@@ -49,7 +49,7 @@ export function useActivityMarkers(mapRef, activities) {
         el.className = "activity-marker-container";
         el.style.cssText = `
           width: 45px; height: 45px; background: white; border-radius: 50%; 
-          border: 3px solid #ff5100; box-shadow: 0 4px 12px rgba(0,0,0,0.3); 
+          border: 3px solid #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.3); 
           cursor: pointer; overflow: hidden; display: flex; align-items: center; 
           justify-content: center; z-index: 100; transition: transform 0.1s ease;
         `;
