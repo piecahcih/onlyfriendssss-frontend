@@ -141,7 +141,7 @@ function ShowCreate() {
           {/* Date & Time Row */}
           <h3 className="">
             <span className=" text-xl">📅</span> {format(new Date(creatingActivity.eventStartTime), 'eee, dd MMM yyyy, HH:mm')}
-            {creatingActivity.eventEndTime && (format(new Date(creatingActivity.eventEndTime), ' - HH:mm'))}
+            {creatingActivity.eventEndTime && (format(new Date(creatingActivity.eventEndTime), ' - eee, dd MMM yyyy, HH:mm'))}
           </h3>
 
           
