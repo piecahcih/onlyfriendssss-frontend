@@ -385,7 +385,7 @@ function Activities() {
       </main>
       <NotificationModal isOpen={notiOpen} onClose={() => setNotiOpen(false)} />
     </div>
-  );
+  )
 }
 
 export default Activities;
