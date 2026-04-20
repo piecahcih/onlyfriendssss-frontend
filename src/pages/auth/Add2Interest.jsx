@@ -2,18 +2,18 @@ import React, { useState } from 'react'
 import { toast } from 'react-toastify';
 import { addInterests } from '../../api/mainApi';
 import { useLocation, useNavigate } from 'react-router';
+import useUserStore from '../../stores/userStore';
+import { LeftIcon } from '../../icons';
 
 function Add2Interest() {
+  const registeringUser = useUserStore(state => state.registeringUser)
+  const completeRegistration = useUserStore(state => state.completeRegistration)
   const navigate = useNavigate()
-  const location = useLocation()
-
-  const users = location.state?.newUser;
 
   const interests = [
     "foodie", "camping", "slowlife", "health", "art",
     "travel", "entertainment", "sport", "volunteer", "workstation"
   ];
-
 
   // ดักห้ามเลือกเกิน 4 
   const [selected, setSelected] = useState([])
@@ -25,20 +25,40 @@ function Add2Interest() {
     }
   }
 
+  const hdlGoBack = () => {
+    navigate('/add-profile');
+  }
+
   const hdlSubmit = async () => {
     try {
-      const res = await addInterests(users?.id, { interests: selected }) // ส่งข้อมูลไปด้วย
-      toast.success('บันทึกสำเร็จ')
-      navigate('/login')
+      const res = await addInterests(registeringUser?.id, { interests: selected })
+      console.log("API Response:", res.data)
+      const { user, token } = res.data
+
+      if (user && token) {
+        completeRegistration(user, token)
+
+        toast.success('Login Success')
+        setTimeout(() => {
+          navigate('/')
+        }, 1500)
+      }
     } catch (error) {
       console.log(error)
-      toast.error('เกิดข้อผิดพลาดในการส่งข้อมูล')
+      toast.error(error.response?.data?.message || 'Failed to submit data. Please try again.')
     }
   }
 
   return (
     <div className="bg-base-200 min-h-screen">
-      <div className="m-auto w-full max-w-[375px] h-[700px] rounded-[45px] flex flex-col p-8 relative overflow-hidden">
+      <div className="m-auto w-full max-w-[375px] h-[700px] flex flex-col p-4 overflow-hidden relative">
+        <button
+          type="button"
+          onClick={hdlGoBack}
+          className="text-primary hover:opacity-80 active:scale-95 transition-all absolute -left-1.5"
+        >
+          <LeftIcon className="w-8 h-8" />
+        </button>
 
         <div className="mt-10 mb-8">
           <h1 className="text-[32px] font-black bai-jamjuree-bold leading-tight text-gray-900">

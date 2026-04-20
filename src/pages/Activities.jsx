@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
-import { SearchIcon, MicIcon, Notification, CalendarIcon, LocationIcon, HeartIcon, HeartLineIcon } from '../icons'
-import mockActImg from '../assets/mockActImg.jpg'
+import { SearchIcon, MicIcon, Notification, CalendarIcon, LocationIcon } from '../icons'
 import defaultProfile from '../assets/default-profilepic.jpg'
 import useActivityStore from '../stores/activitiesStore';
 import { format } from 'date-fns'
 import NotificationModal from '../components/NotificationModal';
 import { NavLink } from 'react-router';
-import { motion } from 'framer-motion'
+import Wishlist from '../components/profile/Wishlist';
+
 
 function Activities() {
     const [selectedCategory, setSelectedCategory] = useState("all");
@@ -195,10 +195,7 @@ function Activities() {
                                             </div>
                                         </div>
 
-                                        <motion.button whileTap={{ scale: 1.2, transition: { duration: 0.2 } }} onClick={hdlLikeClick} className="absolute bottom-4 right-4 p-2 rounded-full bg-white text-primary shadow-lg active:scale-90 transition-transform">
-                                            {haveLike ? <HeartIcon className="h-[28px] ml-auto" />
-                                                : <HeartLineIcon className="h-[28px] ml-auto text-neutral opacity-80" />}
-                                        </motion.button>
+                                        <Wishlist activityId={activity.id} />
 
                                     </div>
 

@@ -1,12 +1,5 @@
 import { NavLink, useNavigate } from "react-router";
-import {
-  AppleLogo,
-  EyeIcon,
-  EyeSlashIcon,
-  FacebookLogo,
-  GoogleLogo,
-  WelcomeIcon,
-} from "../../icons";
+import { AppleLogo, EyeIcon, EyeSlashIcon, FacebookLogo, GoogleLogo, WelcomeIcon, } from "../../icons";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../../validators/schema";
@@ -14,38 +7,52 @@ import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../../utils/firebase";
 import useUserStore from "../../stores/userStore";
 import { toast } from "react-toastify";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Login() {
-  const login = useUserStore((state) => state.login);
-  const loginWithGoogle = useUserStore((state) => state.loginWithGoogle);
-  const navigate = useNavigate();
+  const login = useUserStore((state) => state.login)
+  const loginWithGoogle = useUserStore((state) => state.loginWithGoogle)
+  const navigate = useNavigate()
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm({
     resolver: zodResolver(loginSchema),
     mode: "onSubmit",
-  });
+  })
+
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("rememberedEmail");
+    if (savedEmail) {
+      setValue("email", savedEmail)
+      setValue("rememberMe", true)
+    }
+  }, [setValue])
 
   const onSubmit = async (data) => {
     try {
-      const res = await login(data);
+      if (data.rememberMe) {
+        localStorage.setItem("rememberedEmail", data.email)
+      } else {
+        localStorage.removeItem("rememberedEmail")
+      }
+
+      const res = await login(data)
       // console.log(res.data.message)
-      toast.success(res.data.message);
-      navigate("/");
+      toast.success(res.data.message)
+      navigate("/")
     } catch (error) {
       const errMsg =
-        error.response?.data?.message || "อีเมลหรือรหัสผ่านไม่ถูกต้อง";
-      toast.error(errMsg);
+        error.response?.data?.message
+      toast.error(errMsg)
     }
   };
 
   const handleGoogleLogin = async () => {
     try {
-      googleProvider.setCustomParameters({ prompt: "select_account" });
-      const result = await signInWithPopup(auth, googleProvider);
-      const idToken = await result.user.getIdToken();
+      googleProvider.setCustomParameters({ prompt: "select_account" })
+      const result = await signInWithPopup(auth, googleProvider)
+      const idToken = await result.user.getIdToken()
 
       const userData = {
         email: result.user.email,
@@ -54,16 +61,16 @@ function Login() {
       };
 
       console.log(userData);
-      await loginWithGoogle(idToken, userData);
-      toast.success("Login Success");
-      navigate("/");
+      await loginWithGoogle(idToken, userData)
+      toast.success("Login Success")
+      navigate("/")
     } catch (error) {
-      console.error("Google Login Error", error);
-      toast.error("เกิดข้อผิดพลาดในการเข้าสู่ระบบด้วย Google");
+      console.error("Google Login Error", error)
+      toast.error("เกิดข้อผิดพลาดในการเข้าสู่ระบบด้วย Google")
     }
   };
 
-  const inpStyle = "bg-base-100 rounded-[18px] px-5 py-2 w-[315px]";
+  const inpStyle = "bg-base-100 rounded-[18px] px-5 py-2 w-[315px]"
 
   return (
     <div className="bg-base-200 min-h-screen">
@@ -83,6 +90,8 @@ function Login() {
                   {...register("email")}
                   className={inpStyle}
                 />
+                <p className="text-sm text-error">{errors.email?.message}</p>
+
               </div>
               <div className="flex flex-col gap-1.5">
                 <h3 className="bai-jamjuree-semibold">Password</h3>
@@ -94,12 +103,10 @@ function Login() {
                     {...register("password")}
                     className={`${inpStyle} pr-12 w-full`}
                   />
-
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600 flex items-center"
-                  >
+                    className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center cursor-pointer text-gray-400 hover:text-gray-600 transition-colors"                  >
                     {showPassword ? (
                       <EyeIcon className="w-5 h-5" />
                     ) : (
@@ -107,15 +114,16 @@ function Login() {
                     )}
                   </button>
                 </div>
+                <p className="text-sm text-error">{errors.password?.message}</p>
               </div>
             </div>
-            <div className="flex">
+            <div className="flex items-center mt-3">
               <input
                 type="checkbox"
-                className="ml-4 mr-2 accent-primary"
+                className="ml-4 mr-2 accent-primary cursor-pointer w-4 h-4"
                 {...register("rememberMe")}
               />
-              <p>Remember Me</p>
+              <p className="text-sm">Remember Me</p>
             </div>
 
             <button className="bg-primary text-white bai-jamjuree-bold rounded-[18px] px-5 py-2 w-[315px] mt-8">
