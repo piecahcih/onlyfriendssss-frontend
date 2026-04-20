@@ -57,14 +57,6 @@ function Activities() {
             act.place?.placeName?.toLowerCase().includes(searchText.toLowerCase())
         );
 
-    const [notiOpen, setNotiOpen] = useState(false)
-
-    const [haveLike, setHaveLike] = useState(false)
-    const hdlLikeClick = async (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-    }
-
 
 
     return (
