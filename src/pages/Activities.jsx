@@ -39,8 +39,10 @@ function Activities() {
         act.title.toLowerCase().includes(searchText.toLowerCase())
     ).slice(0, 3) : [];
 
-    const locationSuggestions = Array.isArray(activities) ? activities.filter(act =>
-        act.place?.placeName?.toLowerCase().includes(searchText.toLowerCase())
+    const location = [...new Set(activities.map(act => act.place?.placeName))]
+
+    const locationSuggestions = Array.isArray(activities) ? location.filter(placeName => 
+        placeName?.toLowerCase().includes(searchText.toLowerCase())
     ).slice(0, 3) : [];
 
     // const filteredActivities = selectedCategory === "all" 
@@ -116,17 +118,16 @@ function Activities() {
                                         <div className="px-6 py-3 text-[10px] font-black text-primary/50 uppercase tracking-widest bg-primary/5 border-t border-gray-50">
                                             Locations
                                         </div>
-                                        {locationSuggestions.map((act) => (
+                                        {locationSuggestions.map((placeName) => (
                                             <div
-                                                key={`loc-${act.id}`}
+                                                key={`loc-${placeName.id}`} 
                                                 onClick={() => {
-                                                    setSearchText(act.place?.placeName);
+                                                    setSearchText(placeName);
                                                     setSuggestOpen(false);
                                                 }}
                                                 className="px-6 py-4 hover:bg-primary/5 cursor-pointer flex items-center gap-4 border-b border-gray-50 last:border-none transition-colors">
                                                 <div className="flex flex-col">
-                                                    <span className="text-on-surface font-bold text-sm">{act.place?.placeName}</span>
-                                                    <span className="text-[9px] text-on-surface/40 uppercase font-black">In: {act.title}</span>
+                                                    <span className="text-on-surface font-bold text-sm">{placeName}</span>
                                                 </div>
                                             </div>
                                         ))}

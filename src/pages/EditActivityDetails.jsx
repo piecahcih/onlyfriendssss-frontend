@@ -6,8 +6,9 @@ import useUserStore from "../stores/userStore";
 import mainApi from "../api/mainApi"; 
 import { format } from "date-fns";
 import defaultProfile from "../assets/default-profilepic.jpg";
+import { DeleteSwal } from "../components/swal/DeleteAlert";
 
-function ActivityDetails() {
+function EditActivityDetails() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const actid = searchParams.get("actid");
@@ -43,7 +44,7 @@ function ActivityDetails() {
    }, [actid, getActivityById]);
 
   const hdlGoBack = () => {
-    navigate('/activities');
+    navigate('/profile');
     // navigate(-1);
   };
 
@@ -55,7 +56,7 @@ function ActivityDetails() {
     );
   }
 
-  // ถ้าโหลดเสร็จแล้วแต่ไม่มีข้อมูล
+
   if (!currentActivity) {
     return (
       <div className="min-h-screen bg-base-200 flex flex-col items-center justify-center p-6 text-center">
@@ -67,21 +68,17 @@ function ActivityDetails() {
     );
   }
 
-  // 1. กรองเฉพาะคนที่เป็นผู้เข้าร่วมจริง (APPROVED)
   const approvedAttendees = currentActivity.joinRequests?.filter(req => req.status === 'APPROVED') || [];
   const attendeesCount = approvedAttendees.length;
 
-  // 2. คำนวณที่ว่างที่เหลือจริง
   const maxParticipants = Number(currentActivity?.maxParticipants) || 0;
   const spotsLeft = maxParticipants - attendeesCount;
   const isFull = maxParticipants > 0 && spotsLeft <= 0;
 
-  // 3. เช็คว่าเรา (User) จอยหรือยัง
   const isJoined = approvedAttendees.some(
     (item) => (item.userId || item.user?.id) === storeUser?.id
   );
 
-  // 4. ฟังก์ชันช่วยจัดการ URL รูปภาพให้โชว์ติดทน
   const getFullImgPath = (path) => {
     if (!path) return defaultProfile;
     if (typeof path !== 'string' || path.startsWith('data:') || path.startsWith('http')) {
@@ -90,29 +87,15 @@ function ActivityDetails() {
     return `${BACKEND_URL}${path}`;
   };
 
-  const hdlJoin = async () => {
-    if (!storeUser) {
-      alert("Please Log in before join any activity");
-      return;
-    }
-    try {
-      setLoadingJoin(true);
-      // เรียก API สำหรับ Join (ใช้ Instance mainApi โดยตรงตามเงื่อนไขห้ามแก้ไฟล์อื่น)
-      await mainApi.post(`/activity/join/${actid}`);
+  const hdlEdit = () => {
+    console.log('mockedit')
 
-      alert("Waiting to be approved");
+  };
 
-      // ดึงข้อมูลกิจกรรมใหม่เพื่ออัปเดตรายชื่อผู้เข้าร่วมและจำนวนที่ว่าง
-      await getActivityById(actid);
-    } catch (error) {
-      console.error("Join Error:", error);
-      const errorMsg = error.response?.data?.message || "Activity Unavailable";
-      alert(errorMsg);
-    } finally {
-      setLoadingJoin(false);
-    }
-  }
+  const hdlDelete = () => {
+    console.log('mockdel')
 
+  };
 
   return (
     <div className="min-h-screen bg-base-200 text-neutral pb-28">
@@ -289,12 +272,15 @@ function ActivityDetails() {
 
           </div>
         </div>
+
+        <button type="button" onClick={()=>DeleteSwal({ currentActivity, hdlDelete })} className="w-full flex items-center justify-center hover:underline">
+          Delete this activity</button>
+        
       </main>
 
       {/* Action Footer */}
       <div className="fixed bottom-0 left-0 w-full p-6 z-40 bg-linear-to-t from-base-200 via-base-200 to-transparent">
-        <button onClick={hdlJoin}
-        disabled={loadingJoin || isJoined || isFull}
+        <button onClick={hdlEdit}
         className={`w-full max-w-2xl flex items-center justify-center gap-3 px-8 py-4 rounded-[25px] font-black text-xl  active:scale-95 transition-all border-b-4
           ${isJoined
             ? "bg-linear-to-r from-success to-secondary text-white"
@@ -303,23 +289,11 @@ function ActivityDetails() {
               : "bg-linear-to-r from-primary to-secondary text-white border-primary-focus hover:scale-[1.05]"
           }`}
       >
-        {loadingJoin ? (
-          <span className="loading loading-spinner"></span>
-        ) : isJoined ? (
-          <>
-            <span className="text-2xl">✔</span> JOINED
-         </>
-        ) : isFull ? (
-          "Full"
-        ) : (
-          <>
-            <span className="text-2xl">👋</span> JOIN
-          </>
-        )}
+        Confirm Edit
         </button>
       </div>
     </div>
   );
 }
 
-export default ActivityDetails;
+export default EditActivityDetails;

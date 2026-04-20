@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { LeftIcon, PhotoIcon } from "../../icons";
 import { useNavigate } from "react-router";
-import MapModal from "../../components/MapModal";
+import MapModal from "../../components/map/MapModal";
 import useActivityStore from "../../stores/activitiesStore";
 import useUserStore from "../../stores/userStore";
+import Swal from "sweetalert2";
 
 function CreateActivity() {
   const navigate = useNavigate();
@@ -18,18 +19,18 @@ function CreateActivity() {
   };
 
   const [isMapOpen, setIsMapOpen] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState("");
-  const hdlConfirmLocation = () => {
-    setSelectedLocation("Benchakitti Park, Bangkok");
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const hdlConfirmLocation = (addressData) => {
+    setSelectedLocation(addressData);
     setIsMapOpen(false);
   };
 
   const [selectedCategory, setSelectedCategory] = useState("HEALTH");
   const categoryList = [
-    { id: "HEALTH", title: "Health", icon: "💪" },
-    { id: "ENTERTAINMENT", title: "Entertainment", icon: "🎭" },
-    { id: "ART", title: "Art", icon: "🎨" },
-    { id: "FOOD", title: "Food", icon: "🍱" },
+    { id: "HEALTH", title: "Health & Wellness", icon: "💪" },
+    { id: "ENTERTAINMENT", title: "Chill & Hangout", icon: "🎭" },
+    { id: "ART", title: "Creative", icon: "🎨" },
+    { id: "FOOD", title: "Foodies", icon: "🍱" },
     { id: "TRAVEL", title: "Travel", icon: "✈️" },
   ];
 
@@ -43,30 +44,70 @@ function CreateActivity() {
     setDescription(value)
   }
 
-  const user = useUserStore((st) => st.user);
+  const [file, setFile] = useState(null)
+  const [preview, setPreview] = useState(null)
+
+  const hdlActivityImage = (e) => {
+    const selectFile = e.target.files[0]
+    if (selectFile) {
+      if (preview) {
+        URL.revokeObjectURL(preview)
+      }
+      const newPreviewUrl = URL.createObjectURL(selectFile);
+
+    setFile(selectFile)
+    // console.log('selectFile', selectFile)
+    // console.log('File', file)
+    setPreview(newPreviewUrl)
+    // console.log('newPreviewUrl', newPreviewUrl)
+    }
+  }
+
+  const [eventStartTime, setEventStartTime] = useState("");
+  const [eventEndTime, setEventEndTime] = useState("");
+  const [hasEndTime, setHasEndTime] = useState(false);
+
+  // const user = useUserStore((st) => st.user);
   const Adata = {
-    hostId: user.id,
+    // hostId: user.id,
     isPublic: groupStatus,
-    coverPhoto:
-      "https:res.cloudinary.com/piecahcih/image/upload/v1774345102/1amannlIMG1_kf4hqs.webp",
-    placeId: 1,
+    coverPhoto: file,
+    // placeId: 1,
+    placeName: selectedLocation?.placeName,
+    address: selectedLocation?.address,
+    latitude: selectedLocation?.latitude,
+    longitude: selectedLocation?.longitude,
     title: title,
-    eventStartTime: new Date("2027-09-19T13:00:00"),
+    eventStartTime: new Date(eventStartTime),
+    ...(eventEndTime && { eventEndTime: new Date(eventEndTime) }),
     category: selectedCategory,
     description: description,
+    blob: preview
   };
 
-  // if(eventEndTime){
-  //   Adata.eventEndTime = eventEndTime
-  // }
-
-  // const { coverPhoto,category,title,description,eventStartTime,eventEndTime,placeId } = req.body
 
   const hdlPreCreateActivity = (e, Adata) => {
     e.preventDefault();
-    useActivityStore.getState().setCreatingActivity(Adata);
 
-    navigate("/create-showcreate");
+    if (!Adata.title || !Adata.coverPhoto || !Adata.address || !Adata.description || !eventStartTime) {
+      Swal.fire({
+        title: '<h2 class="text-[20px] font-bold text-neutral leading-tight">Please input all fields</h2>',
+        confirmButtonColor: "#FC5100",
+        width: '300px',  
+        padding: '1em',  
+      });
+
+      return
+    }
+
+    try {
+      useActivityStore.getState().setCreatingActivity(Adata);
+      // console.log('Adata', Adata)
+  
+      navigate("/create-showcreate");   
+    } catch (error) {
+        console.error("Local state error:", error)
+    }
   };
 
   const lblTitleStyle = "text-[18px] font-bold text-neutral";
@@ -131,19 +172,23 @@ function CreateActivity() {
             </div>
           </div>
 
-          {/* Hero Section/Image Upload */}
+          {/* Image Upload */}
           <section className="relative group">
             <h3 className={lblTitleStyle}>Add Cover Photo</h3>
             <div className="w-full h-40 rounded-2xl overflow-hidden bg-base-300 relative">
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#fcdfd4]/50 backdrop-blur-sm transition-all group-hover:backdrop-blur-none">
-                <div
-                  onClick={() => document.getElementById("fileInput").click()}
-                  className="absolute inset-0 flex flex-col items-center justify-center border-2 border-[#e09c99]/20 rounded-2xl transition-opacity duration-300"
-                >
-                  <PhotoIcon className="text-white w-10 h-10" />
-                </div>
-                <input type="file" id="fileInput" className="hidden" />
-                {/* onChange={hdlFileChange} */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#e8dcd8]/50 backdrop-blur-sm transition-all group-hover:backdrop-blur-none">
+                {preview ? (
+                  <img src={preview} alt="preview image" className="w-full" />
+                ):(
+                  <div
+                    onClick={() => document.getElementById("fileInput").click()}
+                    className="absolute inset-0 flex flex-col items-center justify-center border-2 border-[#e09c99]/20 rounded-2xl transition-opacity duration-300"
+                  >
+                    <PhotoIcon className="text-white w-10 h-10" />
+                  </div>
+                )}
+
+                <input type="file" id="fileInput" className="hidden" onChange={hdlActivityImage} /> 
               </div>
             </div>
           </section>
@@ -151,7 +196,6 @@ function CreateActivity() {
           {/* Location */}
           <div>
             <label className={lblTitleStyle}>Location</label>
-
             <button
               type="button"
               onClick={() => setIsMapOpen(true)}
@@ -163,7 +207,7 @@ function CreateActivity() {
 
               <div className="w-full pl-14 pr-6 py-3 rounded-full bg-white text-left ring-2 ring-[#e09c99]/20 group-hover:ring-[#e09c99]/40 group-focus:ring-[#a83100] transition-all text-neutral placeholder:text-[#834c4b]/40">
                 <span className="text-[#834c4b]/40">
-                  {selectedLocation || "Select a location"}
+                  {selectedLocation?.placeName || "Select a location"}
                 </span>
               </div>
             </button>
@@ -178,10 +222,42 @@ function CreateActivity() {
                   </span>
                   <input
                     className="w-full pl-14 pr-4 py-3 rounded-full bg-white border-none ring-2 ring-[#e09c99]/20 focus:ring-[#a83100] transition-all outline-none text-neutral text-sm"
-                    placeholder="Oct 24, 2023"
                     type="datetime-local"
+                    value={eventStartTime}
+                    onChange={(e) => setEventStartTime(e.target.value) }
                   />
             </div>
+
+            {!hasEndTime ? (
+              <button type='button' onClick={()=>setHasEndTime(true)} 
+                className="w-full flex justify-end px-2.5 py-1 text-[12px] text-[#a83100] opacity-60 hover:opacity-100">
+                + Add End Date & Time
+              </button>
+            ):(
+              <div className="">
+                {/* <label className={lblTitleStyle}>End Date & Time</label> */}
+                <div className="relative mt-2">
+                  <span className="absolute left-5 top-1/2 -translate-y-1/2 text-xl pointer-events-none">🏁</span>
+                  <input
+                    type="datetime-local"
+                    value={eventEndTime}
+                    onChange={(e) => setEventEndTime(e.target.value)}
+                    min={eventStartTime} 
+                    className="w-full pl-14 pr-4 py-3 rounded-full bg-white border-none ring-2 ring-[#e09c99]/20 focus:ring-[#a83100] transition-all outline-none text-neutral text-sm"
+                  />
+                </div>
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      setHasEndTime(false)
+                      setEventEndTime("")
+                    }}
+                    className="w-full px-2.5 py-1 flex justify-end text-[12px] text-[#a83100] opacity-60 hover:opacity-100"
+                  >
+                    Remove ✕
+                  </button>
+              </div>              
+            )}
           </div>
 
 
@@ -232,7 +308,7 @@ function CreateActivity() {
           </div>
 
           <div className="pt-4 pb-12">
-            <button className="w-full py-4 rounded-full bg-linear-to-r from-primary to-secondary text-white font-bold text-lg shadow-[0_8px_32px_rgba(168,49,0,0.24)] active:scale-95 transition-all">
+            <button className="w-full py-4 rounded-full bg-linear-to-r from-primary to-secondary text-white font-bold text-lg shadow-[0_8px_32px_rgba(168,49,0,0.24)] active:scale-95 transition-all hover:scale-[1.05]">
               Create Activity
             </button>
           </div>

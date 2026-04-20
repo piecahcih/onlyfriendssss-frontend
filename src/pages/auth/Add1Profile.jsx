@@ -37,7 +37,7 @@ function Add1Profile() {
       if (preview) URL.revokeObjectURL(preview)
       const newPreviewUrl = URL.createObjectURL(selectFile)
       setFile(selectFile)
-      setPreview(newPreviewUrl)
+    setPreview(newPreviewUrl)
     }
   }
 
