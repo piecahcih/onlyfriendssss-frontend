@@ -1,102 +1,204 @@
-import { useState } from "react";
-import { MicIcon, Notification, SearchIcon } from "../icons";
-import NotificationModal from "../components/NotificationModal";
-import { useRef, useEffect } from "react";
-import mapboxgl from "mapbox-gl";
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { format } from "date-fns";
+import { useMapHandler } from "../hooks/useGeolocation";
+import { useActivityMarkers } from "../hooks/useActivityMarkers";
+import useActivityStore from "../stores/activitiesStore";
+import useUserStore from "../stores/userStore";
+import NotificationModal from "../components/NotificationModal";
+import { SearchIcon, Notification, LocationIcon, CalendarIcon, YourLocationIcon } from "../icons";
 
-function LDDiscover() {
-  const mapRef = useRef();
-  const mapContainerRef = useRef();
+const BACKEND_URL = "http://localhost:3999";
 
-  useEffect(() => {
-    mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
-    mapRef.current = new mapboxgl.Map({
-      container: mapContainerRef.current,
-      center: [100.53499383276497, 13.758571505785834],
-      zoom: 15,
-    });
+const LDDiscover = () => {
+  const navigate = useNavigate();
+  const { mapContainerRef, mapRef, hdlGetCurrentLocation } = useMapHandler();
 
-    return () => {
-      mapRef.current.remove();
-    };
-  }, []);
+  const activities = useActivityStore((state) => state.activities) || [];
+  const getAllCurrentActivities = useActivityStore(
+    (state) => state.getAllCurrentActivities,
+  );
+  const getActivityByCategory = useActivityStore(
+    (state) => state.getActivityByCategory,
+  );
+  const user = useUserStore((state) => state.user);
 
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [notiOpen, setNotiOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const categoryList = [
     { id: "all", title: "All", icon: "✨" },
-    { id: "health", title: "Health & Wellness", icon: "💪" },
-    { id: "entertainment", title: "Chill & Hangout", icon: "🎭" },
-    { id: "art", title: "Creative", icon: "🎨" },
-    { id: "food", title: "Foodies", icon: "🍱" },
+    { id: "health", title: "Health", icon: "💪" },
+    { id: "entertainment", title: "Relax", icon: "🎭" },
+    { id: "art", title: "Art", icon: "🎨" },
+    { id: "food", title: "Food", icon: "🍱" },
     { id: "travel", title: "Travel", icon: "✈️" },
   ];
-  const [notiOpen, setNotiOpen] = useState(false);
+
+  // 1. Fetch Data logic
+  useEffect(() => {
+    selectedCategory === "all"
+      ? getAllCurrentActivities()
+      : getActivityByCategory(selectedCategory);
+  }, [selectedCategory, getAllCurrentActivities, getActivityByCategory]);
+
+  // 2. Filter logic
+  const filteredActivities = activities.filter(
+    (act) =>
+      act.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      act.place?.placeName?.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
+
+  // 3. Using the Hook for Markers
+  useActivityMarkers(mapRef, filteredActivities);
+
+  const getFullImgPath = (path) => {
+    if (!path)
+      return "https://api.dicebear.com/8.x/avataaars/svg?seed=onlyfriends";
+    if (
+      typeof path !== "string" ||
+      path.startsWith("data:") ||
+      path.startsWith("http")
+    )
+      return path;
+    return `${BACKEND_URL}${path.startsWith("/") ? "" : "/"}${path}`;
+  };
 
   return (
-    <div className="relative h-screen w-full overflow-hidden bg-base-200">
+    <div className="relative h-screen w-full overflow-hidden bg-gray-100 font-sans">
       <div
-        id="map-container"
         ref={mapContainerRef}
-        className="absolute inset-0 z-0"
-        style={{ width: "100%", height: "100%" }}
+        className="absolute inset-0 z-0 h-full w-full"
       />
 
-      <main className="absolute inset-0 z-10 pt-8 px-6 pointer-events-none">
+      {/* UI Overlay Area */}
+      <div className="absolute top-8 left-0 right-0 px-6 z-20 pointer-events-none">
         <div className="max-w-2xl mx-auto space-y-4">
-          {/* Search Bar  */}
-          <div className="flex items-center justify-between gap-3 pointer-events-auto">
-            <div className="relative flex-1 group">
-              <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-                <SearchIcon className="w-5 text-on-surface/40" />
-              </div>
+          <div className="flex gap-3 pointer-events-auto">
+            <div className="relative flex-1">
+              <SearchIcon className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 w-5" />
               <input
-                className="w-full bg-white/90 backdrop-blur-md border-none outline-none ring-2 ring-[#e09c99]/20 focus:ring-primary py-3 pl-14 pr-14 rounded-full font-body text-lg shadow-xl transition-all placeholder:text-on-surface/40"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-white/95 backdrop-blur-md rounded-full py-3.5 pl-14 pr-12 shadow-xl outline-none border-none ring-1 ring-black/5"
                 placeholder="Find your vibe..."
-                type="text"
               />
-              <div className="absolute inset-y-0 right-5 flex items-center pointer-events-none">
-                <MicIcon className="w-6 text-on-surface/40" />
-              </div>
             </div>
-
             <button
               onClick={() => setNotiOpen(true)}
-              className="relative p-4 rounded-full bg-white/90 backdrop-blur-md ring-2 ring-[#e09c99]/20 shadow-xl active:scale-95 transition-all"
+              className="bg-white/95 backdrop-blur-md p-4 rounded-full shadow-xl"
             >
-              <Notification className="w-6 h-6" />
-              <span className="absolute top-2 right-2 w-5 h-5 bg-primary flex items-center justify-center text-[10px] font-bold text-white border-2 border-white rounded-full">
-                1
-              </span>
+              <Notification className="w-6 h-6 text-gray-600" />
             </button>
           </div>
 
-          {/* Categories Section */}
-          <section className="pointer-events-auto">
-            <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide -mx-2 px-2 no-scrollbar">
-              {categoryList.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setSelectedCategory(cat.id)}
-                  className={`shrink-0 px-5 py-2 rounded-3xl font-bold text-sm flex items-center gap-2 transition-all duration-300 shadow-lg
-                                      ${
-                                        selectedCategory === cat.id
-                                          ? "bg-primary text-white"
-                                          : "bg-white/90 backdrop-blur-md text-on-surface/60 hover:bg-white"
-                                      }`}
-                >
-                  <span className="text-lg">{cat.icon}</span>
-                  {cat.title}
-                </button>
-              ))}
-            </div>
-          </section>
+          <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar pointer-events-auto">
+            {categoryList.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setSelectedCategory(cat.id)}
+                className={`shrink-0 px-6 py-2.5 rounded-full font-bold text-sm flex items-center gap-2 transition-all shadow-lg
+                  ${selectedCategory === cat.id ? "bg-primary text-white scale-105" : "bg-white/95 backdrop-blur-md text-gray-600"}`}
+              >
+                <span>{cat.icon}</span> {cat.title}
+              </button>
+            ))}
+          </div>
         </div>
-      </main>
+      </div>
+
+      {/* <button
+        onClick={() => hdlGetCurrentLocation(getFullImgPath(user?.profileImg))}
+        className="absolute bottom-[260px] right-1 z-20 bg-white p-4 rounded-full shadow-2xl border-2 border-primary/20 active:scale-90 transition-all"
+      >
+        <LocationIcon className="w-7 h-7 text-primary" />
+      </button> */}
+          <button 
+            onClick={() => hdlGetCurrentLocation(getFullImgPath(user?.profileImg))}
+            className="absolute bottom-30 right-3 p-1.5 bg-white rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:bg-gray-50 active:scale-95 transition-all border border-base-200 flex items-center justify-center group"
+            title="Go to current location"
+          >
+            <YourLocationIcon className="w-7 h-7 text-primary group-hover:rotate-12 transition-transform" />
+          </button>
+
+      {/* Bottom Sheet UI */}
+      <motion.div
+        drag="y"
+        dragConstraints={{ top: 0, bottom: 0 }}
+        dragElastic={0.1}
+        dragMomentum={false}
+        onDragEnd={(_, info) => {
+          if (info.offset.y < -50) setIsExpanded(true);
+          else if (info.offset.y > 50) setIsExpanded(false);
+        }}
+        animate={{ y: isExpanded ? "-60vh" : "0vh" }}
+        className="fixed inset-x-0 bottom-0 z-30 bg-white rounded-t-[40px] shadow-[0_-12px_40px_rgba(0,0,0,0.15)] flex flex-col pointer-events-auto"
+        style={{ height: "78vh", marginBottom: "-62vh" }}
+      >
+        <div
+          className="w-full flex justify-center py-5 cursor-grab active:cursor-grabbing touch-none"
+          onClick={() => setIsExpanded(!isExpanded)}
+        >
+          <div className="w-12 h-1.5 bg-gray-200 rounded-full" />
+        </div>
+        <div className="px-8 pb-5 flex justify-between items-end border-b border-gray-50">
+          <div>
+            <h2 className="text-xl font-bold text-gray-800 tracking-tight">
+              Discovery Activities
+            </h2>
+            <p className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">
+              {filteredActivities.length} Results
+            </p>
+          </div>
+        </div>
+        <div className="flex-1 overflow-y-auto px-6 pt-4 pb-32 space-y-4 bg-white">
+          <AnimatePresence>
+            {filteredActivities.map((act) => (
+              <motion.div
+                layout
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                key={act.id}
+                onClick={() => navigate(`/activity-details?actid=${act.id}`)}
+                className="flex gap-4 p-4 bg-gray-50 rounded-2xl border border-gray-100 cursor-pointer active:scale-95 transition-transform"
+              >
+                <img
+                  src={act.coverPhoto || "https://via.placeholder.com/150"}
+                  className="w-20 h-20 rounded-xl object-cover shadow-sm"
+                  alt="cover"
+                />
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-800 line-clamp-1">
+                    {act.title}
+                  </h3>
+                  <div className="flex items-center gap-2 text-[11px] text-gray-500 mt-2 font-medium">
+                    <CalendarIcon className="w-3.5 text-primary" />
+                    <span>
+                      {act.eventStartTime
+                        ? format(new Date(act.eventStartTime), "dd MMM • HH:mm")
+                        : "TBD"}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-[11px] text-gray-500 mt-1.5 font-medium">
+                    <LocationIcon className="w-3.5 text-primary" />
+                    <span className="line-clamp-1">
+                      {act.place?.placeName || "Location N/A"}
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+      </motion.div>
 
       <NotificationModal isOpen={notiOpen} onClose={() => setNotiOpen(false)} />
     </div>
   );
-}
+};
 
 export default LDDiscover;

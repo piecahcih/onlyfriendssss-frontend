@@ -59,11 +59,6 @@ function Activities() {
 
     const [notiOpen, setNotiOpen] = useState(false)
 
-    const [haveLike, setHaveLike] = useState(false)
-    const hdlLikeClick = async (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-    }
 
 
 
