@@ -6,7 +6,8 @@ function ProfilePic(props) {
   return (
     <div className="avatar items-center cursor-pointer">
         <div {...restProps}>
-            <img src={imgSrc ? imgSrc : defaultProfile} alt="avatar" 
+            <img src={imgSrc ? imgSrc : defaultProfile} alt="avatar"
+
              onError={(e) => {
              if (e.target.src !== defaultProfile) {
              e.target.src = defaultProfile;

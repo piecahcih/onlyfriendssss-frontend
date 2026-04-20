@@ -184,7 +184,7 @@ const Profile = () => {
               <form onSubmit={handleSave} className="space-y-5">
                 <div className="flex flex-col items-center mb-4">
                   <div className="relative group">
-                    <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-primary/10 shadow-inner bg-gray-50">
+                    <div className="w-10 h-10 rounded-full overflow-hidden border-4 border-primary/10 shadow-inner bg-gray-50">
                       <ProfilePic
                         imgSrc={
                           previewImage || getFullImgPath(editForm?.profileImg)

@@ -40,7 +40,9 @@ const LDDiscover = () => {
     { id: "food", title: "Foodies", icon: "🍱" },
     { id: "travel", title: "Travel", icon: "✈️" },
   ];
-  const [isExpanded, setIsExpanded] = useState(false);
+  // const [isExpanded, setIsExpanded] = useState(false);
+  const [step, setStep] = useState("half");
+  const yPosition = step === "half" ? "0%" : "-60vh";
 
   const [searchText, setSearchText] = useState("");
   const [suggestOpen, setSuggestOpen] = useState(false);
@@ -53,22 +55,28 @@ const LDDiscover = () => {
     // console.log("activities", activities);
   }, [selectedCategory]);
 
+  // useEffect(() => {
+  //   if (hdlGetCurrentLocation) {
+  //     hdlGetCurrentLocation(getFullImgPath(user?.profileImg))
+  //   }
+  // }, [hdlGetCurrentLocation, user?.profileImg])
+
   const activitySuggestions = Array.isArray(activities)
     ? activities
-        .filter((act) =>
-          act.title.toLowerCase().includes(searchText.toLowerCase()),
-        )
-        .slice(0, 3)
+      .filter((act) =>
+        act.title.toLowerCase().includes(searchText.toLowerCase()),
+      )
+      .slice(0, 3)
     : [];
 
   const location = [...new Set(activities.map((act) => act.place?.placeName))];
 
   const locationSuggestions = Array.isArray(activities)
     ? location
-        .filter((placeName) =>
-          placeName?.toLowerCase().includes(searchText.toLowerCase()),
-        )
-        .slice(0, 3)
+      .filter((placeName) =>
+        placeName?.toLowerCase().includes(searchText.toLowerCase()),
+      )
+      .slice(0, 3)
     : [];
 
   // Filter logic
@@ -77,9 +85,9 @@ const LDDiscover = () => {
       ? selectedCategory === "all"
         ? activities
         : activities.filter(
-            (act) =>
-              act.category?.toLowerCase() === selectedCategory.toLowerCase(),
-          )
+          (act) =>
+            act.category?.toLowerCase() === selectedCategory.toLowerCase(),
+        )
       : []
   ).filter(
     (act) =>
@@ -111,7 +119,7 @@ const LDDiscover = () => {
         className="absolute inset-0 z-0 h-full w-full"
       />
 
-      <div className="absolute top-8 left-0 right-0 px-6 z-40 pointer-events-none">
+      <div className="absolute top-8 left-0 right-0 px-6 z-40 ">
         <div className="max-w-2xl mx-auto space-y-4">
           {/* Search Bar Section */}
           <div className="flex items-center justify-between gap-3 pointer-events-auto">
@@ -213,11 +221,10 @@ const LDDiscover = () => {
                     setSelectedCategory(cat.id);
                   }}
                   className={`shrink-0 px-5 py-1.5 rounded-3xl font-medium text-sm flex items-center gap-2 transition-all duration-300 active:scale-95
-                                    ${
-                                      selectedCategory === cat.id
-                                        ? "bg-primary text-white shadow-[0_8px_12px_rgba(252,81,0,0.3)]"
-                                        : "bg-white text-on-surface/60 hover:bg-white/80 shadow-sm"
-                                    }`}
+                                    ${selectedCategory === cat.id
+                      ? "bg-primary text-white shadow-[0_8px_12px_rgba(252,81,0,0.3)]"
+                      : "bg-white text-on-surface/60 hover:bg-white/80 shadow-sm"
+                    }`}
                 >
                   <span className="text-lg">{cat.icon}</span>
                   {cat.title}
@@ -239,21 +246,28 @@ const LDDiscover = () => {
 
       {/* Bottom Sheet UI */}
       <motion.div
+        initial={false}
+        animate={{ y: yPosition }}
+        transition={{ type: "spring", damping: 25, stiffness: 200 }}
         drag='y'
-        dragConstraints={{ top: 0, bottom: 0 }}
-        dragElastic={0.05}
-        dragMomentum={false}
+        dragConstraints={{ top: -500, bottom: 0 }}
+        dragElastic={0.1}
         onDragEnd={(_, info) => {
-          if (info.offset.y < -50) setIsExpanded(true);
-          else if (info.offset.y > 50) setIsExpanded(false);
+          const { y } = info.offset;
+          if (step === "half") {
+            if (y < -50) setStep("high");
+          } else if (step === "high") {
+            if (y > 50) setStep("half");
+          }
         }}
-        animate={{ y: isExpanded ? "-60vh" : "0vh" }}
+
         className="fixed inset-x-0 bottom-0 z-30 bg-white rounded-t-[40px] shadow-[0_-12px_40px_rgba(0,0,0,0.15)] flex flex-col pointer-events-auto"
         style={{ height: "78vh", marginBottom: "-62vh" }}
       >
         <div
-          className="w-full flex justify-center py-5 cursor-grab active:cursor-grabbing touch-none"
-          onClick={() => setIsExpanded(!isExpanded)}
+          className="w-full flex justify-center py-5 cursor-grab active:cursor-grabbing touch-pan-y"
+
+          onClick={() => setStep(step === "half" ? "high" : "half")}
         >
           <div className="w-12 h-1.5 bg-gray-200 rounded-full" />
         </div>
