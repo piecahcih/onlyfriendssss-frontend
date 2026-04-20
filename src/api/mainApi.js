@@ -55,6 +55,13 @@ export const editProfileApi = (formData) => mainApi.patch("/account/profile", fo
 export const deleteProfileApi = (id) => mainApi.delete("/account/profile", id)
 
 
+////////JOIN ACTIVITY (เพิ่มใหม่ตรงนี้)
+export const joinActivityApi = (activityId) => mainApi.post("/join", { activityId });
+export const manageJoinRequestApi = (requestId, status) => mainApi.patch("/join/manage-request", { requestId, status
+      });
+export const leaveActivityApi = (activityId) => mainApi.delete(`/join/leave/${activityId}`);
+
+
 
 ////////ACTIVITIES
 export const getAllCurrentActivitiesApi = () => mainApi.get("/activity")

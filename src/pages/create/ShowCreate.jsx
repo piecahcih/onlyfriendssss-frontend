@@ -38,10 +38,10 @@ function ShowCreate() {
         formData.append("latitude", creatingActivity.latitude);
         formData.append("longitude", creatingActivity.longitude);
         formData.append("isPublic", creatingActivity.isPublic);
-        formData.append("eventStartTime", creatingActivity.eventStartTime.toISOString());
+        formData.append("eventStartTime", new Date(creatingActivity.eventStartTime).toISOString());
   
         if (creatingActivity.eventEndTime) {
-            formData.append("eventEndTime", creatingActivity.eventEndTime.toISOString());
+            formData.append("eventStartTime", new Date(creatingActivity.eventStartTime).toISOString());
         }
   
         if (creatingActivity.coverPhoto) {
