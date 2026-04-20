@@ -23,12 +23,12 @@ function ShowCreate() {
     // console.log('creatingActivity', creatingActivity)
 
 
-    const hdlCreateActivity = async (e) => {
+const hdlCreateActivity = async (e) => {
       e.preventDefault()
       setIsCreating(true)
       try {
         const formData = new FormData();
-  
+
         formData.append("title", creatingActivity.title);
         formData.append("description", creatingActivity.description);
         formData.append("category", creatingActivity.category);
@@ -38,18 +38,22 @@ function ShowCreate() {
         formData.append("latitude", creatingActivity.latitude);
         formData.append("longitude", creatingActivity.longitude);
         formData.append("isPublic", creatingActivity.isPublic);
-        formData.append("eventStartTime", creatingActivity.eventStartTime.toISOString());
-  
+        formData.append("eventStartTime", new Date(creatingActivity.eventStartTime).toISOString());
+
         if (creatingActivity.eventEndTime) {
-            formData.append("eventEndTime", creatingActivity.eventEndTime.toISOString());
+            formData.append("eventEndTime", new Date(creatingActivity.eventEndTime).toISOString());
         }
-  
+
+        if (creatingActivity.maxParticipants) {
+            formData.append("maxParticipants", creatingActivity.maxParticipants);
+        }
+
         if (creatingActivity.coverPhoto) {
             formData.append("coverPhoto", creatingActivity.coverPhoto); 
         }
-  
+
         await useActivityStore.getState().createActivity(formData)
-        
+
         navigate('/')
         Swal.fire({
           title: '<h2 class="text-[24px] font-bold text-neutral leading-tight">Activity Created Successfully</h2>',
@@ -60,16 +64,12 @@ function ShowCreate() {
         
       } catch (error) {
         setIsCreating(false)
-        const errMsg = error.response?.data?.message || "Create activity error"
-        console.error(errMsg)
+        console.error(error)
       }
 
     }
     
     const [groupStatus, setGroupStatus] = useState(creatingActivity.isPublic)
-    const hdlPrivacyStatus = () => {
-      // setGroupStatus(creatingActivity.isPublic)
-    }
 
   const categoryList = [
     { id: "HEALTH", title: "Health & Wellness", icon: "💪" },
@@ -106,7 +106,7 @@ function ShowCreate() {
 
           <div className="flex gap-3 pb-4">
             {/* Public Badge / Privacy */}
-              <button type='button' onClick={()=>hdlPrivacyStatus()}>
+              <button type='button' disabled>
                   {groupStatus === true ? 
                       <div className="flex items-center justify-between text-[14px] px-3 py-1 rounded-full bg-secondary w-fit">                        
                           <div className="flex items-center gap-2">
@@ -133,6 +133,7 @@ function ShowCreate() {
             <img src={creatingActivity.blob} alt="activityIMG" className='w-full object-contain' />
           </div>
 
+
           {/* Activity Name */}
           <div className="mt-2">
             <label className="text-[22px] font-bold text-neutral">
@@ -140,18 +141,24 @@ function ShowCreate() {
             </label>
           </div>
 
+
           {/* Date & Time Row */}
           <h3 className="">
             <span className=" text-xl">📅</span> {format(new Date(creatingActivity.eventStartTime), 'eee, dd MMM yyyy, HH:mm')}
-            {creatingActivity.eventEndTime && (format(new Date(creatingActivity.eventEndTime), ' - HH:mm'))}
+            {creatingActivity.eventEndTime && (format(new Date(creatingActivity.eventEndTime), ' - eee, dd MMM yyyy, HH:mm'))}
           </h3>
-          
 
+          
           {/* Notes */}
           <p className="font-light my-5 leading-relaxed">{creatingActivity.description}</p>
 
+          {/* maxParticipants */}
+          <p className="font-light my-5 leading-relaxed">
+             {creatingActivity.maxParticipants && (`Max ${creatingActivity.maxParticipants} Participants`)} 
+          </p>
+
           {/* Location Section */}
-          <div className="space-y-4">
+          <div className="space-y-4 mt-5">
             <div className="flex items-start gap-3">
               <span className="text-2xl">📍</span>
               <div className="flex flex-col">
