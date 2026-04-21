@@ -17,9 +17,11 @@ import Welcome from "../pages/Welcome";
 import Friendlist from "../pages/Friends/Friendlist";
 import NonavLayout from "../layouts/NonavLayout";
 import ActivityDetails from "../pages/ActivityDetails";
-import LocationReview from "../pages/reviews/LocationReview";
+import LocationReview from "../pages/reviews/ActivitiesReview";
 import EditActivityDetails from "../pages/EditActivityDetails";
-import AiLocationReview from "../../todsob/AImockReview";
+import ActivitiesReview from "../pages/reviews/ActivitiesReview";
+import PeerReview from "../pages/reviews/PeerReview";
+import MemoryActivityDetails from "../pages/reviews/MemoryActivityDetails";
 
 const guestRouter = createBrowserRouter([
   {
@@ -60,7 +62,7 @@ const userRouter = createBrowserRouter([
     element: <UserLayout />,
     children: [
       {
-        path: "lddiscover",
+        index: true,
         element: <LDDiscover />,
       },
       {
@@ -68,12 +70,16 @@ const userRouter = createBrowserRouter([
         element: <Activities />,
       },
       {
-        path: "reviews-location",
-        element: <LocationReview />,
+        path: "reviews-peer",
+        element: <PeerReview />,
       },
       {
-        path: "ai",
-        element: <AiLocationReview />,
+        path: "reviews-activities",
+        element: <ActivitiesReview />,
+      },
+      {
+        path: "location-reviews",
+        element: <LocationReview />,
       },
       {
         path: "profile",
@@ -90,7 +96,7 @@ const userRouter = createBrowserRouter([
     element: <NonavLayout />,
     children: [
       {
-        index: true,
+        path: "welcome",
         element: <Welcome />,
       },
       {
@@ -116,6 +122,10 @@ const userRouter = createBrowserRouter([
       {
         path: "edit-activity-details",
         element: <EditActivityDetails />,
+      },
+      {
+        path: "memory-activity-details",
+        element: <MemoryActivityDetails />,
       },
     ],
   },
