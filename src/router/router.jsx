@@ -19,6 +19,7 @@ import NonavLayout from "../layouts/NonavLayout";
 import ActivityDetails from "../pages/ActivityDetails";
 import LocationReview from "../pages/reviews/LocationReview";
 import EditActivityDetails from "../pages/EditActivityDetails";
+import AiLocationReview from "../../todsob/AImockReview";
 
 const guestRouter = createBrowserRouter([
   {
@@ -69,6 +70,10 @@ const userRouter = createBrowserRouter([
       {
         path: "reviews-location",
         element: <LocationReview />,
+      },
+      {
+        path: "ai",
+        element: <AiLocationReview />,
       },
       {
         path: "profile",
