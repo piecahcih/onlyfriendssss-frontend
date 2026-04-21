@@ -20,6 +20,7 @@ import ActivityDetails from "../pages/ActivityDetails";
 import LocationReview from "../pages/reviews/ActivitiesReview";
 import EditActivityDetails from "../pages/EditActivityDetails";
 import ActivitiesReview from "../pages/reviews/ActivitiesReview";
+import PeerReview from "../pages/reviews/PeerReview";
 
 const guestRouter = createBrowserRouter([
   {
@@ -68,8 +69,16 @@ const userRouter = createBrowserRouter([
         element: <Activities />,
       },
       {
+        path: "reviews-peer",
+        element: <PeerReview />,
+      },
+      {
         path: "reviews-activities",
         element: <ActivitiesReview />,
+      },
+      {
+        path: "location-reviews",
+        element: <LocationReview />,
       },
       {
         path: "profile",
