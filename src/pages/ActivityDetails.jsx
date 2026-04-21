@@ -7,6 +7,8 @@ import mainApi from "../api/mainApi";
 import { format } from "date-fns";
 import defaultProfile from "../assets/default-profilepic.jpg";
 
+const BACKEND_URL = "http://localhost:3999";
+
 function ActivityDetails() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -29,8 +31,6 @@ function ActivityDetails() {
     { id: "FOOD", title: "Foodies", icon: "🍱" },
     { id: "TRAVEL", title: "Travel", icon: "✈️" },
   ];
-
-  const matchedCategory = categoryList.find((cat) => cat.id === currentActivity.category)
 
   useEffect(() => {
     if (actid) {
@@ -69,8 +69,8 @@ function ActivityDetails() {
     );
   }
 
-  // const matchedCategory = categoryList.find((cat) => cat.id === currentActivity.category);
   // --- LOGIC การคำนวณสถานะ  ---
+  const matchedCategory = categoryList.find((cat) => cat.id === currentActivity.category);
   const isHost = storeUser?.id === currentActivity.hostId;
 
   // 1. แยกรายการคนร่วมกิจกรรม (APPROVED) และ คนที่รออนุมัติ (PENDING)
@@ -102,17 +102,23 @@ function ActivityDetails() {
       alert("Please Log in first");
       return;
     }
+
+     // ถ้าเข้ากลุ่มแล้ว ให้ไปหน้าแชท
+         if (isJoined || isHost) {
+         navigate(`/chat/${currentActivity.title}`);
+          return;
+        }
     try {
       setLoadingJoin(true);
       const res = await joinActivity(actid); // ใช้ฟังก์ชันจาก Store
-
-      if (res.data.data.status === "APPROVED") {
+      const status = res.data?.data?.status || res.data?.status;
+      if (status === "APPROVED")  {
         alert("Joined successfully! 🎉");
       } else {
         alert("Request sent, waiting for host approval.");
       }
     } catch (error) {
-      alert(error.response?.data?.message || "Cannot join this activity");
+      alert("Cannot join this activity");
     } finally {
       setLoadingJoin(false);
     }
