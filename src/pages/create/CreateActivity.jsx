@@ -121,7 +121,7 @@ function CreateActivity() {
     }
   };
 
-  // const creatingActivity = useActivityStore(st=>st.creatingActivity)
+
 
 
   const lblTitleStyle = "text-[18px] font-bold text-neutral";

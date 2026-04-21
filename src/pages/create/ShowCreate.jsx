@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { LeftIcon, LocationIcon, PhotoIcon } from '../../icons'
+import { LeftIcon, LocationIcon } from '../../icons'
 import { useNavigate } from 'react-router'
 import Map, { Marker } from 'react-map-gl/mapbox'
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -20,26 +20,8 @@ function ShowCreate() {
   }
 
   const creatingActivity = useActivityStore(st => st.creatingActivity)
-  console.log('creatingActivitykubbb', creatingActivity)
+  console.log('creatingActivity', creatingActivity)
 
-  const [file, setFile] = useState(null)
-  const [preview, setPreview] = useState(null)
-
-  const hdlActivityImage = (e) => {
-    const selectFile = e.target.files[0]
-    if (selectFile) {
-      if (preview) {
-        URL.revokeObjectURL(preview)
-      }
-      const newPreviewUrl = URL.createObjectURL(selectFile);
-
-      setFile(selectFile)
-      // console.log('selectFile', selectFile)
-      // console.log('File', file)
-      setPreview(newPreviewUrl)
-      // console.log('newPreviewUrl', newPreviewUrl)
-    }
-  }
 
   const hdlCreateActivity = async (e) => {
     e.preventDefault()
@@ -48,7 +30,7 @@ function ShowCreate() {
       const formData = new FormData();
 
       formData.append("title", creatingActivity.title);
-      formData.append("coverPhoto", file);
+      formData.append("coverPhoto", creatingActivity.coverPhoto);
       formData.append("description", creatingActivity.description);
       formData.append("category", creatingActivity.category);
       formData.append("placeName", creatingActivity.placeName || "");
@@ -96,7 +78,7 @@ function ShowCreate() {
   ];
   const selectedCategory = categoryList.find(cat => cat.id === creatingActivity.category)
 
-  const lblTitleStyle = "text-[18px] font-bold text-neutral";
+
   return (
     <div className="min-h-screen bg-base-200 text-neutral pb-28">
 
@@ -145,29 +127,9 @@ function ShowCreate() {
           </div>
 
           {/*Image*/}
-          {/* <div className="w-full h-40 rounded-2xl overflow-hidden bg-base-300 relative border-2 border-[#e09c99]/20">
+          <div className="w-full h-40 rounded-2xl overflow-hidden bg-base-300 relative border-2 border-[#e09c99]/20">
             <img src={creatingActivity.blob} alt="activityIMG" className='w-full object-contain' />
-          </div> */}
-
-          <section className="relative group">
-            <h3 className={lblTitleStyle}>Add Cover Photo</h3>
-            <div className="w-full h-40 rounded-2xl overflow-hidden bg-base-300 relative">
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#e8dcd8]/50 backdrop-blur-sm transition-all group-hover:backdrop-blur-none">
-                {preview ? (
-                  <img src={preview} alt="preview image" className="w-full" />
-                ) : (
-                  <div
-                    onClick={() => document.getElementById("fileInput").click()}
-                    className="absolute inset-0 flex flex-col items-center justify-center border-2 border-[#e09c99]/20 rounded-2xl transition-opacity duration-300"
-                  >
-                    <PhotoIcon className="text-white w-10 h-10" />
-                  </div>
-                )}
-
-                <input type="file" id="fileInput" className="hidden" onChange={hdlActivityImage} />
-              </div>
-            </div>
-          </section>
+          </div>
 
 
           {/* Activity Name */}
