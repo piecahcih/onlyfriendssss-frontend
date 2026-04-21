@@ -93,7 +93,7 @@ function EditActivityDetails() {
       }
 
       await useActivityStore.getState().editActivityById(actid, formData)
-      console.log('formData', formData)
+      // console.log('formData', formData)
 
       navigate('/')
       Swal.fire({
@@ -157,6 +157,10 @@ function EditActivityDetails() {
           <LeftIcon className="w-8 h-8" />
         </button>
 
+        <h1 className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 tracking-[-0.02em] font-bold text-[20px] whitespace-nowrap">
+          Edit Activity
+        </h1>
+
         <button className="text-2xl font-bold text-neutral">•••</button>
 
       </header>
@@ -202,23 +206,6 @@ function EditActivityDetails() {
               {currentActivity.title}
             </h1>
 
-            {/* Host */}
-            {/* <div>
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <img
-                    src={currentActivity.host?.profileImg || defaultProfile}
-                    alt="host"
-                    className="w-12 h-12 rounded-full object-cover border-2 border-primary/20"
-                  />
-                </div>
-                <div>
-                  <p className="text-[10px] text-on-surface/40 font-medium">HOSTED BY</p>
-                  <h4 className="font-bold text-sm">{currentActivity.host?.username}</h4>
-                </div>
-              </div>
-            
-            </div> */}
 
             {/* Description */}
             <p className="text-on-surface/80 leading-relaxed font-medium">
@@ -311,11 +298,13 @@ function EditActivityDetails() {
           </div>
 
           {/* maxParticipants */}
-          <div className="space-y-4 mt-5 bg-white p-5 rounded-[30px] shadow-sm border border-primary/5">
-            <p className="font-light flex gap-4">
-              <span className="font-bold">Max Participants</span>{currentActivity.maxParticipants && (currentActivity.maxParticipants)}
-            </p>
-          </div>
+          {currentActivity.maxParticipants && (
+            <div className="space-y-4 mt-5 bg-white p-5 rounded-[30px] shadow-sm border border-primary/5">
+              <p className="font-light flex gap-4">
+                <span className="font-bold">Max Participants</span>{currentActivity.maxParticipants && (currentActivity.maxParticipants)}
+              </p>
+            </div>
+          )}
 
           <button type="button" onClick={() => DeleteSwal({ currentActivity, hdlDelete })} className="w-full flex items-center justify-center underline">
             Delete this activity</button>
