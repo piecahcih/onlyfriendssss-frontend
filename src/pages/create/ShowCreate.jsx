@@ -30,6 +30,7 @@ const hdlCreateActivity = async (e) => {
         const formData = new FormData();
 
         formData.append("title", creatingActivity.title);
+        formData.append("coverPhoto", creatingActivity.coverPhoto); 
         formData.append("description", creatingActivity.description);
         formData.append("category", creatingActivity.category);
         formData.append("placeName", creatingActivity.placeName || "");
@@ -47,12 +48,9 @@ const hdlCreateActivity = async (e) => {
             formData.append("maxParticipants", creatingActivity.maxParticipants);
         }
 
-        if (creatingActivity.coverPhoto) {
-            formData.append("coverPhoto", creatingActivity.coverPhoto); 
-        }
 
         await useActivityStore.getState().createActivity(formData)
-        console.log('formData', formData)
+        console.log('formData', [...formData.entries()])
 
         navigate('/')
         Swal.fire({
