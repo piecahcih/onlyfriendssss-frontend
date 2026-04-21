@@ -21,6 +21,7 @@ import LocationReview from "../pages/reviews/ActivitiesReview";
 import EditActivityDetails from "../pages/EditActivityDetails";
 import ActivitiesReview from "../pages/reviews/ActivitiesReview";
 import PeerReview from "../pages/reviews/PeerReview";
+import MemoryActivityDetails from "../pages/reviews/MemoryActivityDetails";
 
 const guestRouter = createBrowserRouter([
   {
@@ -121,6 +122,10 @@ const userRouter = createBrowserRouter([
       {
         path: "edit-activity-details",
         element: <EditActivityDetails />,
+      },
+      {
+        path: "memory-activity-details",
+        element: <MemoryActivityDetails />,
       },
     ],
   },
