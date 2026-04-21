@@ -56,7 +56,11 @@ const Profile = () => {
   };
 
   const handleSettingOpen = () => setSettingForm(true);
-  const hdlLogout = () => logout();
+
+  const hdlLogout = () => {
+    sessionStorage.removeItem("hasSeenPremium");
+    logout();
+  }
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -83,7 +87,7 @@ const Profile = () => {
 
       fetchUserProfile();
       setIsEditing(false);
-      setPreviewImage(null); 
+      setPreviewImage(null);
       alert("Data Saved Success!");
     } catch (error) {
       console.error(error);
@@ -112,24 +116,24 @@ const Profile = () => {
     }
   };
 
-   const hdlDeleteAccount = async () => {                                                                          
-  if (window.confirm("คุณแน่ใจหรือไม่ว่าต้องการลบบัญชี? การกระทำนี้ไม่สามารถย้อนกลับได้")) {                                   
-     try {                                                                                                       
-       await deleteProfile();                                                                                 
-       alert("ลบบัญชีของคุณเรียบร้อยแล้ว");                                                                            
-      logout();                                                                                                 
-      navigate("/");                                                                                            
-     } catch (error) {                                                                                           
-       console.error("Delete Account Error:", error);                                                            
-       alert(error.response?.data?.message || "ไม่สามารถลบบัญชีได้");                                                
-     }                                                                                                           
-   }                                                                                                             
-  }; 
+  const hdlDeleteAccount = async () => {
+    if (window.confirm("คุณแน่ใจหรือไม่ว่าต้องการลบบัญชี? การกระทำนี้ไม่สามารถย้อนกลับได้")) {
+      try {
+        await deleteProfile();
+        alert("ลบบัญชีของคุณเรียบร้อยแล้ว");
+        logout();
+        navigate("/");
+      } catch (error) {
+        console.error("Delete Account Error:", error);
+        alert(error.response?.data?.message || "ไม่สามารถลบบัญชีได้");
+      }
+    }
+  };
 
   const triggerFileInput = () => fileInputRef.current.click();
 
   const getFullImgPath = (path) => {
-    if (!path) return "/default-avatar.png"; 
+    if (!path) return "/default-avatar.png";
 
     if (typeof path !== "string" || path.startsWith("data:")) {
       return path;
@@ -325,9 +329,9 @@ const Profile = () => {
                 >
                   Log out
                 </button>
-                <button 
-                onClick={hdlDeleteAccount}
-                className="font-medium text-error hover:opacity-70 transition-all"
+                <button
+                  onClick={hdlDeleteAccount}
+                  className="font-medium text-error hover:opacity-70 transition-all"
                 >
                   Delete Account
                 </button>
@@ -410,8 +414,8 @@ const Profile = () => {
             </p>
             <span className="text-[10px] px-2 py-1 bg-gray-100 rounded-md text-gray-400 font-bold uppercase tracking-wider">
               {profileData?.gender === "MALE" ? "MALE" :
-               profileData?.gender === "FEMALE" ? "FEMALE" :
-               profileData?.gender === "OTHER" ? "OTHER" : "N/A"}
+                profileData?.gender === "FEMALE" ? "FEMALE" :
+                  profileData?.gender === "OTHER" ? "OTHER" : "N/A"}
             </span>
           </div>
         </div>
