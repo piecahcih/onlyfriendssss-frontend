@@ -45,9 +45,7 @@ const useActivityStore = create(persist((set, get) => ({
 
 
   createActivity: async (body) => {
-    // console.log('start')
     await createActivityApi(body)
-    console.log('body:',body)
     await get().getAllCurrentActivities()
 
     set({ creatingActivity: {} })
