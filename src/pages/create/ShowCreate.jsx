@@ -32,7 +32,6 @@ const hdlCreateActivity = async (e) => {
         formData.append("title", creatingActivity.title);
         formData.append("description", creatingActivity.description);
         formData.append("category", creatingActivity.category);
-        formData.append("placeId", creatingActivity.placeId);
         formData.append("placeName", creatingActivity.placeName || "");
         formData.append("address", creatingActivity.address || "");
         formData.append("latitude", creatingActivity.latitude);
@@ -53,6 +52,7 @@ const hdlCreateActivity = async (e) => {
         }
 
         await useActivityStore.getState().createActivity(formData)
+        console.log('formData', formData)
 
         navigate('/')
         Swal.fire({
@@ -82,7 +82,7 @@ const hdlCreateActivity = async (e) => {
 
 
   return (
-    <div className="min-h-screen bg-base-200 text-neutral">
+    <div className="min-h-screen bg-base-200 text-neutral pb-28">
         
       {/* TopAppBar */}
     <header className="w-full top-0 sticky z-40 bg-base-200 shadow-[0_8px_32px_rgba(78,33,32,0.08)] flex items-center justify-between px-6 py-4 relative">
@@ -205,7 +205,7 @@ const hdlCreateActivity = async (e) => {
           </div>
 
 
-          <div className="py-8">
+          <div className="fixed bottom-0 left-0 z-40 w-full p-6">
             <button disabled={isCreating}
             className="w-full py-4 rounded-full bg-linear-to-r from-primary to-secondary text-white font-bold text-lg shadow-[0_8px_32px_rgba(168,49,0,0.24)] active:scale-95 transition-all hover:scale-[1.05]">
               Create Activity {isCreating && <span className="loading loading-dots loading-md"></span>}
