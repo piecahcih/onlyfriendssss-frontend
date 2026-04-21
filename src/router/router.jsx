@@ -62,7 +62,7 @@ const userRouter = createBrowserRouter([
     element: <UserLayout />,
     children: [
       {
-        path: "lddiscover",
+        index: true,
         element: <LDDiscover />,
       },
       {
@@ -96,7 +96,7 @@ const userRouter = createBrowserRouter([
     element: <NonavLayout />,
     children: [
       {
-        index: true,
+        path: "welcome",
         element: <Welcome />,
       },
       {
