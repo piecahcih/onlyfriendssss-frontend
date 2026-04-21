@@ -9,6 +9,7 @@ const useActivityStore = create(persist((set, get) => ({
   setCreatingActivity: (data) => {
     console.log('data:', data)
     set({ creatingActivity: data })
+
   },
   getAllCurrentActivities: async () => {
     const res = await getAllCurrentActivitiesApi()
@@ -46,11 +47,12 @@ const useActivityStore = create(persist((set, get) => ({
 
   createActivity: async (body) => {
     // console.log('start')
+    console.log('bodyjaj', [body.entries()])
     await createActivityApi(body)
-    console.log('body:',body)
+    console.log('body:', body)
     await get().getAllCurrentActivities()
 
-    set({ creatingActivity: {} })
+    // set({ creatingActivity: {} })
   },
   editActivityById: async (activityid, body) => {
     const res = await editActivityByIdApi(activityid, body)
