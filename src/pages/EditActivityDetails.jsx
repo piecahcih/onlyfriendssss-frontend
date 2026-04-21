@@ -93,7 +93,7 @@ function EditActivityDetails() {
       }
 
       await useActivityStore.getState().editActivityById(actid, formData)
-      console.log('formData', formData)
+      // console.log('formData', formData)
 
       navigate('/')
       Swal.fire({

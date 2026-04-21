@@ -20,7 +20,7 @@ function ShowCreate() {
     }
     
     const creatingActivity = useActivityStore(st=>st.creatingActivity)
-    // console.log('creatingActivity', creatingActivity)
+    console.log('creatingActivity', creatingActivity)
 
 
 const hdlCreateActivity = async (e) => {
