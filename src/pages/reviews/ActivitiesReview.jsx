@@ -5,7 +5,7 @@ import { LeftIcon, CameraIcon, YourLocationIcon, StarIcon } from '../../icons';
 import mockActImg from '../../assets/mockPlaceImg.jpg'
 import mockPfImg from '../../assets/default-profilepic.jpg'
 
-function LocationReview() {
+function ActivitiesReview() {
     const navigate = useNavigate();
 
 
@@ -107,4 +107,4 @@ function LocationReview() {
     );
 }
 
-export default LocationReview;
+export default ActivitiesReview;
