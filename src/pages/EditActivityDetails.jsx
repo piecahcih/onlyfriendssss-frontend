@@ -1,25 +1,22 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
-import { LeftIcon, LocationIcon, CalendarIcon } from "../icons";
+import { LeftIcon, LocationIcon, CalendarIcon, PhotoIcon } from "../icons";
 import useActivityStore from "../stores/activitiesStore";
-import useUserStore from "../stores/userStore"; 
-import mainApi from "../api/mainApi"; 
 import { format } from "date-fns";
-import defaultProfile from "../assets/default-profilepic.jpg";
 import { DeleteSwal } from "../components/swal/DeleteAlert";
+import Map, { Marker } from 'react-map-gl/mapbox'
+import 'mapbox-gl/dist/mapbox-gl.css'
+import pointer from '../assets/pointer.svg'
 
 function EditActivityDetails() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const actid = searchParams.get("actid");
 
-  // const activities = useActivityStore((st) => st.activities);
   const currentActivity = useActivityStore((st) => st.currentActivity);
   const getActivityById = useActivityStore((st) => st.getActivityById);
-  const storeUser = useUserStore((state) => state.user); 
-  
+
   const [loading, setLoading] = useState(true);
-  const [loadingJoin, setLoadingJoin] = useState(false);
 
   const categoryList = [
     { id: "HEALTH", title: "Health & Wellness", icon: "💪" },
@@ -32,21 +29,95 @@ function EditActivityDetails() {
   const matchedCategory = categoryList.find((cat) => cat.id === currentActivity.category)
 
   useEffect(() => {
-     if (actid) {
-      console.log(currentActivity)
-       const loadData = async () => {
-         setLoading(true);
-         await getActivityById(actid);
-         setLoading(false);
-       };
-       loadData();
-     }
-   }, [actid, getActivityById]);
+    if (actid) {
+      console.log('Current activity:', currentActivity)
+      const loadData = async () => {
+        setLoading(true);
+        await getActivityById(actid);
+        setLoading(false);
+      };
+      loadData();
+    }
+  }, [actid, getActivityById]);
 
   const hdlGoBack = () => {
     navigate('/profile');
     // navigate(-1);
   };
+
+  const [isUpdating, setIsUpdating] = useState(false)
+  const [editForm, setEditForm] = useState(null)
+  const [input, setInput] = useState("")
+
+  const hdlChangeInput = (e) => {
+    setInput(e.target.value)
+  }
+
+  const hdlChange = (e) => {
+    const { name, value } = e.target;
+    setEditForm((prev) => ({ ...prev, [name]: value }));
+  }
+
+
+  const [preview, setPreview] = useState(null)
+  const hdlChangeActivityImage = async (e) => {
+    const selectFile = e.target.files[0]
+
+    if (selectFile) {
+      if (preview) {
+        URL.revokeObjectURL(preview)
+      }
+      const newPreviewUrl = URL.createObjectURL(selectFile);
+
+      setEditForm((prev) => ({ ...prev, coverPhoto: selectFile }));
+      setPreview(newPreviewUrl)
+    }
+  }
+
+  const saveEdit = async (e) => {
+    e.preventDefault();
+    setIsUpdating(true)
+
+    try {
+      const formData = new FormData();
+
+      if (editForm) {
+        Object.keys(editForm).forEach((key) => {
+          if (key === "eventStartTime" || key === "eventEndTime") {
+            formData.append(key, new Date(editForm[key]).toISOString());
+          }
+          else {
+            formData.append(key, editForm[key]);
+          }
+        });
+      }
+
+      await useActivityStore.getState().editActivityById(actid, formData)
+      console.log('formData', formData)
+
+      navigate('/')
+      Swal.fire({
+        title: '<h2 class="text-[24px] font-bold text-neutral leading-tight">Activity Created Successfully</h2>',
+        confirmButtonColor: "#FC5100",
+        width: '300px',
+        padding: '1em',
+      });
+
+    } catch (error) {
+      setIsUpdating(false)
+      console.error("Update failed:", error)
+    }
+
+    // try {
+    //   await useActivityStore.getState().editActivityById({ [fieldName]: input })
+    //   setInput("")
+    //   setEditField(null)
+    // } catch (error) {
+    //   console.error("Update failed:", error)
+    // }
+  }
+
+
 
   if (loading) {
     return (
@@ -68,33 +139,10 @@ function EditActivityDetails() {
     );
   }
 
-  const approvedAttendees = currentActivity.joinRequests?.filter(req => req.status === 'APPROVED') || [];
-  const attendeesCount = approvedAttendees.length;
-
-  const maxParticipants = Number(currentActivity?.maxParticipants) || 0;
-  const spotsLeft = maxParticipants - attendeesCount;
-  const isFull = maxParticipants > 0 && spotsLeft <= 0;
-
-  const isJoined = approvedAttendees.some(
-    (item) => (item.userId || item.user?.id) === storeUser?.id
-  );
-
-  const getFullImgPath = (path) => {
-    if (!path) return defaultProfile;
-    if (typeof path !== 'string' || path.startsWith('data:') || path.startsWith('http')) {
-      return path;
-    }
-    return `${BACKEND_URL}${path}`;
-  };
-
-  const hdlEdit = () => {
-    console.log('mockedit')
-
-  };
 
   const hdlDelete = () => {
-    console.log('mockdel')
-
+    useActivityStore.getState().deleteActivityById(actid)
+    navigate('/profile')
   };
 
   return (
@@ -108,190 +156,183 @@ function EditActivityDetails() {
         >
           <LeftIcon className="w-8 h-8" />
         </button>
-        
-             <button className="text-2xl font-bold text-neutral">•••</button>
-        
+
+        <button className="text-2xl font-bold text-neutral">•••</button>
+
       </header>
 
-      <main className="max-w-2xl mx-auto px-6 space-y-6">
-        {/* Tags */}
-        <div className="flex flex-wrap gap-2.5">
+      <form onSubmit={saveEdit}>
+
+        <main className="max-w-2xl mx-auto px-6 space-y-6">
+          {/* Tags */}
+          <div className="flex flex-wrap gap-2.5">
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white shadow-sm text-xs font-bold">
-                
-                {currentActivity.isPublic ? " 🌎 Public  " : " 🔒 Private "}
+              {currentActivity.isPublic ? " 🌎 Public  " : " 🔒 Private "}
             </div>
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white shadow-sm text-xs font-bold">
-                <span className="text-lg">📍</span>
-                1km
+              <span className="text-lg">📍</span>
+              1km
             </div>
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 text-primary shadow-sm text-xs font-bold border border-primary/20">
-                <span>{matchedCategory.icon}</span>
-                 {currentActivity.category}
+              <span>{matchedCategory.icon}</span>
+              {currentActivity.category}
             </div>
-        </div>
-        {/* Cover Photo */}
-        <div className="relative w-full h-40 rounded-[15px] overflow-hidden shadow-lg">
-            <img 
-                src={currentActivity.coverPhoto}
-                alt={currentActivity.title}
-                className="w-full h-full object-cover"
+          </div>
+          {/* Cover Photo */}
+          <div className="relative w-full h-40 rounded-[15px] overflow-hidden shadow-lg">
+            <img
+              src={preview || currentActivity.coverPhoto}
+              alt={currentActivity.title}
+              className="w-full h-full object-cover"
             />
-        </div>
-
-        
-
-        {/* Title & Host */}
-        <div className="space-y-2">
-          <h1 className="text-3xl font-black text-on-surface leading-tight">
-            {currentActivity.title}
-          </h1>
-
-          <div>
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <img
-                   src={currentActivity.host?.profileImg || defaultProfile}
-                   alt="host"
-                  className="w-12 h-12 rounded-full object-cover border-2 border-primary/20"
-                />
-              </div>
-              <div>
-                <p className="text-[10px] text-on-surface/40 font-medium">HOSTED BY</p>
-                <h4 className="font-bold text-sm">{currentActivity.host?.username}</h4>
-              </div>
+            <div
+              onClick={() => document.getElementById("fileInput").click()}
+              className="absolute inset-0 flex flex-col gap-2 items-center justify-center bg-black/30 border-2 border-[#e09c99]/20 rounded-2xl transition-opacity duration-300"
+            >
+              <PhotoIcon className="text-white w-10 h-10" />
+              <p className="text-white font-regular text-xs">Tap to change photo</p>
             </div>
-           
-          </div>
-          {/* Description */}
-              <p className="text-on-surface/80 leading-relaxed font-medium">
-                  {currentActivity.description || "No description provided."}
-              </p>
-
-              <p className="text-[11px] text-on-surface/30 font-light uppercase tracking-wider">
-                  Created {format(new Date(currentActivity.createdAt), 'dd MMM yyyy')}
-              </p>
-        </div>
-
-
-        {/* Info Cards */}
-        <div className="grid grid-cols-1 gap-4">
-            {/* Time Card */}
-            <div className="flex items-center gap-4 bg-white p-5 rounded-[30px] shadow-sm border border-primary/5">
-                <div className="p-3 bg-primary/10 rounded-2xl text-primary">
-                    <CalendarIcon className="w-7 h-7" />
-                </div>
-                <div className="flex items-center gap-6">
-                  <div>
-                      <h5 className="font-bold text-sm text-on-surface">
-                          {currentActivity.eventStartTime ? format(new Date(currentActivity.eventStartTime), 'eee, dd MMM yyyy') : '-'}
-                      </h5>
-                      <p className="text-xs text-on-surface/50 font-medium">
-                          {currentActivity.eventStartTime ? format(new Date(currentActivity.eventStartTime), 'p') : '-'}
-                      </p>
-                  </div>
-                  {currentActivity.eventEndTime && (
-                    <>
-                      <p>-</p>
-                      <div>
-                          <h5 className="font-bold text-sm text-on-surface">
-                              {format(new Date(currentActivity.eventEndTime), 'eee, dd MMM yyyy')}
-                          </h5>
-                          <p className="text-xs text-on-surface/50 font-medium">
-                              {format(new Date(currentActivity.eventEndTime), 'p')}
-                          </p>
-                      </div>
-                    </>
-                  )}
-                </div>
-            </div>
-
-            {/* Location Card */}
-            <div className="flex items-center gap-4 bg-white p-5 rounded-[30px] shadow-sm border border-primary/5">
-                <div className="p-3 bg-primary/10 rounded-2xl text-primary">
-                    <LocationIcon className="w-7 h-7" />
-                </div>
-                <div className="flex-1 overflow-hidden">
-                    <h5 className="font-bold text-sm text-on-surface truncate">
-                        {currentActivity.place?.placeName}
-                    </h5>
-                    <p className="text-xs text-on-surface/50 font-medium truncate mb-1">
-                        {currentActivity.place?.address || "See Map"}
-                    </p>
-                    <a 
-                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(currentActivity.place?.placeName)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary text-[11px] font-bold hover:underline"
-                    >
-                        Open with Google Maps
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        {/* Participants */}
-        <div className="bg-white p-6 rounded-[30px] shadow-sm border border-primary/5 space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-baseline gap-2">
-              <span className="text-lg font-black text-on-surface">
-                {attendeesCount}/{maxParticipants > 0 ? maxParticipants : "∞"} Will go
-              </span>
-              <span className="text-sm font-bold text-primary">
-                • {maxParticipants > 0
-                  ? (spotsLeft > 0 ? `${spotsLeft} spots left` : "Full")
-                  : "Unlimited"}
-              </span>
-            </div>
-            <button className="text-primary font-bold text-xs hover:underline transition-all">See All</button>
+            <input type="file" id="fileInput" className="hidden" onChange={hdlChangeActivityImage} />
           </div>
 
-          <div className="flex items-center gap-4 overflow-x-auto pb-2 scrollbar-hide">
-            <button className="shrink-0 w-12 h-12 rounded-full border-2 border-dashed border-primary/30 flex items-center justify-center text-primary text-2xl font-light hover:bg-primary/5 active:scale-95 transition-all">
-              +
-            </button>
-            {approvedAttendees.map((item, idx) => (
-              <div key={idx} className="shrink-0 text-center space-y-1">
+
+          {/* Title */}
+          <div className="space-y-2">
+            <h1 className="text-3xl font-black text-on-surface leading-tight">
+              {currentActivity.title}
+            </h1>
+
+            {/* Host */}
+            {/* <div>
+              <div className="flex items-center gap-3">
                 <div className="relative">
                   <img
-                    src={getFullImgPath(item.user?.profileImg)}
-                    className="w-12 h-12 rounded-full border-2 border-white shadow-sm object-cover"
-                    alt="avatar"
+                    src={currentActivity.host?.profileImg || defaultProfile}
+                    alt="host"
+                    className="w-12 h-12 rounded-full object-cover border-2 border-primary/20"
                   />
                 </div>
-                <p className="text-[10px] font-bold text-on-surface/60 max-w-[48px] truncate">
-                  {item.user?.username || "User"}
+                <div>
+                  <p className="text-[10px] text-on-surface/40 font-medium">HOSTED BY</p>
+                  <h4 className="font-bold text-sm">{currentActivity.host?.username}</h4>
+                </div>
+              </div>
+            
+            </div> */}
+
+            {/* Description */}
+            <p className="text-on-surface/80 leading-relaxed font-medium">
+              {currentActivity.description || "No description provided."}
+            </p>
+
+            <p className="text-[11px] text-on-surface/30 font-light uppercase tracking-wider">
+              Created {format(new Date(currentActivity.createdAt), 'dd MMM yyyy')}
+            </p>
+          </div>
+
+
+
+
+          {/* Time Card */}
+          <div className="flex items-center gap-4 bg-white p-5 rounded-[30px] shadow-sm border border-primary/5">
+            <div className="p-3 bg-primary/10 rounded-2xl text-primary">
+              <CalendarIcon className="w-7 h-7" />
+            </div>
+            <div className="flex items-center gap-6">
+              <div>
+                <h5 className="font-bold text-sm text-on-surface">
+                  {currentActivity.eventStartTime ? format(new Date(currentActivity.eventStartTime), 'eee, dd MMM yyyy') : '-'}
+                </h5>
+                <p className="text-xs text-on-surface/50 font-medium">
+                  {currentActivity.eventStartTime ? format(new Date(currentActivity.eventStartTime), 'p') : '-'}
                 </p>
               </div>
-            ))}
-
-            {attendeesCount === 0 && (
-              <span className="text-[10px] font-bold text-on-surface/30 uppercase pl-2">
-                Be the first to join
-              </span>
-            )}
-
+              {currentActivity.eventEndTime && (
+                <>
+                  <p>-</p>
+                  <div>
+                    <h5 className="font-bold text-sm text-on-surface">
+                      {format(new Date(currentActivity.eventEndTime), 'eee, dd MMM yyyy')}
+                    </h5>
+                    <p className="text-xs text-on-surface/50 font-medium">
+                      {format(new Date(currentActivity.eventEndTime), 'p')}
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
+
+
+          {/* Location Section */}
+          <div className="space-y-4 mt-5 bg-white p-5 rounded-[30px] shadow-sm border border-primary/5">
+            <div className="flex items-start gap-3 px-2">
+              <div className="flex flex-col">
+                <span className="font-bold text-neutral text-[16px] leading-tight">
+                  {currentActivity?.place.placeName || "Selected Location"}
+                </span>
+                <span className=" text-[14px] text-neutral/50 font-medium">
+                  {currentActivity?.place.address}
+                </span>
+              </div>
+            </div>
+
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${currentActivity?.place.longitude},${currentActivity?.place.longitude}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block relative w-full h-35 rounded-[2rem] overflow-hidden ring-2 ring-[#e09c99]/20 focus:ring-primary active:scale-[0.98] transition-all"
+            >
+              <div className="w-full h-full bg-base-300 relative pointer-events-none">
+                <Map
+                  mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
+                  initialViewState={{
+                    longitude: currentActivity?.place.longitude,
+                    latitude: currentActivity?.place.latitude,
+                    zoom: 15
+                  }}
+                  interactive={false}
+                  mapStyle="mapbox://styles/mapbox/streets-v12"
+                >
+                  <Marker
+                    longitude={currentActivity?.place.longitude}
+                    latitude={currentActivity?.place.latitude}
+                  >
+                    <img className="w-10 h-10" src={pointer} alt="pointer" />
+                  </Marker>
+                </Map>
+                <div className="absolute inset-0 bg-linear-to-t from-black/10 to-transparent" />
+
+                <div className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-black text-primary shadow-sm uppercase tracking-wider z-10">
+                  Open Google Maps ↗
+                </div>
+              </div>
+            </a>
+          </div>
+
+          {/* maxParticipants */}
+          <div className="space-y-4 mt-5 bg-white p-5 rounded-[30px] shadow-sm border border-primary/5">
+            <p className="font-light flex gap-4">
+              <span className="font-bold">Max Participants</span>{currentActivity.maxParticipants && (currentActivity.maxParticipants)}
+            </p>
+          </div>
+
+          <button type="button" onClick={() => DeleteSwal({ currentActivity, hdlDelete })} className="w-full flex items-center justify-center underline">
+            Delete this activity</button>
+
+        </main>
+
+        {/* Action Footer */}
+        <div className="fixed bottom-0 left-0 w-full p-6 z-40 bg-linear-to-t from-base-200 via-base-200 to-transparent">
+          <button className={`w-full max-w-2xl flex items-center justify-center gap-3 px-8 py-4 rounded-[25px] font-black text-xl  active:scale-95 transition-all border-b-4
+                bg-linear-to-r from-primary to-secondary text-white border-primary-focus hover:scale-[1.05]"`}>
+            Confirm Edit {isUpdating && <span className="loading loading-dots loading-md"></span>}
+          </button>
         </div>
 
-        <button type="button" onClick={()=>DeleteSwal({ currentActivity, hdlDelete })} className="w-full flex items-center justify-center hover:underline">
-          Delete this activity</button>
-        
-      </main>
+      </form>
 
-      {/* Action Footer */}
-      <div className="fixed bottom-0 left-0 w-full p-6 z-40 bg-linear-to-t from-base-200 via-base-200 to-transparent">
-        <button onClick={hdlEdit}
-        className={`w-full max-w-2xl flex items-center justify-center gap-3 px-8 py-4 rounded-[25px] font-black text-xl  active:scale-95 transition-all border-b-4
-          ${isJoined
-            ? "bg-linear-to-r from-success to-secondary text-white"
-            : isFull
-              ? "bg-neutral text-white border-neutral-content opacity-50 cursor-not-allowed"
-              : "bg-linear-to-r from-primary to-secondary text-white border-primary-focus hover:scale-[1.05]"
-          }`}
-      >
-        Confirm Edit
-        </button>
-      </div>
+
     </div>
   );
 }
