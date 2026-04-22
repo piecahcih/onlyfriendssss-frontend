@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -8,19 +8,16 @@ import { useActivityMarkers } from "../hooks/useActivityMarkers";
 import useActivityStore from "../stores/activitiesStore";
 import useUserStore from "../stores/userStore";
 import NotificationModal from "../components/NotificationModal";
-import {
-  SearchIcon,
-  Notification,
-  CalendarIcon,
-  YourLocationIcon,
-  MicIcon,
-} from "../icons";
+import { SearchIcon, Notification, CalendarIcon, YourLocationIcon, MicIcon, } from "../icons";
+import { io, Socket } from 'socket.io-client'
 
 const BACKEND_URL = "http://localhost:3999";
 
 const LDDiscover = () => {
   const navigate = useNavigate();
   const { mapContainerRef, mapRef, hdlGetCurrentLocation } = useMapHandler();
+
+
 
   const activities = useActivityStore((state) => state.activities) || [];
   const getAllCurrentActivities = useActivityStore(
@@ -30,6 +27,7 @@ const LDDiscover = () => {
     (state) => state.getActivityByCategory,
   );
   const user = useUserStore((state) => state.user);
+  const token = useUserStore((state) => state.token)
 
   const [selectedCategory, setSelectedCategory] = useState("all");
   const categoryList = [
@@ -43,9 +41,9 @@ const LDDiscover = () => {
   // const [isExpanded, setIsExpanded] = useState(false);
   const [step, setStep] = useState("half");
   const yPosition = step === "half" ? "0%" : "-60vh";
-
   const [searchText, setSearchText] = useState("");
   const [suggestOpen, setSuggestOpen] = useState(false);
+  const socketRef = useRef(null)
 
   useEffect(() => {
     selectedCategory === "all"
@@ -60,6 +58,23 @@ const LDDiscover = () => {
   //     hdlGetCurrentLocation(getFullImgPath(user?.profileImg))
   //   }
   // }, [hdlGetCurrentLocation, user?.profileImg])
+
+  const connectSocket = () => {
+    console.log('tokenkub', token)
+    socketRef.current = io("http://localhost:3999", {
+      auth: { token }
+    })
+    socketRef.current.on("connect", () => {
+      console.log('Connected', socketRef.current.id)
+    })
+    return () => {
+      socketRef.current.disconnect()
+    }
+  }
+
+  useEffect(() => {
+    connectSocket()
+  }, [])
 
   const activitySuggestions = Array.isArray(activities)
     ? activities

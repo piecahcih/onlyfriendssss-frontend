@@ -78,6 +78,7 @@ const userRouter = createBrowserRouter([
         path: "chat",
         element: <Chat />,
       },
+
     ],
   },
   {
@@ -89,7 +90,7 @@ const userRouter = createBrowserRouter([
         element: <Welcome />,
       },
       {
-        path: "chat/:name",
+        path: "chat/:roomId",
         element: <InsideChat />,
       },
       {

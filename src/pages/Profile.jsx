@@ -25,9 +25,6 @@ const Profile = () => {
 
   const fileInputRef = useRef(null);
 
-  useEffect(() => {
-    fetchUserProfile();
-  }, []);
 
   const fetchUserProfile = async () => {
     try {
@@ -43,6 +40,10 @@ const Profile = () => {
       console.error("Fetch Profile Error:", error);
     }
   };
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
 
   const handleEditOpen = () => {
     setEditForm({ ...profileData });

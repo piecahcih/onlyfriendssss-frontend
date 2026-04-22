@@ -5,16 +5,26 @@ const useSocketStore = create((set, get) => ({
     socket: null,
     isConnected: false,
 
+    // ฟังก์ชันเริ่มเชื่อมต่อ
     connectSocket: (token) => {
-        //ถ้าเชื่อมต่ออยู่แล้ว ไม่ต้องทำซ้ำ
-        if (get().socket?.connected) return;
+        const currentSocket = get().socket;
 
-        //ใช้ config จาก socket.js
+        // 1. ถ้ามี socket อยู่แล้ว
+        if (currentSocket) {
+            if (!currentSocket.connected) {
+                console.log("🔄 Attempting to reconnect existing socket...");
+                currentSocket.connect();
+            }
+            return;
+        }
+
+        // 2. ถ้ายังไม่มี ให้สร้างใหม่
+        console.log("📡 Creating new socket connection...");
         const socket = createSocketInstance(token);
 
         socket.on("connect", () => {
             set({ isConnected: true });
-            console.log("✅ Socket connected!");
+            console.log("✅ Socket connected! ID:", socket.id);
         });
 
         socket.on("disconnect", (reason) => {
@@ -22,13 +32,16 @@ const useSocketStore = create((set, get) => ({
             console.log("❌ Socket disconnected:", reason);
         });
 
-        // เก็บ instance ไว้ใน store
-        set({ socket });
+        socket.on("connect_error", (err) => {
+            console.error("❌ Socket Connection Error:", err.message);
+            set({ isConnected: false });
+        });
 
-        // เริ่มเชื่อมต่อ
+        set({ socket });
         socket.connect();
     },
 
+    // ฟังก์ชันตัดการเชื่อมต่อ (เรียกใช้ตอน Logout)
     disconnectSocket: () => {
         const { socket } = get();
         if (socket) {
