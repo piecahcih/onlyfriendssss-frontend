@@ -9,6 +9,7 @@ import useActivityStore from "../stores/activitiesStore";
 import useUserStore from "../stores/userStore";
 import NotificationModal from "../components/NotificationModal";
 import { SearchIcon, Notification, CalendarIcon, YourLocationIcon, MicIcon, } from "../icons";
+import PremiumModal from "../components/ads/PremiumModal"
 import { io, Socket } from 'socket.io-client'
 
 const BACKEND_URL = "http://localhost:3999";
@@ -44,6 +45,7 @@ const LDDiscover = () => {
   const [searchText, setSearchText] = useState("");
   const [suggestOpen, setSuggestOpen] = useState(false);
   const socketRef = useRef(null)
+  const [settingForm, setSettingForm] = useState(false)
 
   useEffect(() => {
     selectedCategory === "all"
@@ -52,6 +54,18 @@ const LDDiscover = () => {
     // console.log("selectedCategory:", selectedCategory);
     // console.log("activities", activities);
   }, [selectedCategory]);
+
+  useEffect(() => {
+    const hasSeenInSession = sessionStorage.getItem("hasSeenPremium");
+
+    if (!hasSeenInSession) {
+      const timer = setTimeout(() => {
+        setSettingForm(true);
+        sessionStorage.setItem("hasSeenPremium", "true");
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [])
 
   // useEffect(() => {
   //   if (hdlGetCurrentLocation) {
