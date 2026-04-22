@@ -83,30 +83,23 @@ export const getAllWishlist = () => mainApi.get('/wishlist')
 export const addWishlist = (activityId) => mainApi.post('/wishlist', { activityId })
 export const deleteWishlist = (activityId) => mainApi.delete(`/wishlist/${activityId}`)
 
-//// Review
-export const getAllActivity = () => mainApi.get("/review/activity");
-export const getActivityDetail = (activityId) => mainApi.get(`/review/activities/${activityId}/reviews`)
-export const reviewActivity = (activityId, body) => mainApi.post(`/review/activity/${activityId}`, body)
-export const reviewUser = (activityId, receiverId, body) => mainApi.post(`/review/user/${activityId}/${receiverId}`, body)
-export const getUserApi = (userId) => mainApi.get(`/review/${userId}`);
-
 
 
 ////////REVIEWS
-export const getUserApi = () => mainApi.get('/user/:userId')
+export const getUserApi = () => mainApi.get(`/user/${userId}`)
 
 export const getActivityRatingScoreApi = () => mainApi.get('/review/activity-score')
 
 export const getAllUsersReviewsApi = () => mainApi.get('/review/users')
 export const getAllReviewsMeApi = () => mainApi.get('/review/who-reviews-me')
 
-export const getAllActivitiessReviewsApi = () => mainApi.get('/review/activities')
+export const getAllActivitiesReviewsApi = () => mainApi.get('/review/activities')
 export const getActivityReviewsApi = (actid) => mainApi.get(`/review/activity/${actid}`)
 export const getActivityReviewsByLocationApi = (placeid) => mainApi.get(`/review/place/${placeid}`)
 export const getSpecificReviewApi = (reviewid) => mainApi.get(`/${reviewid}`)
 
-export const reviewActivityApi = (actid, body) => mainApi.post(`/activity/${actid}`,body)
-export const reviewUserApi = (actid, receiverid, body) => mainApi.post(`/user/${actid}/${receiverid}`,body)
+export const createReviewActivityApi = (actid, body) => mainApi.post(`/activity/${actid}`,body)
+export const createReviewUserApi = (actid, receiverid, body) => mainApi.post(`/user/${actid}/${receiverid}`,body)
 
 
 
