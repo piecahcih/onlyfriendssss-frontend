@@ -72,8 +72,9 @@ export const getAllActivitiesJoinedByThisAccountApi = () => mainApi.get("/activi
 export const getActivityByIdApi = (activityid) => mainApi.get(`/activity/${activityid}`)
 export const getActivityByCategoryApi = (category) => mainApi.get(`/activity/category/${category}`)
 export const createActivityApi = (body) => mainApi.post("/activity", body)
-export const editActivityByIdApi = (activityid) => mainApi.patch(`/activity/${activityid}`)
+export const editActivityByIdApi = (activityid,body) => mainApi.patch(`/activity/${activityid}`, body)
 export const changeActivityStatusApi = (activityid, body) => mainApi.patch(`/activity/status/${activityid}`, body)
+export const cancelActivityStatusApi = (activityid) => mainApi.patch(`/activity/cancel/${activityid}`)
 export const deleteActivityByIdApi = (activityid) => mainApi.delete(`/activity/${activityid}`)
 
 
