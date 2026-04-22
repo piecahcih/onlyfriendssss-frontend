@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { changeActivityStatusApi, createActivityApi, deleteActivityByIdApi, editActivityByIdApi, getActivityByCategoryApi, getActivityByIdApi, getAllActivitiesApi, getAllActivitiesCreatedByThisAccountApi, getAllActivitiesJoinedByThisAccountApi, getAllCurrentActivitiesApi, getAllFinishedActivitiesOnThisAccountApi, joinActivityApi, manageJoinRequestApi, leaveActivityApi } from "../api/mainApi";
+import { changeActivityStatusApi, createActivityApi, deleteActivityByIdApi, editActivityByIdApi, getActivityByCategoryApi, getActivityByIdApi, getAllActivitiesApi, getAllActivitiesCreatedByThisAccountApi, getAllActivitiesJoinedByThisAccountApi, getAllCurrentActivitiesApi, getAllFinishedActivitiesOnThisAccountApi, joinActivityApi, manageJoinRequestApi, leaveActivityApi, cancelActivityStatusApi } from "../api/mainApi";
 
 const useActivityStore = create(persist((set, get) => ({
   activities: [],
@@ -9,6 +9,7 @@ const useActivityStore = create(persist((set, get) => ({
   setCreatingActivity: (data) => {
     console.log('data:', data)
     set({ creatingActivity: data })
+
   },
   getAllCurrentActivities: async () => {
     const res = await getAllCurrentActivitiesApi()
@@ -46,18 +47,25 @@ const useActivityStore = create(persist((set, get) => ({
 
   createActivity: async (body) => {
     // console.log('start')
+    console.log('bodyjaj', [body.entries()])
     await createActivityApi(body)
-    console.log('body:',body)
+    console.log('body:', body)
     await get().getAllCurrentActivities()
 
-    set({ creatingActivity: {} })
+    // set({ creatingActivity: {} })
   },
   editActivityById: async (activityid, body) => {
+    // console.log('body', Object.fromEntries(body))
     const res = await editActivityByIdApi(activityid, body)
     set({ activities: res.data.activities })
   },
   changeActivityStatus: async (activityid, body) => {
     const res = await changeActivityStatusApi(activityid, body)
+    set({ activities: res.data.activities })
+  },
+  cancelActivityById: async (activityid) => {
+    await cancelActivityStatusApi(activityid)
+    const res = await get().getAllCurrentActivities()
     set({ activities: res.data.activities })
   },
   deleteActivityById: async (activityid) => {

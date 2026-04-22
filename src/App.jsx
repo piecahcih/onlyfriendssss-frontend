@@ -3,6 +3,8 @@ import { guestRouter, userRouter } from "./router/router";
 import useUserStore from "./stores/userStore";
 import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
+import useSocketStore from "./stores/socketStore";
+import { useChatEvents } from "./hooks/useChatEvents";
 
 
 function App() {
@@ -10,6 +12,8 @@ function App() {
   const user = useUserStore(st => st.user)
   ////  ยังไม่ได้เพิ่ม routerAdim ให้พีชมาเพิ่มเอง
   const finalRouter = !user ? guestRouter : userRouter
+
+  useChatEvents();
 
   useEffect(() => {
     const { user, rememberMe, logout } = useUserStore.getState();
@@ -20,6 +24,16 @@ function App() {
     }
     sessionStorage.setItem("session_active", "true");
   }, []);
+
+  const { connectSocket } = useSocketStore();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token'); // หรือดึงจาก store
+    if (token) {
+      connectSocket(token);
+    }
+  }, [user]);
+
 
   return (
     <>

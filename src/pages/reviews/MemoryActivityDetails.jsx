@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
-import { LeftIcon, LocationIcon, CalendarIcon, ChatIcon } from "../icons";
-import useActivityStore from "../stores/activitiesStore";
-import useUserStore from "../stores/userStore";
-import mainApi from "../api/mainApi";
+import { LeftIcon, LocationIcon, CalendarIcon, ChatIcon } from "../../icons";
+import useActivityStore from "../../stores/activitiesStore";
+import useUserStore from "../../stores/userStore";
+import mainApi from "../../api/mainApi";
 import { format } from "date-fns";
-import defaultProfile from "../assets/default-profilepic.jpg";
+import defaultProfile from "../../assets/default-profilepic.jpg";
 
-function ActivityDetails() {
+function MemoryActivityDetails() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const actid = searchParams.get("actid");
@@ -21,6 +21,8 @@ function ActivityDetails() {
 
   const [loading, setLoading] = useState(true);
   const [loadingJoin, setLoadingJoin] = useState(false);
+  const [selectedParticipant, setSelectedParticipant] = useState(null);
+  const BACKEND_URL = "http://localhost:3999";
 
   const categoryList = [
     { id: "HEALTH", title: "Health & Wellness", icon: "💪" },
@@ -30,7 +32,7 @@ function ActivityDetails() {
     { id: "TRAVEL", title: "Travel", icon: "✈️" },
   ];
 
-  const matchedCategory = categoryList.find((cat) => cat.id === currentActivity?.category)
+  const matchedCategory = categoryList.find((cat) => cat.id === currentActivity.category)
 
   useEffect(() => {
     if (actid) {
@@ -97,46 +99,20 @@ function ActivityDetails() {
     return `${BACKEND_URL}${path}`;
   };
 
-  const hdlJoin = async () => {
-    if (!storeUser) {
-      alert("Please Log in first");
-      return;
+  const hdlActivityReview = () => {
+        navigate("/reviews-activities")
     }
-    try {
-      setLoadingJoin(true);
-      const res = await joinActivity(actid); // ใช้ฟังก์ชันจาก Store
-
-      if (res.data.data.status === "APPROVED") {
-        alert("Joined successfully! 🎉");
+ const hdlPeerReview = () => {
+     console.log("Checking data before navigate:", selectedParticipant); 
+     console.log('selectedParticipant', selectedParticipant)
+     if (selectedParticipant && selectedParticipant.userId) {
+       navigate(`/reviews-peer?actid=${actid}&userId=${selectedParticipant.userId}`);
       } else {
-        alert("Request sent, waiting for host approval.");
-      }
-    } catch (error) {
-      alert(error.response?.data?.message || "Cannot join this activity");
-    } finally {
-      setLoadingJoin(false);
-    }
-  };
+        alert("Please select a participant first");
+     }
+    };
 
-  const hdlGotoChat = () => {
-    navigate(`/chat/${encodeURIComponent(currentActivity.title)}`, {
-      state: {
-        roomId: currentActivity.id,
-        title: currentActivity.title,
-        icon: currentActivity.coverPhoto
-      }
-    })
-  }
-
-  // ฟังก์ชันสำหรับ Host จัดการคำขอ
-  const hdlHostAction = async (requestId, status) => {
-    try {
-      await manageJoinRequest(actid, requestId, status);
-      alert(`User ${status === 'APPROVED' ? 'Approved' : 'Rejected'}`);
-    } catch (error) {
-      alert("Action failed");
-    }
-  };
+  
   return (
     <div className="min-h-screen bg-base-200 text-neutral pb-28">
       {/* TopAppBar */}
@@ -166,7 +142,7 @@ function ActivityDetails() {
           </div>
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 text-primary shadow-sm text-xs font-bold border border-primary/20">
             <span>{matchedCategory.icon}</span>
-            {currentActivity?.category}
+            {currentActivity.category}
           </div>
         </div>
         {/* Cover Photo */}
@@ -275,22 +251,23 @@ function ActivityDetails() {
           <div className="flex items-center justify-between">
             <div className="flex items-baseline gap-2">
               <span className="text-lg font-black text-on-surface">
-                {attendeesCount}/{maxParticipants > 0 ? maxParticipants : "∞"} Will go
-              </span>
-              <span className="text-sm font-bold text-primary">
-                • {maxParticipants > 0 ? (spotsLeft > 0 ? `${spotsLeft} spots left` : "Full") : "Unlimited"}
+                {attendeesCount} That Joined
               </span>
             </div>
-            <button className="text-primary font-bold text-xs hover:underline transition-all">See All</button>
           </div>
 
           {/* List: Approved Attendees (UI วงกลมเรียงกัน) */}
           <div className="flex items-center gap-4 overflow-x-auto pb-2 scrollbar-hide">
-            <button className="shrink-0 w-12 h-12 rounded-full border-2 border-dashed border-primary/30 flex items-center justify-center text-primary text-2xl font-light hover:bg-primary/5 active:scale-95 transition-all">
-              +
-            </button>
+            
             {approvedRequests.map((item, idx) => (
-              <div key={idx} className="shrink-0 text-center space-y-1">
+              <div
+             key={idx}
+             className="shrink-0 text-center space-y-1 cursor-pointer active:scale-95 transition-all"
+            onClick={() => {
+      console.log("You clicked on:", item); // เช็คว่า item นี้มี id และ user หรือไม่
+      setSelectedParticipant(item);
+    }}
+           >
                 <div className="relative">
                   <img
                     src={getFullImgPath(item.user?.profileImg)}
@@ -305,86 +282,66 @@ function ActivityDetails() {
             ))}
             {attendeesCount === 0 && (
               <span className="text-[10px] font-bold text-on-surface/30 uppercase pl-2 italic">
-                Be the first to join
+                No one join
               </span>
             )}
           </div>
 
-          {/* ส่วนที่เพิ่ม: ถ้าเป็น Host ให้แสดงรายการ Pending เพื่อกดยอมรับ/ปฏิเสธ */}
-          {isHost && pendingRequests.length > 0 && (
-            <div className="mt-4 pt-4 border-t border-gray-100">
-              <p className="text-[11px] font-black uppercase text-primary mb-3 tracking-widest">Wait for approval ({pendingRequests.length})</p>
-              <div className="space-y-3">
-                {pendingRequests.map((req) => (
-                  <div key={req.id} className="flex items-center justify-between bg-base-200/50 p-2 rounded-2xl">
-                    <div className="flex items-center gap-2">
-                      <img src={getFullImgPath(req.user?.profileImg)} className="w-8 h-8 rounded-full object-cover" />
-                      <span className="text-xs font-bold">{req.user?.username}</span>
-                    </div>
-                    <div className="flex gap-1">
-                      <button onClick={() => hdlHostAction(req.id, 'REJECTED')} className="btn btn-ghost btn-xs text-error">Reject</button>
-                      <button onClick={() => hdlHostAction(req.id, 'APPROVED')} className="btn btn-primary btn-xs text-white px-4 rounded-full">Approve</button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          {/* Modal: Participant Details */}
+       {selectedParticipant && (
+        <div className="modal modal-open">
+           <div className="modal-box bg-white rounded-[35px] p-8 flex flex-col items-center gap-5 relative">
+            <button
+              onClick={() => setSelectedParticipant(null)}
+              className="btn btn-sm btn-circle btn-ghost absolute right-4 top-4">
+             ✕
+             </button>
+   
+           <div className="relative">
+               <img
+               src={getFullImgPath(selectedParticipant.user?.profileImg)}
+                className="w-28 h-28 rounded-full border-4 border-primary/10 object-cover shadow-lg"
+                alt="participant"
+               />
+             </div>
+     
+            <div className="text-center">
+               <h3 className="text-xl font-black text-on-surface">
+                {selectedParticipant.user?.username || "User"}
+              </h3>
+              <p className="text-xs font-bold text-primary uppercase tracking-widest mt-1">Participant</p>
+             </div>
+      
+            <div className="w-full space-y-3 mt-2">
+              <button className="btn btn-primary w-full rounded-2xl text-white font-bold">
+                 Add Friend
+            </button>
+              <button
+              onClick={hdlPeerReview}
+               className="btn btn-outline btn-primary w-full rounded-2xl font-bold">
+                 Review This User
+               </button>
+             </div>
+           </div>
+          <div className="modal-backdrop" onClick={() => setSelectedParticipant(null)}>
+            <button>close</button>
+           </div>
+         </div>
+       )}
         </div>
       </main>
 
       {/* Action Footer */}
       <div className="fixed bottom-0 left-0 w-full p-6 z-40 bg-linear-to-t from-base-200 via-base-200 to-transparent">
         <button
-          // onClick={hdlJoin}
-          // disabled={loadingJoin || isJoined || isFull || isPending || isHost}
-          onClick={isJoined || isHost ? hdlGotoChat : hdlJoin}
-          disabled={loadingJoin || isFull || isPending}
-          className={`w-full max-w-2xl flex items-center justify-center gap-3 px-8 py-4 rounded-[25px] font-black text-xl  active:scale-95 transition-all border-b-4
-          ${(isJoined || isHost)
-
-              ? "bg-linear-to-r from-success to-secondary text-white"
-              : (isFull || isPending)
-                ? "bg-neutral text-white opacity-50 cursor-not-allowed"
-                : "bg-linear-to-r from-primary to-secondary text-white border-primary-focus hover:scale-[1.05]"
-            }`}
-        >
-          {/* {loadingJoin ? (
-            <span className="loading loading-spinner"></span>
-          ) : isHost ? (
-            "YOU ARE THE HOST"
-          ) : isJoined ? (
-            <>
-              <span className="text-2xl"><ChatIcon className="w-7" /></span> CHAT
-            </>
-          ) : isPending ? (
-            "WAITING FOR APPROVAL..."
-          ) : isFull ? (
-            "ACTIVITY FULL"
-          ) : (
-            <>
-              <span className="text-2xl">👋</span> JOIN NOW
-            </>
-          )} */}
-          {loadingJoin ? (
-            <span className="loading loading-spinner"></span>
-          ) : (isJoined || isHost) ? (
-            <>
-              <span className="text-2xl"><ChatIcon className="w-7" /></span> {isHost ? "HOST CHAT" : "CHAT"}
-            </>
-          ) : isPending ? (
-            "WAITING FOR APPROVAL..."
-          ) : isFull ? (
-            "ACTIVITY FULL"
-          ) : (
-            <>
-              <span className="text-2xl">👋</span> JOIN NOW
-            </>
-          )}
+          onClick={hdlActivityReview}
+          className={`w-full max-w-2xl flex bg-primary items-center justify-center gap-3 px-8 py-4 rounded-[25px] font-black text-xl text-white active:scale-95 transition-all border-b-4`}>
+          
+              <span className="text-2xl">👋</span> Review This Activity
         </button>
       </div>
     </div>
   );
 }
 
-export default ActivityDetails;
+export default MemoryActivityDetails;

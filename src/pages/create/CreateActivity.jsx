@@ -37,7 +37,7 @@ function CreateActivity() {
   const hdlTitle = (value) => {
     setTitle(value)
   }
-  
+
   const [description, setDescription] = useState("")
   const hdlDescription = (value) => {
     setDescription(value)
@@ -54,11 +54,11 @@ function CreateActivity() {
       }
       const newPreviewUrl = URL.createObjectURL(selectFile);
 
-    setFile(selectFile)
-    // console.log('selectFile', selectFile)
-    // console.log('File', file)
-    setPreview(newPreviewUrl)
-    // console.log('newPreviewUrl', newPreviewUrl)
+      setFile(selectFile)
+      // console.log('selectFile', selectFile)
+      // console.log('File', file)
+      setPreview(newPreviewUrl)
+      // console.log('newPreviewUrl', newPreviewUrl)
     }
   }
 
@@ -85,6 +85,7 @@ function CreateActivity() {
   };
 
 
+
   const hdlPreCreateActivity = (e, Adata) => {
     e.preventDefault();
 
@@ -92,8 +93,8 @@ function CreateActivity() {
       Swal.fire({
         title: '<h2 class="text-[20px] font-bold text-neutral leading-tight">Please input all fields</h2>',
         confirmButtonColor: "#FC5100",
-        width: '300px',  
-        padding: '1em',  
+        width: '300px',
+        padding: '1em',
       });
 
       return
@@ -103,8 +104,8 @@ function CreateActivity() {
       Swal.fire({
         title: '<h2 class="text-[20px] font-bold text-neutral leading-tight">Please don\'t select date before today</h2>',
         confirmButtonColor: "#FC5100",
-        width: '300px',  
-        padding: '1em',  
+        width: '300px',
+        padding: '1em',
       });
 
       return
@@ -113,14 +114,14 @@ function CreateActivity() {
     try {
       useActivityStore.getState().setCreatingActivity(Adata);
       // console.log('Adata', Adata)
-  
-      navigate("/create-showcreate");   
+
+      navigate("/create-showcreate");
     } catch (error) {
-        console.error("Local state error:", error)
+      console.error("Local state error:", error)
     }
   };
 
-  // const creatingActivity = useActivityStore(st=>st.creatingActivity)
+
 
 
   const lblTitleStyle = "text-[18px] font-bold text-neutral";
@@ -179,9 +180,9 @@ function CreateActivity() {
                 className="w-full pl-14 pr-6 py-3 rounded-full bg-white border-none ring-2 ring-[#e09c99]/20 focus:ring-[#a83100] focus:ring-2 transition-all outline-none text-neutral placeholder:text-[#834c4b]/40"
                 placeholder="Morning Run in the Park"
                 type="text"
-                value= {title}
+                value={title}
                 // value= {creatingActivity.title||title}
-                onChange={(e)=>hdlTitle(e.target.value)}
+                onChange={(e) => hdlTitle(e.target.value)}
               />
             </div>
           </div>
@@ -193,7 +194,7 @@ function CreateActivity() {
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#e8dcd8]/50 backdrop-blur-sm transition-all group-hover:backdrop-blur-none">
                 {preview ? (
                   <img src={preview} alt="preview image" className="w-full" />
-                ):(
+                ) : (
                   <div
                     onClick={() => document.getElementById("fileInput").click()}
                     className="absolute inset-0 flex flex-col items-center justify-center border-2 border-[#e09c99]/20 rounded-2xl transition-opacity duration-300"
@@ -202,7 +203,7 @@ function CreateActivity() {
                   </div>
                 )}
 
-                <input type="file" id="fileInput" className="hidden" onChange={hdlActivityImage} /> 
+                <input type="file" id="fileInput" className="hidden" onChange={hdlActivityImage} />
               </div>
             </div>
           </section>
@@ -231,23 +232,23 @@ function CreateActivity() {
           <div>
             <label className={lblTitleStyle}>Pick a Time</label>
             <div className="relative">
-                  <span className="absolute left-5 top-1/2 -translate-y-1/2 text-xl">
-                    📅
-                  </span>
-                  <input
-                    className="w-full pl-14 pr-4 py-3 rounded-full bg-white border-none ring-2 ring-[#e09c99]/20 focus:ring-[#a83100] transition-all outline-none text-neutral text-sm"
-                    type="datetime-local"
-                    value={eventStartTime}
-                    onChange={(e) => setEventStartTime(e.target.value) }
-                  />
+              <span className="absolute left-5 top-1/2 -translate-y-1/2 text-xl">
+                📅
+              </span>
+              <input
+                className="w-full pl-14 pr-4 py-3 rounded-full bg-white border-none ring-2 ring-[#e09c99]/20 focus:ring-[#a83100] transition-all outline-none text-neutral text-sm"
+                type="datetime-local"
+                value={eventStartTime}
+                onChange={(e) => setEventStartTime(e.target.value)}
+              />
             </div>
 
             {!hasEndTime ? (
-              <button type='button' onClick={()=>setHasEndTime(true)} 
+              <button type='button' onClick={() => setHasEndTime(true)}
                 className="w-full flex justify-end px-2.5 py-1 text-[12px] text-[#a83100] opacity-60 hover:opacity-100">
                 + Add End Date & Time
               </button>
-            ):(
+            ) : (
               <div className="">
                 {/* <label className={lblTitleStyle}>End Date & Time</label> */}
                 <div className="relative mt-2">
@@ -256,35 +257,35 @@ function CreateActivity() {
                     type="datetime-local"
                     value={eventEndTime}
                     onChange={(e) => setEventEndTime(e.target.value)}
-                    min={eventStartTime} 
+                    min={eventStartTime}
                     className="w-full pl-14 pr-4 py-3 rounded-full bg-white border-none ring-2 ring-[#e09c99]/20 focus:ring-[#a83100] transition-all outline-none text-neutral text-sm"
                   />
                 </div>
-                  <button 
-                    type="button" 
-                    onClick={() => {
-                      setHasEndTime(false)
-                      setEventEndTime("")
-                    }}
-                    className="w-full px-2.5 py-1 flex justify-end text-[12px] text-[#a83100] opacity-60 hover:opacity-100"
-                  >
-                    Remove ✕
-                  </button>
-              </div>              
+                <button
+                  type="button"
+                  onClick={() => {
+                    setHasEndTime(false)
+                    setEventEndTime("")
+                  }}
+                  className="w-full px-2.5 py-1 flex justify-end text-[12px] text-[#a83100] opacity-60 hover:opacity-100"
+                >
+                  Remove ✕
+                </button>
+              </div>
             )}
           </div>
 
           {/* maxParticipants */}
           <div className="flex items-center gap-4 -mt-3">
             <label className={lblTitleStyle}>Max Participant <span className="font-light">(optional)</span></label>
-              <input
-                className="w-11 h-8 pl-4 rounded-full bg-white border-none ring-2 ring-[#e09c99]/20 focus:ring-[#a83100] focus:ring-2 transition-all outline-none text-neutral placeholder:text-[#834c4b]/40"
-                placeholder="5"
-                type="text"
-                value= {maxParticipants}
-                onChange={(e)=>setMaxParticipants(e.target.value)}
-              />
-              {/* <p>{maxParticipants}</p>
+            <input
+              className="w-11 h-8 pl-4 rounded-full bg-white border-none ring-2 ring-[#e09c99]/20 focus:ring-[#a83100] focus:ring-2 transition-all outline-none text-neutral placeholder:text-[#834c4b]/40"
+              placeholder="5"
+              type="text"
+              value={maxParticipants}
+              onChange={(e) => setMaxParticipants(e.target.value)}
+            />
+            {/* <p>{maxParticipants}</p>
               <p>{typeof maxParticipants}</p> */}
           </div>
 
@@ -305,11 +306,10 @@ function CreateActivity() {
                     type="button"
                     onClick={() => setSelectedCategory(cat.id)}
                     className={`px-3 py-1.5 rounded-3xl text-[14px] font-medium flex items-center gap-2 transition-all duration-200 active:scale-95
-                        ${
-                          isSelected
-                            ? "bg-secondary text-white shadow-md"
-                            : "bg-[#ffdad8] text-[#834c4b] hover:bg-[#ffd2d0]"
-                        }
+                        ${isSelected
+                        ? "bg-secondary text-white shadow-md"
+                        : "bg-[#ffdad8] text-[#834c4b] hover:bg-[#ffd2d0]"
+                      }
                     `}
                   >
                     <span className="text-[16px]">{cat.icon}</span> {cat.title}
@@ -326,10 +326,10 @@ function CreateActivity() {
               <span className="absolute left-5 top-6 text-xl">📝</span>
               <textarea
                 className="w-full pl-14 pr-6 py-5 rounded-2xl bg-white border-none ring-2 ring-[#e09c99]/20 focus:ring-[#a83100] transition-all outline-none text-neutral placeholder:text-[#834c4b]/40 resize-none"
-                placeholder={description||"Tell us more about the activity, what to bring, and expectations..."}
+                placeholder={description || "Tell us more about the activity, what to bring, and expectations..."}
                 rows="4"
-                value= {description}
-                onChange={(e)=>hdlDescription(e.target.value)}
+                value={description}
+                onChange={(e) => hdlDescription(e.target.value)}
               ></textarea>
             </div>
           </div>

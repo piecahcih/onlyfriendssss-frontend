@@ -57,8 +57,9 @@ export const deleteProfileApi = (id) => mainApi.delete("/account/profile", id)
 
 ////////JOIN ACTIVITY (เพิ่มใหม่ตรงนี้)
 export const joinActivityApi = (activityId) => mainApi.post("/join", { activityId });
-export const manageJoinRequestApi = (requestId, status) => mainApi.patch("/join/manage-request", { requestId, status
-      });
+export const manageJoinRequestApi = (requestId, status) => mainApi.patch("/join/manage-request", {
+  requestId, status
+});
 export const leaveActivityApi = (activityId) => mainApi.delete(`/join/leave/${activityId}`);
 
 
@@ -72,8 +73,9 @@ export const getAllActivitiesJoinedByThisAccountApi = () => mainApi.get("/activi
 export const getActivityByIdApi = (activityid) => mainApi.get(`/activity/${activityid}`)
 export const getActivityByCategoryApi = (category) => mainApi.get(`/activity/category/${category}`)
 export const createActivityApi = (body) => mainApi.post("/activity", body)
-export const editActivityByIdApi = (activityid) => mainApi.patch(`/activity/${activityid}`)
+export const editActivityByIdApi = (activityid,body) => mainApi.patch(`/activity/${activityid}`, body)
 export const changeActivityStatusApi = (activityid, body) => mainApi.patch(`/activity/status/${activityid}`, body)
+export const cancelActivityStatusApi = (activityid) => mainApi.patch(`/activity/cancel/${activityid}`)
 export const deleteActivityByIdApi = (activityid) => mainApi.delete(`/activity/${activityid}`)
 
 
@@ -81,6 +83,31 @@ export const deleteActivityByIdApi = (activityid) => mainApi.delete(`/activity/$
 export const getAllWishlist = () => mainApi.get('/wishlist')
 export const addWishlist = (activityId) => mainApi.post('/wishlist', { activityId })
 export const deleteWishlist = (activityId) => mainApi.delete(`/wishlist/${activityId}`)
+
+////Chat
+export const getChatRoomsApi = () => mainApi.get("/chat/rooms");
+export const getChatHistoryApi = (roomId) => mainApi.get(`/chat/messages/${roomId}`);
+export const getOrCreatePrivateRoomApi = (friendId) => mainApi.post("/chat/rooms/private", { friendId });
+export const markChatAsReadApi = (roomId) => mainApi.patch(`/chat/rooms/${roomId}/read`);
+
+
+
+
+////////REVIEWS
+export const getUserApi = () => mainApi.get(`/user/${userId}`)
+
+export const getActivityRatingScoreApi = () => mainApi.get('/review/activity-score')
+
+export const getAllUsersReviewsApi = () => mainApi.get('/review/users')
+export const getAllReviewsMeApi = () => mainApi.get('/review/who-reviews-me')
+
+export const getAllActivitiesReviewsApi = () => mainApi.get('/review/activities')
+export const getActivityReviewsApi = (actid) => mainApi.get(`/review/activity/${actid}`)
+export const getActivityReviewsByLocationApi = (placeid) => mainApi.get(`/review/place/${placeid}`)
+export const getSpecificReviewApi = (reviewid) => mainApi.get(`/${reviewid}`)
+
+export const createReviewActivityApi = (actid, body) => mainApi.post(`/activity/${actid}`,body)
+export const createReviewUserApi = (actid, receiverid, body) => mainApi.post(`/user/${actid}/${receiverid}`,body)
 
 
 
