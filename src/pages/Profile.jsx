@@ -153,6 +153,10 @@ const Profile = () => {
       </div>
     );
 
+    // const hdlRating = () => {
+    //     navigate("/reviews-rating")
+    // }
+
   return (
     <div className="bg-base-200 min-h-screen flex flex-col font-sans pb-24 relative overflow-x-hidden">
       {/* --- EDIT MODAL --- */}
@@ -370,14 +374,19 @@ const Profile = () => {
               {profileData?.username}
             </h2>
             <div className="bg-primary w-full rounded-[30px] py-3 flex justify-around text-white shadow-lg">
-              <div className="flex flex-col items-center border-r border-white/30 flex-1">
+
+               <NavLink
+                to="/reviews-rating"
+                className="flex flex-col items-center flex-1"
+              >
                 <span className="text-lg bai-jamjuree-bold">
-                  {profileData?.trustScore || 0}
+                  {profileData?._count?.receivedFriendRequests || 0}
                 </span>
                 <span className="text-[10px] bai-jamjuree-medium opacity-90">
-                  Rating
+                  Rating 
                 </span>
-              </div>
+              </NavLink>
+              
               <div className="flex flex-col items-center border-r border-white/30 flex-1">
                 <span className="text-lg bai-jamjuree-bold">
                   {profileData?._count?.createdActivities || 0}

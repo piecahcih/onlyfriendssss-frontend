@@ -22,6 +22,7 @@ import EditActivityDetails from "../pages/EditActivityDetails";
 import ActivitiesReview from "../pages/reviews/ActivitiesReview";
 import PeerReview from "../pages/reviews/PeerReview";
 import MemoryActivityDetails from "../pages/reviews/MemoryActivityDetails";
+import RatingReview from "../pages/reviews/RatingReview";
 
 const guestRouter = createBrowserRouter([
   {
@@ -126,6 +127,10 @@ const userRouter = createBrowserRouter([
       {
         path: "reviews-peer",
         element: <PeerReview />,
+      },
+      {
+        path: "reviews-rating",
+        element: <RatingReview />,
       },
     ],
   },
