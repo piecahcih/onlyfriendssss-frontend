@@ -70,14 +70,6 @@ const userRouter = createBrowserRouter([
         element: <Activities />,
       },
       {
-        path: "reviews-activities",
-        element: <ActivitiesReview />,
-      },
-      {
-        path: "location-reviews",
-        element: <LocationReview />,
-      },
-      {
         path: "profile",
         element: <Profile />,
       },
@@ -127,6 +119,14 @@ const userRouter = createBrowserRouter([
       {
         path: "reviews-peer",
         element: <PeerReview />,
+      },
+      {
+        path: "reviews-activities",
+        element: <ActivitiesReview />,
+      },
+      {
+        path: "location-reviews",
+        element: <LocationReview />,
       },
     ],
   },

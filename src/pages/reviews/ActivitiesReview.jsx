@@ -1,110 +1,139 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router';
-import { motion } from 'framer-motion';
-import { LeftIcon, CameraIcon, YourLocationIcon, StarIcon } from '../../icons';
-import mockActImg from '../../assets/mockPlaceImg.jpg'
-import mockPfImg from '../../assets/default-profilepic.jpg'
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router";
+import { LeftIcon } from "../../icons";
+import useReviewStore from "../../stores/reviewStore";
+import useActivityStore from "../../stores/activitiesStore";
+import defaultActivityImg from "../../assets/mockPlaceImg.jpg";
 
 function ActivitiesReview() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const actid = searchParams.get("actid");
 
+  const getActivityById = useActivityStore((state) => state.getActivityById);
+  const currentActivity = useActivityStore((state) => state.currentActivity);
+  const createReviewActivity = useReviewStore((state) => state.createReviewActivity);
 
-    const hdlGoBack = () => {
-        navigate(-1);
-    };
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+  const [loading, setLoading] = useState(false);
 
+  console.log('rating', rating)
 
+  useEffect(() => {
+    if (actid) {
+      getActivityById(actid);
+    }
+  }, [actid, getActivityById]);
+
+  const hdlSubmit = async () => {
+    if (rating === 0) {
+      alert("Please select a rating");
+      return;
+    }
+    try {
+      setLoading(true);
+      await createReviewActivity(actid, { rating, comment });
+      alert("Activity review submitted successfully!");
+      navigate(`/memory-activity-details?actid=${actid}`);
+    } catch (error) {
+      console.error(error);
+      alert(error.response?.data?.message || "Failed to submit review");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  console.log('actid', actid)
+  if (!currentActivity) {
     return (
-        <div className="min-h-screen bg-base-200 flex flex-col">
-
-            <header className="w-full top-0 sticky z-40 bg-base-200 shadow-[0_8px_32px_rgba(78,33,32,0.08)] flex flex-col justify-between gap-5 px-6 py-4 relative">
-                <div className="flex items-center justify-between">
-                    <button
-                        type="button"
-                        onClick={hdlGoBack}
-                        className="text-[#a83100] hover:opacity-80 active:scale-95 transition-transform duration-200 relative z-10"
-                    >
-                        <LeftIcon className="w-8" />
-                    </button>
-
-                    <button className="text-2xl font-bold text-neutral">•••</button>
-                </div>
-
-                <div className="w-full flex items-center gap-4">
-                    <div className="w-full flex flex-col gap-4">
-                        <h2 className="text-[22px] font-bold text-black">Benjakitti Park</h2>
-
-                        <a
-                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('Benjakitti Park')}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-full text-[12px] font-medium bg-amber-200 flex justify-between items-center"
-                        >
-                            <span>Ratchadaphisek Rd, Khlong Toei, Bangkok 10110</span>
-                            <div className="bg-base-100 w-fit rounded-full p-1.5">
-                                <YourLocationIcon className='w-6' />
-                            </div>
-                        </a>
-                    </div>
-                </div>
-
-            </header>
-
-            {/* Review Content */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex-1 overflow-y-auto px-6 pt-4 pb-8 flex flex-col gap-8"
-            >
-
-                <div className="flex flex-col gap-4">
-                    <h3 className='font-bold'>Reviews (999)</h3>
-                    <div className="flex gap-4">
-                        <div className="w-23 h-25 rounded-[8px] overflow-hidden shadow-md flex-shrink-0 bg-white">
-                            <img src={mockActImg} alt="mockIMG" className='w-full h-full object-cover' />
-                        </div>
-                        <div className="flex flex-col gap-2 py-2">
-                            <p className="text-[12px] line-clamp-2 leading-3">
-                                Easily one of the most beautiful green spaces in Bangkok. The park is very spacious, clean, and well maintained. Walking around the large 
-                            </p>
-                            <div className="flex items-center">
-                                <StarIcon className='w-4 text-yellow-400' />
-                                <p className='text-[10px]'><span className='font-bold'>4.4</span>/5 (67)</p>
-                            </div>
-                            <div className="flex items-center justify-end gap-3">
-                                <p className='text-[10px]'>manitapockpew100%</p>
-                                <div className="w-7 h-7 rounded-full overflow-hidden shadow-md flex-shrink-0 bg-white">
-                                    <img src={mockPfImg} alt="mockIMG" className='w-full h-full object-cover' />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex gap-4">
-                        <div className="w-23 h-25 rounded-[8px] overflow-hidden shadow-md flex-shrink-0 bg-white">
-                            <img src={mockActImg} alt="mockIMG" className='w-full h-full object-cover' />
-                        </div>
-                        <div className="flex flex-col gap-2 py-2">
-                            <p className="text-[12px] line-clamp-2 leading-3">
-                                Easily one of the most beautiful green spaces in Bangkok. The park is very spacious, clean, and well maintained. Walking around the large 
-                            </p>
-                            <div className="flex items-center">
-                                <StarIcon className='w-4 text-yellow-400' />
-                                <p className='text-[10px]'><span className='font-bold'>4.4</span>/5 (67)</p>
-                            </div>
-                            <div className="flex items-center justify-end gap-3">
-                                <p className='text-[10px]'>manitapockpew100%</p>
-                                <div className="w-7 h-7 rounded-full overflow-hidden shadow-md flex-shrink-0 bg-white">
-                                    <img src={mockPfImg} alt="mockIMG" className='w-full h-full object-cover' />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-            </motion.div>
+      <div className="min-h-screen bg-base-200 flex items-center justify-center p-6 text-center text-neutral">
+        <div className="flex flex-col items-center gap-4">
+          <span className="loading loading-dots loading-lg text-primary"></span>
+          <h2 className="text-xl font-bold">Loading activity info...</h2>
+          <button onClick={() => navigate(-1)} className="btn btn-primary rounded-full px-8 text-white">
+            Go Back
+          </button>
         </div>
+      </div>
     );
+  }
+
+  return (
+    <div className="min-h-screen bg-base-200 text-neutral pb-10">
+      <header className="w-full top-0 sticky z-40 bg-base-200/80 backdrop-blur-md flex items-center px-6 py-4">
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="text-primary active:scale-95 transition-all p-2 -ml-2"
+        >
+          <LeftIcon className="w-8 h-8" />
+        </button>
+        <h1 className="ml-4 text-xl font-black text-on-surface uppercase tracking-tight">Review Activity</h1>
+      </header>
+
+      <main className="max-w-2xl mx-auto px-6 mt-10 space-y-8 font-body">
+        {/* Activity Profile Card */}
+        <div className="flex flex-col items-center gap-4 bg-white p-8 rounded-[40px] shadow-[0_12px_32px_rgba(78,33,32,0.04)] border border-primary/5">
+          <div className="relative w-full aspect-video overflow-hidden rounded-[30px] shadow-lg border-4 border-primary/10">
+            <img
+              src={
+                currentActivity?.coverPhoto
+                  ? currentActivity.coverPhoto.startsWith("http")
+                    ? currentActivity.coverPhoto
+                    : `http://localhost:3999${currentActivity.coverPhoto}`
+                  : defaultActivityImg
+              }
+              className="w-full h-full object-cover"
+              alt="activity"
+            />
+          </div>
+          <div className="text-center">
+            <h2 className="text-2xl font-black text-on-surface">{currentActivity?.title}</h2>
+            <p className="text-[10px] font-black text-primary uppercase tracking-widest mt-2 px-4 py-1.5 bg-primary/5 rounded-full inline-block">
+              {currentActivity?.category} Trip
+            </p>
+          </div>
+        </div>
+
+        {/* Star Rating Section */}
+        <div className="bg-white p-8 rounded-[40px] shadow-sm border border-primary/5 space-y-4 text-center">
+          <h3 className="text-lg font-black text-on-surface">Rate your experience</h3>
+          <div className="flex justify-center gap-3">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <button
+                key={star}
+                onClick={() => setRating(star)}
+                className="text-4xl transition-all active:scale-90 hover:scale-110"
+              >
+                {star <= rating ? "⭐" : "☆"}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Comment Section */}
+        <div className="bg-white p-8 rounded-[40px] shadow-sm border border-primary/5 space-y-4">
+          <h3 className="text-lg font-black text-on-surface">Leave a comment</h3>
+          <textarea
+            className="textarea textarea-bordered w-full h-32 bg-base-200/50 rounded-[25px] p-5 font-medium text-on-surface focus:ring-2 focus:ring-primary/20 border-none transition-all"
+            placeholder="Tell us about your experience with this activity..."
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+          ></textarea>
+        </div>
+
+        {/* Submit Button */}
+        <button
+          onClick={hdlSubmit}
+          disabled={loading || !rating}
+          className="btn btn-primary w-full h-16 rounded-[25px] text-xl font-black text-white shadow-lg shadow-primary/20 active:scale-95 transition-all border-none disabled:bg-neutral/10 disabled:text-neutral/30"
+        >
+          {loading ? <span className="loading loading-spinner"></span> : "Confirm Activity Review"}
+        </button>
+      </main>
+    </div>
+  );
 }
 
 export default ActivitiesReview;
