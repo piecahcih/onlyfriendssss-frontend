@@ -102,9 +102,15 @@ function MemoryActivityDetails() {
   const hdlActivityReview = () => {
         navigate("/reviews-activities")
     }
-  const hdlPeerReview = () => {
-        navigate("/reviews-peer")
-    }
+ const hdlPeerReview = () => {
+     console.log("Checking data before navigate:", selectedParticipant); 
+     console.log('selectedParticipant', selectedParticipant)
+     if (selectedParticipant && selectedParticipant.userId) {
+       navigate(`/reviews-peer?actid=${actid}&userId=${selectedParticipant.userId}`);
+      } else {
+        alert("Please select a participant first");
+     }
+    };
 
   
   return (
@@ -257,7 +263,10 @@ function MemoryActivityDetails() {
               <div
              key={idx}
              className="shrink-0 text-center space-y-1 cursor-pointer active:scale-95 transition-all"
-            onClick={() => setSelectedParticipant(item)}
+            onClick={() => {
+      console.log("You clicked on:", item); // เช็คว่า item นี้มี id และ user หรือไม่
+      setSelectedParticipant(item);
+    }}
            >
                 <div className="relative">
                   <img

@@ -70,10 +70,6 @@ const userRouter = createBrowserRouter([
         element: <Activities />,
       },
       {
-        path: "reviews-peer",
-        element: <PeerReview />,
-      },
-      {
         path: "reviews-activities",
         element: <ActivitiesReview />,
       },
@@ -126,6 +122,10 @@ const userRouter = createBrowserRouter([
       {
         path: "memory-activity-details",
         element: <MemoryActivityDetails />,
+      },
+      {
+        path: "reviews-peer",
+        element: <PeerReview />,
       },
     ],
   },
