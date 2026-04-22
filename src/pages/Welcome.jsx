@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import useUserStore from '../stores/userStore'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { AnimatePresence, motion } from 'framer-motion'
 import Premium from '../components/ads/Premium'
 import { CloseIcon, WelcomeIcon } from '../icons'
@@ -9,6 +9,7 @@ import { toast } from 'react-toastify'
 function Welcome() {
   const user = useUserStore(state => state.user)
   const [settingForm, setSettingForm] = useState(false)
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (user) {
@@ -16,15 +17,16 @@ function Welcome() {
     }
   }, [])
 
-  const handleSettingOpen = () => {
-    setSettingForm(true);
-  }
-
   return (
-    <div className='bg-base-200 min-h-screen'>
+    <div className='bg-base-200 min-h-screen relative'>
+      <Link to='/lddiscover'>
+        <div className='w-8 h-8 absolute right-4 top-3'>
+          <CloseIcon />
+        </div>
+      </Link>
       <div className="flex flex-col items-center justify-between min-h-screen p-6 font-sans">
 
-        <div className="flex-1 flex flex-col items-center text-center">
+        <div className="flex-1 flex flex-col items-center text-center mt-5">
           <div className="mb-6">
             <WelcomeIcon />
           </div>
@@ -65,52 +67,13 @@ function Welcome() {
         </div>
 
         <div className="w-full max-w-sm mt-auto mb-4">
-          <button onClick={handleSettingOpen} className="w-full bg-[#FF7B4C] hover:bg-[#ff6a33] text-white py-4 rounded-full font-bold text-lg transition-colors shadow-lg">
-            Premium
-          </button>
-          <div className="w-32 h-1 bg-black rounded-full mx-auto mt-6 opacity-20"></div>
+          <Link to='/lddiscover'>
+            <button className="w-full bg-[#FF7B4C] hover:bg-[#ff6a33] text-white py-4 rounded-full font-bold text-lg transition-colors shadow-lg">
+              Continue
+            </button>
+            <div className="w-32 h-1 bg-black rounded-full mx-auto mt-6 opacity-20"></div>
+          </Link>
         </div>
-
-        <AnimatePresence>
-          {settingForm && (
-            <>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setSettingForm(false)}
-                className="fixed inset-0 bg-black/50 z-[100] backdrop-blur-sm" />
-
-              <motion.div
-                initial={{ y: "100%" }}
-                animate={{ y: 0 }}
-                exit={{ y: "100%" }}
-                transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                className="fixed bottom-0 left-0 right-0 bg-white z-[101] rounded-t-[40px] p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-
-                <div className="text-center mt-4 mb-">
-                  <div className='text-end'>
-                    <button onClick={() => setSettingForm(false)} className="text-end p-2 rounded-full hover:bg-gray-200 transition-colors">
-                      <CloseIcon className="w-6 h-6 text-gray-500" />
-                    </button>
-                  </div>
-
-                  <h1 className="text-[#FF7B4C] text-3xl font-black mb-6 tracking-tight">
-                    onlyfriendssss
-                  </h1>
-                  <h2 className="text-black text-sm font-bold uppercase tracking-widest leading-relaxed max-w-[250px] mx-auto">
-                    MAKE UNLIMITED TRAVEL WITH <br />
-                    onlyfriendssss PREMIUM
-                  </h2>
-                </div>
-
-                <Premium />
-
-
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
 
       </div>
     </div>

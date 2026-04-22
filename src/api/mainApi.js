@@ -72,8 +72,9 @@ export const getAllActivitiesJoinedByThisAccountApi = () => mainApi.get("/activi
 export const getActivityByIdApi = (activityid) => mainApi.get(`/activity/${activityid}`)
 export const getActivityByCategoryApi = (category) => mainApi.get(`/activity/category/${category}`)
 export const createActivityApi = (body) => mainApi.post("/activity", body)
-export const editActivityByIdApi = (activityid) => mainApi.patch(`/activity/${activityid}`)
+export const editActivityByIdApi = (activityid,body) => mainApi.patch(`/activity/${activityid}`, body)
 export const changeActivityStatusApi = (activityid, body) => mainApi.patch(`/activity/status/${activityid}`, body)
+export const cancelActivityStatusApi = (activityid) => mainApi.patch(`/activity/cancel/${activityid}`)
 export const deleteActivityByIdApi = (activityid) => mainApi.delete(`/activity/${activityid}`)
 
 
@@ -81,6 +82,24 @@ export const deleteActivityByIdApi = (activityid) => mainApi.delete(`/activity/$
 export const getAllWishlist = () => mainApi.get('/wishlist')
 export const addWishlist = (activityId) => mainApi.post('/wishlist', { activityId })
 export const deleteWishlist = (activityId) => mainApi.delete(`/wishlist/${activityId}`)
+
+
+
+////////REVIEWS
+export const getUserApi = () => mainApi.get(`/user/${userId}`)
+
+export const getActivityRatingScoreApi = () => mainApi.get('/review/activity-score')
+
+export const getAllUsersReviewsApi = () => mainApi.get('/review/users')
+export const getAllReviewsMeApi = () => mainApi.get('/review/who-reviews-me')
+
+export const getAllActivitiesReviewsApi = () => mainApi.get('/review/activities')
+export const getActivityReviewsApi = (actid) => mainApi.get(`/review/activity/${actid}`)
+export const getActivityReviewsByLocationApi = (placeid) => mainApi.get(`/review/place/${placeid}`)
+export const getSpecificReviewApi = (reviewid) => mainApi.get(`/${reviewid}`)
+
+export const createReviewActivityApi = (actid, body) => mainApi.post(`/activity/${actid}`,body)
+export const createReviewUserApi = (actid, receiverid, body) => mainApi.post(`/user/${actid}/${receiverid}`,body)
 
 
 

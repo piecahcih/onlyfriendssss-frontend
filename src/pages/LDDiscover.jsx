@@ -9,6 +9,7 @@ import useActivityStore from "../stores/activitiesStore";
 import useUserStore from "../stores/userStore";
 import NotificationModal from "../components/NotificationModal";
 import { SearchIcon, Notification, LocationIcon, CalendarIcon, YourLocationIcon } from "../icons";
+import PremiumModal from "../components/ads/PremiumModal";
 
 const BACKEND_URL = "http://localhost:3999";
 
@@ -29,6 +30,7 @@ const LDDiscover = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [notiOpen, setNotiOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [settingForm, setSettingForm] = useState(false)
 
   const categoryList = [
     { id: "all", title: "All", icon: "✨" },
@@ -45,6 +47,18 @@ const LDDiscover = () => {
       ? getAllCurrentActivities()
       : getActivityByCategory(selectedCategory);
   }, [selectedCategory, getAllCurrentActivities, getActivityByCategory]);
+
+  useEffect(() => {
+    const hasSeenInSession = sessionStorage.getItem("hasSeenPremium");
+
+    if (!hasSeenInSession) {
+      const timer = setTimeout(() => {
+        setSettingForm(true);
+        sessionStorage.setItem("hasSeenPremium", "true");
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [])
 
   // 2. Filter logic
   const filteredActivities = activities.filter(
@@ -117,13 +131,13 @@ const LDDiscover = () => {
       >
         <LocationIcon className="w-7 h-7 text-primary" />
       </button> */}
-          <button 
-            onClick={() => hdlGetCurrentLocation(getFullImgPath(user?.profileImg))}
-            className="absolute bottom-30 right-3 p-1.5 bg-white rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:bg-gray-50 active:scale-95 transition-all border border-base-200 flex items-center justify-center group"
-            title="Go to current location"
-          >
-            <YourLocationIcon className="w-7 h-7 text-primary group-hover:rotate-12 transition-transform" />
-          </button>
+      <button
+        onClick={() => hdlGetCurrentLocation(getFullImgPath(user?.profileImg))}
+        className="absolute bottom-30 right-3 p-1.5 bg-white rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:bg-gray-50 active:scale-95 transition-all border border-base-200 flex items-center justify-center group"
+        title="Go to current location"
+      >
+        <YourLocationIcon className="w-7 h-7 text-primary group-hover:rotate-12 transition-transform" />
+      </button>
 
       {/* Bottom Sheet UI */}
       <motion.div
@@ -195,6 +209,11 @@ const LDDiscover = () => {
           </AnimatePresence>
         </div>
       </motion.div>
+
+      <PremiumModal
+        isOpen={settingForm}
+        onClose={() => setSettingForm(false)}
+      />
 
       <NotificationModal isOpen={notiOpen} onClose={() => setNotiOpen(false)} />
     </div>
