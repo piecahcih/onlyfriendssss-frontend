@@ -98,8 +98,8 @@ export const getActivityReviewsApi = (actid) => mainApi.get(`/review/activity/${
 export const getActivityReviewsByLocationApi = (placeid) => mainApi.get(`/review/place/${placeid}`)
 export const getSpecificReviewApi = (reviewid) => mainApi.get(`/${reviewid}`)
 
-export const createReviewActivityApi = (actid, body) => mainApi.post(`/activity/${actid}`,body)
-export const createReviewUserApi = (actid, receiverid, body) => mainApi.post(`/user/${actid}/${receiverid}`,body)
+export const createReviewActivityApi = (actid, body) => mainApi.post(`/review/activity/${actid}`,body)
+export const createReviewUserApi = (actid, receiverid, body) => mainApi.post(`/review/user/${actid}/${receiverid}`,body)
 
 
 
