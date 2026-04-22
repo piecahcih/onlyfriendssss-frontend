@@ -7,24 +7,25 @@ import defaultProfile from "../../assets/default-profilepic.jpg";
 function PeerReview() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const userId= searchParams.get("userId");
+  const userId = searchParams.get("userId");
+  console.log('userId', userId)
   const actid = searchParams.get("actid");
 
-   const getUser = useReviewStore((state) => state.getUser);
-   const selectedUser = useReviewStore((state) => state.selectedUser);
-   const reviewUser = useReviewStore((state) => state.reviewUser);
-   
+  const getUser = useReviewStore((state) => state.getUser);
+  const selectedUser = useReviewStore((state) => state.selectedUser);
+  const reviewUser = useReviewStore((state) => state.reviewUser);
 
-   const [rating, setRating] = useState(0);
-   const [comment, setComment] = useState("");
-   const [loading, setLoading] = useState(false);
- 
-   const BACKEND_URL = "http://localhost:3999";
 
- useEffect(() => {
-  if (userId) {
-  getUser(userId);
-  }
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const BACKEND_URL = "http://localhost:3999";
+
+  useEffect(() => {
+    if (userId) {
+      getUser(userId);
+    }
   }, [userId, getUser]);
 
 

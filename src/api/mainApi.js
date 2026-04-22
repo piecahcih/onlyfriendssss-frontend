@@ -57,8 +57,9 @@ export const deleteProfileApi = (id) => mainApi.delete("/account/profile", id)
 
 ////////JOIN ACTIVITY (เพิ่มใหม่ตรงนี้)
 export const joinActivityApi = (activityId) => mainApi.post("/join", { activityId });
-export const manageJoinRequestApi = (requestId, status) => mainApi.patch("/join/manage-request", { requestId, status
-      });
+export const manageJoinRequestApi = (requestId, status) => mainApi.patch("/join/manage-request", {
+  requestId, status
+});
 export const leaveActivityApi = (activityId) => mainApi.delete(`/join/leave/${activityId}`);
 
 
@@ -83,10 +84,17 @@ export const getAllWishlist = () => mainApi.get('/wishlist')
 export const addWishlist = (activityId) => mainApi.post('/wishlist', { activityId })
 export const deleteWishlist = (activityId) => mainApi.delete(`/wishlist/${activityId}`)
 
+////Chat
+export const getChatRoomsApi = () => mainApi.get("/chat/rooms");
+export const getChatHistoryApi = (roomId) => mainApi.get(`/chat/messages/${roomId}`);
+export const getOrCreatePrivateRoomApi = (friendId) => mainApi.post("/chat/rooms/private", { friendId });
+export const markChatAsReadApi = (roomId) => mainApi.patch(`/chat/rooms/${roomId}/read`);
+
+
 
 
 ////////REVIEWS
-export const getUserApi = () => mainApi.get(`/user/${userId}`)
+export const getUserApi = (userid) => mainApi.get(`/review/user/${userid}`)
 
 export const getActivityRatingScoreApi = () => mainApi.get('/review/activity-score')
 
@@ -98,8 +106,8 @@ export const getActivityReviewsApi = (actid) => mainApi.get(`/review/activity/${
 export const getActivityReviewsByLocationApi = (placeid) => mainApi.get(`/review/place/${placeid}`)
 export const getSpecificReviewApi = (reviewid) => mainApi.get(`/${reviewid}`)
 
-export const createReviewActivityApi = (actid, body) => mainApi.post(`/activity/${actid}`,body)
-export const createReviewUserApi = (actid, receiverid, body) => mainApi.post(`/user/${actid}/${receiverid}`,body)
+export const createReviewActivityApi = (actid, body) => mainApi.post(`/review/activity/${actid}`,body)
+export const createReviewUserApi = (actid, receiverid, body) => mainApi.post(`/review/user/${actid}/${receiverid}`,body)
 
 
 

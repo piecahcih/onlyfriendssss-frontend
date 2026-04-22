@@ -30,7 +30,7 @@ function ActivityDetails() {
     { id: "TRAVEL", title: "Travel", icon: "✈️" },
   ];
 
-  const matchedCategory = categoryList.find((cat) => cat.id === currentActivity.category)
+  const matchedCategory = categoryList.find((cat) => cat.id === currentActivity?.category)
 
   useEffect(() => {
     if (actid) {
@@ -118,6 +118,16 @@ function ActivityDetails() {
     }
   };
 
+  const hdlGotoChat = () => {
+    navigate(`/chat/${encodeURIComponent(currentActivity.title)}`, {
+      state: {
+        roomId: currentActivity.id,
+        title: currentActivity.title,
+        icon: currentActivity.coverPhoto
+      }
+    })
+  }
+
   // ฟังก์ชันสำหรับ Host จัดการคำขอ
   const hdlHostAction = async (requestId, status) => {
     try {
@@ -156,7 +166,7 @@ function ActivityDetails() {
           </div>
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 text-primary shadow-sm text-xs font-bold border border-primary/20">
             <span>{matchedCategory.icon}</span>
-            {currentActivity.category}
+            {currentActivity?.category}
           </div>
         </div>
         {/* Cover Photo */}
@@ -326,23 +336,41 @@ function ActivityDetails() {
       {/* Action Footer */}
       <div className="fixed bottom-0 left-0 w-full p-6 z-40 bg-linear-to-t from-base-200 via-base-200 to-transparent">
         <button
-          onClick={hdlJoin}
-          disabled={loadingJoin || isJoined || isFull || isPending || isHost}
+          // onClick={hdlJoin}
+          // disabled={loadingJoin || isJoined || isFull || isPending || isHost}
+          onClick={isJoined || isHost ? hdlGotoChat : hdlJoin}
+          disabled={loadingJoin || isFull || isPending}
           className={`w-full max-w-2xl flex items-center justify-center gap-3 px-8 py-4 rounded-[25px] font-black text-xl  active:scale-95 transition-all border-b-4
-          ${isJoined
+          ${(isJoined || isHost)
+
               ? "bg-linear-to-r from-success to-secondary text-white"
               : (isFull || isPending)
                 ? "bg-neutral text-white opacity-50 cursor-not-allowed"
                 : "bg-linear-to-r from-primary to-secondary text-white border-primary-focus hover:scale-[1.05]"
             }`}
         >
-          {loadingJoin ? (
+          {/* {loadingJoin ? (
             <span className="loading loading-spinner"></span>
           ) : isHost ? (
             "YOU ARE THE HOST"
           ) : isJoined ? (
             <>
               <span className="text-2xl"><ChatIcon className="w-7" /></span> CHAT
+            </>
+          ) : isPending ? (
+            "WAITING FOR APPROVAL..."
+          ) : isFull ? (
+            "ACTIVITY FULL"
+          ) : (
+            <>
+              <span className="text-2xl">👋</span> JOIN NOW
+            </>
+          )} */}
+          {loadingJoin ? (
+            <span className="loading loading-spinner"></span>
+          ) : (isJoined || isHost) ? (
+            <>
+              <span className="text-2xl"><ChatIcon className="w-7" /></span> {isHost ? "HOST CHAT" : "CHAT"}
             </>
           ) : isPending ? (
             "WAITING FOR APPROVAL..."
