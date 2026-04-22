@@ -12,20 +12,20 @@ const swalWithBootstrapButtons = Swal.mixin({
   buttonsStyling: false
 });
 
-export function DeleteSwal ({currentActivity, hdlDelete}) {
+export function DeleteSwal ({currentActivity, hdlCancel}) {
 
     swalWithBootstrapButtons.fire({
-      title: `<h2 class="text-[24px] font-bold text-neutral leading-tight">Delete ${currentActivity.title} ?</h2>`,
+      title: `<h2 class="text-[24px] font-bold text-neutral leading-tight">Cancel ${currentActivity.title} ?</h2>`,
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Delete",
-      cancelButtonText: "Cancel",
+      confirmButtonText: "Cancel",
+      cancelButtonText: "No",
       reverseButtons: true
     }).then(async(result) => {
       if (result.isConfirmed){
-        await hdlDelete()
+        await hdlCancel()
           swalWithBootstrapButtons.fire({
-          title: "This Activity has been deleted.",
+          title: "This Activity has been cancelled.",
           icon: "success"
         });
       } 

@@ -52,7 +52,11 @@ const Profile = () => {
   };
 
   const handleSettingOpen = () => setSettingForm(true);
-  const hdlLogout = () => logout();
+
+  const hdlLogout = () => {
+    sessionStorage.removeItem("hasSeenPremium");
+    logout();
+  }
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -110,11 +114,7 @@ const Profile = () => {
   };
 
   const hdlDeleteAccount = async () => {
-    if (
-      window.confirm(
-        "คุณแน่ใจหรือไม่ว่าต้องการลบบัญชี? การกระทำนี้ไม่สามารถย้อนกลับได้",
-      )
-    ) {
+    if (window.confirm("คุณแน่ใจหรือไม่ว่าต้องการลบบัญชี? การกระทำนี้ไม่สามารถย้อนกลับได้")) {
       try {
         await deleteProfile();
         alert("ลบบัญชีของคุณเรียบร้อยแล้ว");
@@ -410,13 +410,9 @@ const Profile = () => {
               {profileData?.bio || "No bio available"}
             </p>
             <span className="text-[10px] px-2 py-1 bg-gray-100 rounded-md text-gray-400 font-bold uppercase tracking-wider">
-              {profileData?.gender === "MALE"
-                ? "MALE"
-                : profileData?.gender === "FEMALE"
-                  ? "FEMALE"
-                  : profileData?.gender === "OTHER"
-                    ? "OTHER"
-                    : "N/A"}
+              {profileData?.gender === "MALE" ? "MALE" :
+                profileData?.gender === "FEMALE" ? "FEMALE" :
+                  profileData?.gender === "OTHER" ? "OTHER" : "N/A"}
             </span>
           </div>
         </div>

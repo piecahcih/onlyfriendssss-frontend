@@ -337,6 +337,11 @@ const LDDiscover = () => {
         </div>
       </motion.div>
 
+      <PremiumModal
+        isOpen={settingForm}
+        onClose={() => setSettingForm(false)}
+      />
+
       <NotificationModal isOpen={notiOpen} onClose={() => setNotiOpen(false)} />
     </div>
   );

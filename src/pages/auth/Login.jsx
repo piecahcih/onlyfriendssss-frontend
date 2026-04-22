@@ -40,7 +40,7 @@ function Login() {
       const res = await login(data)
       // console.log(res.data.message)
       toast.success(res.data.message)
-      navigate("/")
+      navigate("/welcome")
     } catch (error) {
       const errMsg =
         error.response?.data?.message
