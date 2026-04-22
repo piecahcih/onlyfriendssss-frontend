@@ -31,7 +31,7 @@ function LocationReview() {
 
                 <div className="w-full flex items-center gap-4">
                     <div className="w-full flex flex-col gap-4">
-                        <h2 className="text-[22px] font-bold text-black">Benjakitti Park</h2>
+                        <h2 className="text-[22px] font-bold text-black">Benjakitti Park Jaaa</h2>
 
                         <a
                             href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('Benjakitti Park')}`}
@@ -58,26 +58,6 @@ function LocationReview() {
 
                 <div className="flex flex-col gap-4">
                     <h3 className='font-bold'>Reviews (999)</h3>
-                    <div className="flex gap-4">
-                        <div className="w-23 h-25 rounded-[8px] overflow-hidden shadow-md flex-shrink-0 bg-white">
-                            <img src={mockActImg} alt="mockIMG" className='w-full h-full object-cover' />
-                        </div>
-                        <div className="flex flex-col gap-2 py-2">
-                            <p className="text-[12px] line-clamp-2 leading-3">
-                                Easily one of the most beautiful green spaces in Bangkok. The park is very spacious, clean, and well maintained. Walking around the large 
-                            </p>
-                            <div className="flex items-center">
-                                <StarIcon className='w-4 text-yellow-400' />
-                                <p className='text-[10px]'><span className='font-bold'>4.4</span>/5 (67)</p>
-                            </div>
-                            <div className="flex items-center justify-end gap-3">
-                                <p className='text-[10px]'>manitapockpew100%</p>
-                                <div className="w-7 h-7 rounded-full overflow-hidden shadow-md flex-shrink-0 bg-white">
-                                    <img src={mockPfImg} alt="mockIMG" className='w-full h-full object-cover' />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <div className="flex gap-4">
                         <div className="w-23 h-25 rounded-[8px] overflow-hidden shadow-md flex-shrink-0 bg-white">
                             <img src={mockActImg} alt="mockIMG" className='w-full h-full object-cover' />
