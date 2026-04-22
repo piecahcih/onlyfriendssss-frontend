@@ -95,13 +95,13 @@ export const getActivityRatingScoreApi = () => mainApi.get('/review/activity-sco
 export const getAllUsersReviewsApi = () => mainApi.get('/review/users')
 export const getAllReviewsMeApi = () => mainApi.get('/review/who-reviews-me')
 
-export const getAllActivitiessReviewsApi = () => mainApi.get('/review/activities')
+export const getAllActivitiesReviewsApi = () => mainApi.get('/review/activities')
 export const getActivityReviewsApi = (actid) => mainApi.get(`/review/activity/${actid}`)
 export const getActivityReviewsByLocationApi = (placeid) => mainApi.get(`/review/place/${placeid}`)
 export const getSpecificReviewApi = (reviewid) => mainApi.get(`/${reviewid}`)
 
-export const reviewActivityApi = (actid, body) => mainApi.post(`/activity/${actid}`,body)
-export const reviewUserApi = (actid, receiverid, body) => mainApi.post(`/user/${actid}/${receiverid}`,body)
+export const createReviewActivityApi = (actid, body) => mainApi.post(`/activity/${actid}`,body)
+export const createReviewUserApi = (actid, receiverid, body) => mainApi.post(`/user/${actid}/${receiverid}`,body)
 
 
 
