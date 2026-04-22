@@ -72,8 +72,9 @@ export const getAllActivitiesJoinedByThisAccountApi = () => mainApi.get("/activi
 export const getActivityByIdApi = (activityid) => mainApi.get(`/activity/${activityid}`)
 export const getActivityByCategoryApi = (category) => mainApi.get(`/activity/category/${category}`)
 export const createActivityApi = (body) => mainApi.post("/activity", body)
-export const editActivityByIdApi = (activityid) => mainApi.patch(`/activity/${activityid}`)
+export const editActivityByIdApi = (activityid,body) => mainApi.patch(`/activity/${activityid}`, body)
 export const changeActivityStatusApi = (activityid, body) => mainApi.patch(`/activity/status/${activityid}`, body)
+export const cancelActivityStatusApi = (activityid) => mainApi.patch(`/activity/cancel/${activityid}`)
 export const deleteActivityByIdApi = (activityid) => mainApi.delete(`/activity/${activityid}`)
 
 
@@ -88,6 +89,24 @@ export const getActivityDetail = (activityId) => mainApi.get(`/review/activities
 export const reviewActivity = (activityId, body) => mainApi.post(`/review/activity/${activityId}`, body)
 export const reviewUser = (activityId, receiverId, body) => mainApi.post(`/review/user/${activityId}/${receiverId}`, body)
 export const getUserApi = (userId) => mainApi.get(`/review/${userId}`);
+
+
+
+////////REVIEWS
+export const getUserApi = () => mainApi.get('/user/:userId')
+
+export const getActivityRatingScoreApi = () => mainApi.get('/review/activity-score')
+
+export const getAllUsersReviewsApi = () => mainApi.get('/review/users')
+export const getAllReviewsMeApi = () => mainApi.get('/review/who-reviews-me')
+
+export const getAllActivitiessReviewsApi = () => mainApi.get('/review/activities')
+export const getActivityReviewsApi = (actid) => mainApi.get(`/review/activity/${actid}`)
+export const getActivityReviewsByLocationApi = (placeid) => mainApi.get(`/review/place/${placeid}`)
+export const getSpecificReviewApi = (reviewid) => mainApi.get(`/${reviewid}`)
+
+export const reviewActivityApi = (actid, body) => mainApi.post(`/activity/${actid}`,body)
+export const reviewUserApi = (actid, receiverid, body) => mainApi.post(`/user/${actid}/${receiverid}`,body)
 
 
 
