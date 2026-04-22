@@ -2,12 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ProfilePic from "../components/profile/ProfilePic";
 import useUserStore from "../stores/userStore";
-import {
-  SettingIcon,
-  CloseIcon,
-  CameraIcon,
-  EditIcon,
-} from "../icons";
+import { SettingIcon, CloseIcon, CameraIcon, EditIcon } from "../icons";
 import { NavLink } from "react-router";
 
 import MyActivityTab from "../components/profile/MyActivityTab";
@@ -30,9 +25,6 @@ const Profile = () => {
 
   const fileInputRef = useRef(null);
 
-  useEffect(() => {
-    fetchUserProfile();
-  }, []);
 
   const fetchUserProfile = async () => {
     try {
@@ -48,6 +40,10 @@ const Profile = () => {
       console.error("Fetch Profile Error:", error);
     }
   };
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
 
   const handleEditOpen = () => {
     setEditForm({ ...profileData });
@@ -76,7 +72,8 @@ const Profile = () => {
         formData.append("profileImg", editForm.profileImg);
       }
 
-      const response = await updateProfile(formData);
+      const response = await editProfileApi(formData);
+
       const updatedUser = response.data.data;
 
       if (updatedUser.profileImg) {
@@ -362,7 +359,7 @@ const Profile = () => {
       {/* --- PROFILE INFO --- */}
       <div className="px-6 flex flex-col">
         <div className="flex items-center w-full gap-4 mb-6">
-          <div className="w-28 h-28 rounded-full overflow-hidden shadow-md flex-shrink-0 bg-white">
+          <div style={{ width: '112px', height: '112px', borderRadius: '100%', overflow: "hidden" }}>
             <ProfilePic imgSrc={getFullImgPath(profileData?.profileImg)} />
           </div>
           <div className="flex-1 flex flex-col">
