@@ -4,6 +4,7 @@ import { createReviewActivityApi, createReviewUserApi, getActivityReviewsApi, ge
 
 const useReviewStore = create(persist((set, get) => ({
   reviews: [],
+  selectedUser: null,
   currentReview: null,
   rating: [],
   getUser: async (userId) => {

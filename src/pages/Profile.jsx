@@ -23,7 +23,7 @@ const Profile = () => {
   const deleteProfile = useUserStore((state) => state.deleteProfile);
 
   const [profileData, setProfileData] = useState(null);
-  console.log(profileData)
+  console.log("profileData",profileData)
   const [isEditing, setIsEditing] = useState(false);
   const [settingForm, setSettingForm] = useState(false);
   const [editForm, setEditForm] = useState({});
