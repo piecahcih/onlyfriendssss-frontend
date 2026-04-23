@@ -11,9 +11,17 @@ function Add2Interest() {
   const navigate = useNavigate()
 
   const interests = [
-    "foodie", "camping", "slowlife", "health", "art",
-    "travel", "entertainment", "sport", "volunteer", "workstation"
-  ];
+    { label: "foodie 🍳", value: "foodie" },
+    { label: "camping 🏕️", value: "camping" },
+    { label: "slowlife 🌿", value: "slowlife" },
+    { label: "health 🥗", value: "health" },
+    { label: "art 🎨", value: "art" },
+    { label: "travel ✈️", value: "travel" },
+    { label: "entertainment 🎬", value: "entertainment" },
+    { label: "sport 🏀", value: "sport" },
+    { label: "volunteer 🤝", value: "volunteer" },
+    { label: "workstation 💻", value: "workstation" }
+  ]
 
   // ดักห้ามเลือกเกิน 4 
   const [selected, setSelected] = useState([])
@@ -40,7 +48,7 @@ function Add2Interest() {
 
         toast.success('Login Success')
         setTimeout(() => {
-          navigate('/')
+          navigate('/welcome')
         }, 1500)
       }
     } catch (error) {
@@ -68,17 +76,17 @@ function Add2Interest() {
 
         <div className="flex flex-wrap gap-3 overflow-y-auto max-h-[400px] no-scrollbar">
           {interests.map((item) => {
-            const isSelected = selected.includes(item);
+            const isSelected = selected.includes(item.value);
             return (
               <button
                 key={item}
-                onClick={() => toggleInterest(item)}
+                onClick={() => toggleInterest(item.value)}
                 style={{ backgroundColor: isSelected ? '#FF7F50' : '#F3F4F6' }}
                 className={`px-5 py-2.5 rounded-full bai-jamjuree-bold text-sm transition-all duration-200 active:scale-90
                   ${isSelected ? 'text-white' : 'text-gray-600'}
                 `}
               >
-                {item}
+                {item.label}
               </button>
             );
           })}

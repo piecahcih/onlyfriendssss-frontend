@@ -31,7 +31,6 @@ function Register() {
 
   const onSubmit = async (data) => {
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000))
       const resp = await registerApi(data)
       setRegisteringUser(resp.data.user)
       // console.log(resp.data.message)
@@ -55,7 +54,7 @@ function Register() {
       // console.log(result.user)
       await loginWithGoogle(idToken)
       toast.success('Login Success')
-      navigate('/')
+      navigate('/welcome')
     } catch (error) {
       console.error('Google Login Error', error)
       toast.error("Google login failed. Please try again.")

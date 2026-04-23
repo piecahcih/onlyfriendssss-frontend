@@ -6,6 +6,7 @@ import { SettingIcon, CloseIcon, CameraIcon, EditIcon } from "../icons";
 import { NavLink } from "react-router";
 
 import MyActivityTab from "../components/profile/MyActivityTab";
+import { editProfileApi } from "../api/mainApi";
 
 const BACKEND_URL = "http://localhost:3999";
 
@@ -130,7 +131,7 @@ const Profile = () => {
   const triggerFileInput = () => fileInputRef.current.click();
 
   const getFullImgPath = (path) => {
-    if (!path) return "/default-avatar.png";
+    if (!path) return null;
 
     if (typeof path !== "string" || path.startsWith("data:")) {
       return path;
@@ -188,7 +189,7 @@ const Profile = () => {
                     <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-primary/10 shadow-inner bg-gray-50">
                       <ProfilePic
                         imgSrc={
-                          previewImage || getFullImgPath(editForm?.profileImg)
+                          previewImage || getFullImgPath(editForm?.profileImg) || data.profileImg
                         }
                       />
                     </div>
@@ -360,7 +361,7 @@ const Profile = () => {
       <div className="px-6 flex flex-col">
         <div className="flex items-center w-full gap-4 mb-6">
           <div style={{ width: '112px', height: '112px', borderRadius: '100%', overflow: "hidden" }}>
-            <ProfilePic imgSrc={getFullImgPath(profileData?.profileImg)} />
+            <ProfilePic imgSrc={getFullImgPath(profileData?.profileImg) || data.profileImg} />
           </div>
           <div className="flex-1 flex flex-col">
             <h2 className="text-xl bai-jamjuree-bold text-neutral mb-2">
@@ -415,6 +416,16 @@ const Profile = () => {
                   profileData?.gender === "OTHER" ? "OTHER" : "N/A"}
             </span>
           </div>
+
+
+
+          {/* ปุ่มชั่วคราวเทสหน้า Location Review */}
+          <NavLink 
+            to="/location-reviews?placeid=8" 
+            className="btn btn-sm btn-outline btn-primary w-full rounded-xl mt-4"
+          >
+            Location Review Test (Place ID: 8)
+          </NavLink>
         </div>
       </div>
 
