@@ -5,6 +5,7 @@ import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css';
 import MapContainer from './MapContainer';
 import getPlaces, { reverseGeocode } from '../../api/getPlace';
+import { useSpeechToText } from '../../hooks/useSpeechToText';
 
 function MapboxViewer() {
   const mapContainerRef = useRef()
@@ -53,6 +54,20 @@ function MapModal({ isOpen, onClose, onConfirm }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
+  const performSearch = async (query) => {
+    if (query.length > 2) {
+      const results = await getPlaces(query);
+      setSearchResults(results || []);
+    } else {
+      setSearchResults([]);
+    }
+  };
+
+  const { isListening, toggleListening, isSupported } = useSpeechToText((transcript) => {
+    setSearchQuery(transcript);
+    performSearch(transcript);
+  });
+
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -97,12 +112,7 @@ function MapModal({ isOpen, onClose, onConfirm }) {
   const hdlSearch = async (e) => {
     const query = e.target.value;
     setSearchQuery(query);
-    if (query.length > 2) {
-      const results = await getPlaces(query);
-      setSearchResults(results || []);
-    } else {
-      setSearchResults([]);
-    }
+    performSearch(query);
   };
 
   const handleSelectPlace = (feature) => {
@@ -162,9 +172,18 @@ function MapModal({ isOpen, onClose, onConfirm }) {
                   placeholder="Search for a place" 
                   type="text"
                 />
-                <div className="absolute inset-y-0 right-5 flex items-center pointer-events-none">
-                  <MicIcon className='w-5.5' />
-                </div>
+                {isSupported && (
+                  <div 
+                    onClick={toggleListening}
+                    className="absolute inset-y-0 right-5 flex items-center cursor-pointer z-10"
+                  >
+                    <MicIcon 
+                      className={`w-5.5 transition-all duration-300 ${
+                        isListening ? "text-red-500 animate-pulse scale-110" : "text-gray-400 hover:text-primary"
+                      }`} 
+                    />
+                  </div>
+                )}
               </div>
 
               {searchResults.length > 0 && (

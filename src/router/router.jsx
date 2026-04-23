@@ -22,6 +22,7 @@ import EditActivityDetails from "../pages/EditActivityDetails";
 import ActivitiesReview from "../pages/reviews/ActivitiesReview";
 import PeerReview from "../pages/reviews/PeerReview";
 import MemoryActivityDetails from "../pages/reviews/MemoryActivityDetails";
+import HomePage from "../pages/HomePage";
 
 const guestRouter = createBrowserRouter([
   {
@@ -63,6 +64,10 @@ const userRouter = createBrowserRouter([
     children: [
       {
         index: true,
+        element: <HomePage />,
+      },
+      {
+        path: "discover",
         element: <LDDiscover />,
       },
       {

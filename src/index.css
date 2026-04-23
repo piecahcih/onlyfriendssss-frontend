@@ -96,7 +96,7 @@
   /* Secondary */
   --color-secondary: #ff7f50;
   --color-secondary-focus: #f59f65;
-  --color-secondary-content: #ffffff; /*white/search*/
+  --color-secondary-content: #7d7d7d; /*white/search*/
 
   /* Neutral: Gray for secondary/primary text */
   --color-neutral: #505050;
