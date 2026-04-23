@@ -88,9 +88,11 @@ export const deleteWishlist = (activityId) => mainApi.delete(`/wishlist/${activi
 
 
 ////////REVIEWS
-export const getUserApi = (userid) => mainApi.get(`/review/user/${userid}`)
+export const getActivityRatingsApi = () => mainApi.get('/review/activity-scores')
+export const getUserRatingsApi = () => mainApi.get('/review/user-scores')
+export const getPlaceRatingsApi = () => mainApi.get('/review/place-scores')
 
-export const getActivityRatingScoreApi = () => mainApi.get('/review/activity-score')
+export const getUserApi = (userid) => mainApi.get(`/review/user/${userid}`)
 
 export const getAllUsersReviewsApi = () => mainApi.get('/review/users')
 export const getAllReviewsMeApi = () => mainApi.get('/review/who-reviews-me')

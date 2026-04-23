@@ -11,6 +11,7 @@ import {
 import { NavLink } from "react-router";
 
 import MyActivityTab from "../components/profile/MyActivityTab";
+import useReviewStore from "../stores/reviewStore";
 
 const BACKEND_URL = "http://localhost:3999";
 
@@ -29,10 +30,14 @@ const Profile = () => {
   const [editForm, setEditForm] = useState({});
   const [previewImage, setPreviewImage] = useState(null);
 
+  const userRatings = useReviewStore((state) => state.userRatings);
+  const getUserRatings = useReviewStore((state) => state.getUserRatings);
+
   const fileInputRef = useRef(null);
 
   useEffect(() => {
     fetchUserProfile();
+    getUserRatings(); 
   }, []);
 
   const fetchUserProfile = async () => {
@@ -157,6 +162,8 @@ const Profile = () => {
     // const hdlRating = () => {
     //     navigate("/reviews-rating")
     // }
+  const currentRatingInfo = userRatings.find(u => u.id === profileData?.id);
+  const averageScore = currentRatingInfo?.averageRating || "0.0";
 
   return (
     <div className="bg-base-200 min-h-screen flex flex-col font-sans pb-24 relative overflow-x-hidden">
@@ -381,7 +388,7 @@ const Profile = () => {
                 className="flex flex-col items-center flex-1"
               >
                 <span className="text-lg bai-jamjuree-bold">
-                  {profileData?._count?.receivedFriendRequests || 0}
+                  {averageScore}
                 </span>
                 <span className="text-[10px] bai-jamjuree-medium opacity-90">
                   Rating 
