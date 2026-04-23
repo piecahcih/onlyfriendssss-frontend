@@ -176,7 +176,7 @@ function LocationReview() {
                         </div>
                         <div className="flex flex-col">
                           <span className="text-xs bai-jamjuree-bold text-neutral">@{review.reviewer?.username}</span>
-                          <div className="text-[9px] bai-jamjuree-bold text-neutral/20 uppercase tracking-widest">
+                          <div className="mt-1 text-[9px] bai-jamjuree-bold text-neutral/60 uppercase tracking-widest">
                             {new Date(review.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
                           </div>
                         </div>
@@ -213,7 +213,7 @@ function LocationReview() {
                       </div>
                     )}
 
-                    <div className="text-[10px] bai-jamjuree-bold text-neutral/20 text-right uppercase tracking-widest">
+                    <div className="text-[10px] bai-jamjuree-bold text-neutral/60 text-right uppercase tracking-widest">
                       <p>{review.activity?.category}</p>
                     </div>
 
