@@ -416,12 +416,15 @@ const Profile = () => {
                   profileData?.gender === "OTHER" ? "OTHER" : "N/A"}
             </span>
           </div>
-          {/* ปุ่มชั่วคราวสำหรับเทสหน้า Location Review */}
+
+
+
+          {/* ปุ่มชั่วคราวเทสหน้า Location Review */}
           <NavLink 
-            to="/location-reviews?placeid=1" 
+            to="/location-reviews?placeid=8" 
             className="btn btn-sm btn-outline btn-primary w-full rounded-xl mt-4"
           >
-            Location Review Test (Place ID: 1)
+            Location Review Test (Place ID: 8)
           </NavLink>
         </div>
       </div>
