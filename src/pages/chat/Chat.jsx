@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import { SearchIcon } from "../../icons";
+import { LeftIcon, SearchIcon } from "../../icons";
 import ProfilePic from "../../components/profile/ProfilePic";
 import useChatStore from "../../stores/chatStore";
 
@@ -42,32 +42,23 @@ function Chat() {
   return (
     <div className="min-h-screen bg-base-200 pb-24 font-sans">
       {/* Header & Search (Friendlist Style) */}
-      <div className="bg-white px-5 pt-8 pb-4 shadow-sm sticky top-0 z-10">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={hdlGoBack}
-            className="btn btn-ghost btn-circle btn-sm text-secondary"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2.5}
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15.75 19.5L8.25 12l7.5-7.5"
-              />
-            </svg>
-          </button>
-          <h1 className="text-secondary text-2xl font-bold bai-jamjuree-bold">
-            Chat Roomssss
-          </h1>
-        </div>
+      <header className="w-full top-0 text-secondary sticky z-40 bg-base-200 shadow-[0_8px_32px_rgba(78,33,32,0.08)] flex items-center justify-between px-6 py-4 relative">
+        <button
+          type="button"
+          onClick={() => hdlGoBack()}
+          className="hover:opacity-80  active:scale-95 transition-transform duration-200 relative z-10"
+        >
+          <LeftIcon className="w-8" />
+        </button>
 
+        <h1 className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 tracking-[-0.02em] font-bold text-[20px] whitespace-nowrap">
+          Chat Roomssss
+        </h1>
+
+        <div className="w-8"></div>
+      </header>
+
+      <div className="bg-white px-5 pb-4 shadow-sm sticky top-0 z-10">
         <div className="mt-4 relative">
           <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
             <SearchIcon className="w-5 h-5 text-base-content/50" />

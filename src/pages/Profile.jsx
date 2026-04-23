@@ -172,7 +172,7 @@ const Profile = () => {
               className="fixed bottom-0 left-0 right-0 bg-white z-[101] rounded-t-[40px] p-8 shadow-2xl max-h-[90vh] overflow-y-auto"
             >
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl bai-jamjuree-bold text-neutral-focus">
+                <h2 className="text-[20px] bai-jamjuree-bold text-neutral-focus">
                   Edit Profile
                 </h2>
                 <button
@@ -310,7 +310,7 @@ const Profile = () => {
               className="fixed bottom-0 left-0 right-0 bg-white z-[101] rounded-t-[40px] p-8 shadow-2xl"
             >
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl bai-jamjuree-bold text-neutral-focus">
+                <h2 className="text-[20px] bai-jamjuree-bold text-neutral-focus">
                   Settings
                 </h2>
                 <button

@@ -81,22 +81,17 @@ export function DiscoveryIcon(props) {
 
 export function CreateIcon(props) {
   return (
-    <svg
-      viewBox="0 0 28 28"
-      fill="currentColor"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
-      <g fill="currentColor">
-        <path d="M7 13.8a.8.8 0 01.8-.8H13V7.8a.797.797 0 01.8-.8h.4a.8.8 0 01.8.8V13h5.2a.798.798 0 01.8.8v.4a.8.8 0 01-.8.8H15v5.2a.8.8 0 01-.8.8h-.4a.8.8 0 01-.8-.8V15H7.8a.8.8 0 01-.8-.8v-.4z" />
-        <path
-          clipRule="evenodd"
-          d="M1 14C1 6.82 6.82 1 14 1s13 5.82 13 13-5.82 13-13 13S1 21.18 1 14zM14 3C7.926 3 3 7.925 3 14s4.926 11 11 11 11-4.925 11-11S20.074 3 14 3z"
-          fillRule="evenodd"
-        />
-      </g>
+    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" {...props}>
+      <path
+        d="M488 1106h-5v5a1.001 1.001 0 01-2 0v-5h-5a1.001 1.001 0 010-2h5v-5a1.001 1.001 0 012 0v5h5a1.001 1.001 0 010 2zm-6-17c-8.837 0-16 7.16-16 16s7.163 16 16 16 16-7.16 16-16-7.163-16-16-16z"
+        transform="translate(-466 -1089)"
+        fill="currentColor"
+        stroke="none"
+        strokeWidth={1}
+        fillRule="evenodd"
+      />
     </svg>
-  );
+  )
 }
 
 export function ChatIcon(props) {
@@ -115,14 +110,21 @@ export function ChatIcon(props) {
 export function FacebookLogo(props) {
   return (
     <svg
-      fill="currentColor"
-      viewBox="0 0 32 32"
+      viewBox="0 0 16 16"
       xmlns="http://www.w3.org/2000/svg"
+      fill="none"
       {...props}
     >
-      <path d="M30.996 16.091C30.995 7.81 24.282 1.097 16 1.097S1.004 7.811 1.004 16.093c0 7.455 5.44 13.639 12.566 14.8l.086.012V20.427H9.848v-4.336h3.808v-3.302a5.293 5.293 0 015.684-5.834l-.018-.001c1.199.017 2.359.123 3.491.312l-.134-.019v3.69h-1.892a2.168 2.168 0 00-2.444 2.351l-.001-.009v2.812h4.159l-.665 4.336h-3.494v10.478c7.213-1.174 12.653-7.359 12.654-14.814z" />
+      <path
+        fill="#1877F2"
+        d="M15 8a7 7 0 00-7-7 7 7 0 00-1.094 13.915v-4.892H5.13V8h1.777V6.458c0-1.754 1.045-2.724 2.644-2.724.766 0 1.567.137 1.567.137v1.723h-.883c-.87 0-1.14.54-1.14 1.093V8h1.941l-.31 2.023H9.094v4.892A7.001 7.001 0 0015 8z"
+      />
+      <path
+        fill="#fff"
+        d="M10.725 10.023L11.035 8H9.094V6.687c0-.553.27-1.093 1.14-1.093h.883V3.87s-.801-.137-1.567-.137c-1.6 0-2.644.97-2.644 2.724V8H5.13v2.023h1.777v4.892a7.037 7.037 0 002.188 0v-4.892h1.63z"
+      />
     </svg>
-  );
+  )
 }
 
 export function GoogleLogo(props) {
@@ -215,7 +217,25 @@ export function LeftIcon(props) {
         fillRule="evenodd"
         clipRule="evenodd"
         d="M15.707 4.293a1 1 0 010 1.414L9.414 12l6.293 6.293a1 1 0 01-1.414 1.414l-7-7a1 1 0 010-1.414l7-7a1 1 0 011.414 0z"
-        fill="#000"
+        fill="currentColor"
+      />
+    </svg>
+  )
+}
+
+export function RighttIcon(props) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M8.293 4.293a1 1 0 011.414 0l7 7a1 1 0 010 1.414l-7 7a1 1 0 01-1.414-1.414L14.586 12 8.293 5.707a1 1 0 010-1.414z"
+        fill="currentColor"
       />
     </svg>
   )
@@ -367,6 +387,24 @@ export function StarIcon(props) {
         strokeWidth={2}
         strokeLinecap="round"
         strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+export function HomeIcon(props) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M4.188 11.379C4.03 11.759 4 11.953 4 12v8.002c0 .55.447.998 1 .998h3v-6a2 2 0 012-2h4a2 2 0 012 2v6h3c.553 0 1-.447 1-.998V12c0-.047-.03-.241-.188-.621a10.539 10.539 0 00-.657-1.277c-.579-.978-1.39-2.122-2.298-3.212-.91-1.092-1.893-2.1-2.807-2.825a7.208 7.208 0 00-1.245-.82C12.43 3.058 12.165 3 12 3c-.164 0-.429.059-.806.244a7.21 7.21 0 00-1.244.82c-.914.726-1.897 1.734-2.807 2.826-.908 1.09-1.72 2.234-2.298 3.212-.29.49-.511.924-.657 1.277zm6.121-9.928C10.835 1.19 11.414 1 12 1c.586 0 1.165.191 1.69.45.535.265 1.076.63 1.604 1.048 1.055.837 2.134 1.954 3.1 3.112.966 1.16 1.842 2.391 2.483 3.475.32.541.59 1.061.783 1.528.183.44.34.934.34 1.387v8.002A2.998 2.998 0 0119 23h-3a2 2 0 01-2-2v-6h-4v6a2 2 0 01-2 2H5c-1.656 0-3-1.34-3-2.998V12c0-.453.157-.947.34-1.387.193-.467.464-.987.783-1.528.64-1.084 1.517-2.315 2.484-3.475.965-1.158 2.044-2.275 3.1-3.112.527-.419 1.068-.783 1.602-1.047z"
+        fill="currentColor"
       />
     </svg>
   )

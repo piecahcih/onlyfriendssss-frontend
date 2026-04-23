@@ -137,7 +137,7 @@ function Login() {
         <div className="divider w-90 m-auto text-[12px] p-7">OR</div>
 
         <div className="flex justify-center gap-4 h-[50px]">
-          <FacebookLogo className="bg-base-100 rounded-full p-2 text-black" />
+          <FacebookLogo className="bg-base-100 rounded-full p-2" />
           <button
             onClick={handleGoogleLogin}
             className="transition-transform active:scale-95 bg-base-100 rounded-full p-2 shadow-sm hover:bg-gray-100"

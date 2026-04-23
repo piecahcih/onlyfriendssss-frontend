@@ -122,7 +122,7 @@ function EditActivityDetails() {
       await useActivityStore.getState().editActivityById(actid, formData);
 
       Swal.fire({
-        title: '<h2 class="text-[24px] font-bold text-neutral leading-tight">Activity Updated Successfully</h2>',
+        title: '<h2 class="text-[18px] font-bold text-neutral leading-tight">Activity Updated Successfully</h2>',
         confirmButtonColor: "#FC5100",
         width: '300px',
         padding: '1em',
@@ -233,7 +233,7 @@ function EditActivityDetails() {
                 defaultValue={currentActivity.title}
                 onChange={hdlChange}
                 placeholder="Enter title..."
-                className="text-3xl font-black text-on-surface leading-tight bg-transparent border-b border-dashed border-primary/20 focus:border-primary focus:outline-none w-full pb-1"
+                className="text-[20px] font-black text-on-surface leading-tight bg-transparent border-b border-dashed border-primary/20 focus:border-primary focus:outline-none w-full pb-1"
               />
             </div>
 
@@ -250,7 +250,7 @@ function EditActivityDetails() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 bg-white p-5 rounded-[30px] shadow-sm border border-primary/5">
+          <div className="flex flex-col gap-4 bg-white p-4 rounded-[30px] shadow-sm border border-primary/5">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-primary/10 rounded-2xl text-primary">
                 <CalendarIcon className="w-7 h-7" />
@@ -282,17 +282,17 @@ function EditActivityDetails() {
 
           <div 
             onClick={() => setIsMapOpen(true)}
-            className="space-y-4 bg-white p-5 rounded-[30px] shadow-sm border border-primary/5 cursor-pointer hover:border-primary/20 transition-all group"
+            className="space-y-4 bg-white p-4 rounded-[30px] shadow-sm border border-primary/5 cursor-pointer hover:border-primary/20 transition-all group"
           >
             <div className="flex items-start gap-3 px-2">
               <div className="p-2 bg-primary/10 rounded-xl text-primary group-hover:scale-110 transition-transform">
                 <LocationIcon className="w-6 h-6" />
               </div>
               <div className="flex flex-col flex-1">
-                <span className="font-bold text-neutral text-[16px] leading-tight">
+                <span className="font-bold text-neutral text-[14px] leading-tight">
                   {editForm.placeName || currentActivity.place?.placeName || "Select Location"}
                 </span>
-                <span className="text-[14px] text-neutral/50 font-medium line-clamp-2">
+                <span className="text-[12px] text-neutral/50 font-medium line-clamp-2">
                   {editForm.address || currentActivity.place?.address || "Tap to choose a place on map"}
                 </span>
               </div>
@@ -325,7 +325,7 @@ function EditActivityDetails() {
             <input 
               type="number" 
               name="maxParticipants"
-              defaultValue={currentActivity.maxParticipants}
+              defaultValue={currentActivity.maxParticipants || 0}
               onChange={hdlChange}
               className="w-20 text-right font-black text-primary bg-transparent focus:outline-none text-xl"
             />
@@ -334,7 +334,7 @@ function EditActivityDetails() {
           <button 
             type="button" 
             onClick={() => DeleteSwal({ currentActivity, hdlCancel })} 
-            className="w-full flex items-center justify-center text-neutral/40 hover:text-error transition-colors text-sm font-medium underline py-4"
+            className="w-full flex items-center justify-center text-neutral/40 hover:text-error transition-colors text-sm font-medium underline"
           >
             Cancel this activity
           </button>

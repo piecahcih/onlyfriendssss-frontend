@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router";
+import { useEffect, useState, useRef, useMemo } from "react";
+import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
+import { NavLink, useNavigate } from "react-router";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { format } from "date-fns";
 import { useMapHandler } from "../hooks/useGeolocation";
@@ -8,9 +8,11 @@ import { useActivityMarkers } from "../hooks/useActivityMarkers";
 import useActivityStore from "../stores/activitiesStore";
 import useUserStore from "../stores/userStore";
 import NotificationModal from "../components/NotificationModal";
-import { SearchIcon, Notification, CalendarIcon, YourLocationIcon, MicIcon, } from "../icons";
+import { SearchIcon, Notification, CalendarIcon, YourLocationIcon, MicIcon, LocationIcon, RighttIcon, } from "../icons";
 import PremiumModal from "../components/ads/PremiumModal"
 import { io, Socket } from 'socket.io-client'
+import Wishlist from "../components/profile/Wishlist";
+import { useSpeechToText } from "../hooks/useSpeechToText";
 
 const BACKEND_URL = "http://localhost:3999";
 
@@ -41,7 +43,12 @@ const LDDiscover = () => {
   ];
   // const [isExpanded, setIsExpanded] = useState(false);
   const [step, setStep] = useState("half");
+  const y = useMotionValue(0);
   const yPosition = step === "half" ? "0%" : "-60vh";
+
+  
+  const buttonOpacity = useTransform(y, [-200, -300], [1, 0]);
+
   const [searchText, setSearchText] = useState("");
   const [suggestOpen, setSuggestOpen] = useState(false);
   const socketRef = useRef(null)
@@ -56,6 +63,12 @@ const LDDiscover = () => {
   }, [selectedCategory]);
 
   useEffect(() => {
+    if (hdlGetCurrentLocation && user) {
+      hdlGetCurrentLocation(getFullImgPath(user?.profileImg), true);
+    }
+  }, [hdlGetCurrentLocation, user?.profileImg]);
+
+  useEffect(() => {
     const hasSeenInSession = sessionStorage.getItem("hasSeenPremium");
 
     if (!hasSeenInSession) {
@@ -67,11 +80,11 @@ const LDDiscover = () => {
     }
   }, [])
 
-  // useEffect(() => {
-  //   if (hdlGetCurrentLocation) {
-  //     hdlGetCurrentLocation(getFullImgPath(user?.profileImg))
-  //   }
-  // }, [hdlGetCurrentLocation, user?.profileImg])
+  useEffect(() => {
+    if (hdlGetCurrentLocation) {
+      hdlGetCurrentLocation(getFullImgPath(user?.profileImg))
+    }
+  }, [hdlGetCurrentLocation, user?.profileImg])
 
   const connectSocket = () => {
     console.log('tokenkub', token)
@@ -126,6 +139,12 @@ const LDDiscover = () => {
 
   const [notiOpen, setNotiOpen] = useState(false);
 
+  const { isListening, toggleListening, isSupported } = useSpeechToText((transcript) => {
+    setSearchText(transcript);
+    setSuggestOpen(true);
+  });
+
+
   // 3. Using the Hook for Markers
   useActivityMarkers(mapRef, filteredActivities);
 
@@ -149,17 +168,17 @@ const LDDiscover = () => {
       />
 
       <div className="absolute top-8 left-0 right-0 px-6 z-40 ">
-        <div className="max-w-2xl mx-auto space-y-4">
+        <div className="mx-auto">
           {/* Search Bar Section */}
-          <div className="flex items-center justify-between gap-3 pointer-events-auto">
+          <div className="flex items-center justify-between gap-2 pointer-events-auto">
             <div className="relative flex-1">
               {" "}
               {/* ตัวนี้ทำหน้าที่เป็นจุดยึด (Anchor) ให้ Modal */}
-              <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-                <SearchIcon className="w-5 text-gray-400" />
+              <div className="absolute inset-y-0 left-5 z-10 flex items-center pointer-events-none">
+                <SearchIcon className="w-5 text-neutral" />
               </div>
               <input
-                className="w-full bg-white/95 backdrop-blur-md border-none outline-none ring-2 ring-primary/10 focus:ring-primary py-3.5 pl-14 pr-14 rounded-full shadow-xl text-gray-700 transition-all placeholder:text-gray-400"
+                className="w-full bg-white/95 backdrop-blur-md border-none outline-none ring-2 ring-primary/10 focus:ring-primary py-2 pl-14 pr-14 rounded-full shadow-xl text-gray-700 transition-all placeholder:text-gray-400"
                 placeholder="Find your vibe..."
                 type="text"
                 value={searchText}
@@ -167,9 +186,19 @@ const LDDiscover = () => {
                 onFocus={() => setSuggestOpen(true)}
                 onBlur={() => setTimeout(() => setSuggestOpen(false), 200)}
               />
-              <div className="absolute inset-y-0 right-5 flex items-center pointer-events-none">
-                <MicIcon className="w-6 text-gray-400" />
-              </div>
+              {isSupported && (
+                  <div 
+                    className="absolute inset-y-0 right-5 flex items-center z-10 cursor-pointer"
+                    onClick={toggleListening}
+                  >
+                    <MicIcon 
+                      className={`w-6 transition-all duration-300 ${
+                        isListening ? "text-red-500 animate-pulse scale-110" : "text-gray-400 hover:text-primary"
+                      }`} 
+                    />
+                  </div>
+              )}
+
               {/* Suggestions Modal - แสดงเมื่อมีการพิมพ์และเจอผลลัพธ์ */}
               {suggestOpen &&
                 searchText.length > 0 &&
@@ -232,24 +261,24 @@ const LDDiscover = () => {
             <button
               type="button"
               onClick={() => setNotiOpen(true)}
-              className="relative p-4 rounded-full bg-white/95 backdrop-blur-md shadow-xl active:scale-95 transition-all"
+              className="relative p-3 rounded-full bg-white/95 backdrop-blur-md shadow-xl active:scale-95 transition-all"
             >
-              <Notification className="w-6 h-6 text-gray-600" />
-              <span className="absolute top-2 right-2 w-5 h-5 bg-primary flex items-center justify-center text-[10px] font-bold text-white border-2 border-white rounded-full">
+              <Notification className="w-5 h-5 text-gray-600" />
+              <span className="absolute top-1 right-1 w-5 h-5 bg-primary flex items-center justify-center text-[10px] font-bold text-white border-2 border-white rounded-full">
                 1
               </span>
             </button>
           </div>
           {/* Categories Horizontal Scroll */}
-          <section className="space-y-4 my-4 pointer-events-auto">
-            <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide  scroll-smooth -mx-2 px-2">
+          <section className="space-y-4 my-2 z-50">
+            <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide scroll-smooth -mx-2 px-2">
               {categoryList.map((cat) => (
                 <button
                   key={cat.id}
                   onClick={() => {
                     setSelectedCategory(cat.id);
                   }}
-                  className={`shrink-0 px-5 py-1.5 rounded-3xl font-medium text-sm flex items-center gap-2 transition-all duration-300 active:scale-95
+                  className={`shrink-0 px-4 py-1 rounded-3xl font-medium text-[12px] flex items-center gap-2 transition-all duration-300 active:scale-95
                                     ${selectedCategory === cat.id
                       ? "bg-primary text-white shadow-[0_8px_12px_rgba(252,81,0,0.3)]"
                       : "bg-white text-on-surface/60 hover:bg-white/80 shadow-sm"
@@ -264,45 +293,83 @@ const LDDiscover = () => {
         </div>
       </div>
 
-      {/* Location Pin*/}
-      <button
-        onClick={() => hdlGetCurrentLocation(getFullImgPath(user?.profileImg))}
-        className="absolute bottom-30 right-3 p-1.5 bg-white rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:bg-gray-50 active:scale-95 transition-all border border-base-200 flex items-center justify-center group"
-        title="Go to current location"
-      >
-        <YourLocationIcon className="w-7 h-7 text-primary group-hover:rotate-12 transition-transform" />
-      </button>
+
 
       {/* Bottom Sheet UI */}
       <motion.div
         initial={false}
         animate={{ y: yPosition }}
-        transition={{ type: "spring", damping: 25, stiffness: 200 }}
-        drag='y'
-        dragConstraints={{ top: -500, bottom: 0 }}
-        dragElastic={0.1}
-        onDragEnd={(_, info) => {
-          const { y } = info.offset;
-          if (step === "half") {
-            if (y < -50) setStep("high");
-          } else if (step === "high") {
-            if (y > 50) setStep("half");
+        style={{ y, height: "106vh", marginBottom: "-62vh" }}
+        onUpdate={(latest) => {
+          // Sync motion value during animation
+          if (typeof latest.y === "number") y.set(latest.y);
+          else if (typeof latest.y === "string" && latest.y.endsWith("vh")) {
+            const vh = parseFloat(latest.y);
+            y.set((vh / 100) * window.innerHeight);
+          } else if (latest.y === "0%") {
+            y.set(0);
           }
         }}
+        transition={{ type: "spring", damping: 25, stiffness: 200 }}
+        drag="y"
+        dragConstraints={{ top: -800, bottom: 0 }}
+        dragElastic={0.05}
+        onDrag={(event, info) => {
+          // Live update y motion value during drag
+          y.set(info.offset.y);
+        }}
+        onDragEnd={(_, info) => {
+          const { y: offsetY } = info.offset;
+          const { y: velocityY } = info.velocity;
+          const pointY = info.point.y;
 
-        className="fixed inset-x-0 bottom-0 z-30 bg-white rounded-t-[40px] shadow-[0_-12px_40px_rgba(0,0,0,0.15)] flex flex-col pointer-events-auto"
-        style={{ height: "78vh", marginBottom: "-62vh" }}
+          // pointY is the absolute position on screen. 
+          // If pointY is small (e.g., < 150), it means the sheet is near the top.
+          const isAtTop = pointY < 150;
+
+          if (step === "half") {
+            if (offsetY < -150 || velocityY < -500 || isAtTop) {
+              setStep("high");
+              // Smooth transition to activities
+              setTimeout(() => navigate("/activities"), 200);
+            } else if (offsetY < -50 || velocityY < -300) {
+              setStep("high");
+            }
+          } else if (step === "high") {
+            if (offsetY > 100 || velocityY > 400) {
+              setStep("half");
+            } else if (offsetY < 0 || velocityY < -200 || isAtTop) {
+              // Already at top, any upward intent navigates
+              navigate("/activities");
+            }
+          }
+        }}
+        className="fixed inset-x-0 bottom-0 z-[60] bg-white rounded-t-[25px] shadow-[0_-12px_40px_rgba(0,0,0,0.15)] flex flex-col pointer-events-auto"
       >
-        <div
-          className="w-full flex justify-center py-5 cursor-grab active:cursor-grabbing touch-pan-y"
 
-          onClick={() => setStep(step === "half" ? "high" : "half")}
-        >
-          <div className="w-12 h-1.5 bg-gray-200 rounded-full" />
-        </div>
-        <div className="px-8 pb-5 flex justify-between items-end border-b border-gray-50">
+            {/* Location Pin - Moved inside and positioned at top-right of sheet */}
+            <motion.div 
+              style={{ opacity: buttonOpacity }}
+              className="absolute -top-16 right-6"
+            >
+              <button
+                onClick={() => hdlGetCurrentLocation(getFullImgPath(user?.profileImg))}
+                className="p-3 bg-white rounded-full shadow-xl hover:bg-gray-50 active:scale-95 transition-all border border-gray-100 group"
+                title="Go to current location"
+              >
+                <YourLocationIcon className="w-6 h-6 text-primary group-hover:rotate-12 transition-transform" />
+              </button>
+            </motion.div>
+
+
+          <div className="w-full flex justify-center py-5 cursor-grab active:cursor-grabbing touch-pan-y"
+          onClick={() => setStep(step === "half" ? "high" : "half")}>
+            <div className="w-12 h-1.5 bg-gray-200 rounded-full -mt-2 " />
+          </div>
+
+        <div className="px-6 flex justify-between items-end border-b border-gray-50">
           <div>
-            <h2 className="text-xl font-bold text-gray-800 tracking-tight">
+            <h2 className="text-[18px] font-bold text-gray-800 tracking-tight">
               Discovery Activities
             </h2>
             <p className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">
@@ -310,6 +377,9 @@ const LDDiscover = () => {
             </p>
           </div>
         </div>
+        
+       
+
         <div className="flex-1 overflow-y-auto px-6 pt-4 pb-32 space-y-4 bg-white">
           <AnimatePresence>
             {filteredActivities.map((act) => (
@@ -319,7 +389,7 @@ const LDDiscover = () => {
                 animate={{ opacity: 1 }}
                 key={act.id}
                 onClick={() => navigate(`/activity-details?actid=${act.id}`)}
-                className="flex gap-4 p-4 bg-gray-50 rounded-2xl border border-gray-100 cursor-pointer active:scale-95 transition-transform"
+                className="flex gap-4 cursor-pointer active:scale-95 transition-transform"
               >
                 <img
                   src={act.coverPhoto || "https://via.placeholder.com/150"}
@@ -345,6 +415,9 @@ const LDDiscover = () => {
                     </span>
                   </div>
                 </div>
+
+                <RighttIcon className="w-7" />
+                
               </motion.div>
             ))}
           </AnimatePresence>
