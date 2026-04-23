@@ -48,7 +48,7 @@ function Add2Interest() {
 
         toast.success('Login Success')
         setTimeout(() => {
-          navigate('/')
+          navigate('/welcome')
         }, 1500)
       }
     } catch (error) {

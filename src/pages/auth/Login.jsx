@@ -36,11 +36,11 @@ function Login() {
       } else {
         localStorage.removeItem("rememberedEmail")
       }
-
+      await new Promise(resolve => setTimeout(resolve, 2000))
       const res = await login(data)
       // console.log(res.data.message)
       toast.success(res.data.message)
-      navigate("/welcome")
+      navigate('/welcome')
     } catch (error) {
       const errMsg =
         error.response?.data?.message
@@ -63,7 +63,9 @@ function Login() {
       console.log(userData);
       await loginWithGoogle(idToken, userData)
       toast.success("Login Success")
-      navigate("/")
+      setTimeout(() => {
+        navigate('/welcome')
+      }, 1500)
     } catch (error) {
       console.error("Google Login Error", error)
       toast.error("เกิดข้อผิดพลาดในการเข้าสู่ระบบด้วย Google")
