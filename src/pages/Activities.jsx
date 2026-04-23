@@ -221,15 +221,15 @@ function Activities() {
             {/* <button className="text-primary font-bold text-sm hover:underline">See all</button> */}
           </div>
 
-          <div className="space-y-8">
+          <div className="space-y-6">
             {filteredActivities.map((activity) => (
               <NavLink
                 to={`/activity-details?actid=${activity.id}`}
                 key={activity.id}
                 className="block"
               >
-                <div className="relative h-[450px] bg-white rounded-[18px] overflow-hidden shadow-[0_12px_32px_rgba(78,33,32,0.04)] group">
-                  {/* <div className="relative h-35 w-full overflow-hidden"> */}
+                <div style={{ height: '230px' }} className="relative bg-amber-500 rounded-[18px] overflow-hidden shadow-md group">
+
                     <img
                       src={activity?.coverPhoto}
                       alt={activity.title}
@@ -250,11 +250,9 @@ function Activities() {
 
                     <Wishlist activityId={activity.id} />
 
-                  {/* </div> */}
-
 
                   {/* ContentAct */}
-                  <div className="backdrop-blur-md px-4 py-3 absolute top-10 left-3 right-3 rounded-[18px] text-white">
+                  <div className="backdrop-blur-md px-4 py-3 absolute bottom-2 left-3 right-3 rounded-[18px] text-white">
                     
                     <h3 className="font-headline font-bold text-[18px] truncate">
                         {activity.title}
@@ -292,7 +290,7 @@ function Activities() {
                               <img
                                 key={attendee.id || i}
                                 src={attendee.user?.profileImg}
-                                className="w-10 h-10 rounded-full border-2 border-white object-cover shadow-sm"
+                                className="w-8 h-8 rounded-full border-2 border-white object-cover shadow-sm"
                                 alt="attendee"
                               />
                             ))}
@@ -304,13 +302,13 @@ function Activities() {
 
                             if (approvedCount > 3) {
                               return (
-                                <div className=" h-5 px-3 rounded-full bg-[#ffccb5] border-2 border-white flex items-center justify-center text-[11px] font-black text-primary shadow-sm">
+                                <div className=" h-5 px-2 rounded-full bg-[#ffccb5] border-2 border-white flex items-center justify-center text-[11px] font-black text-primary shadow-sm">
                                   +{approvedCount - 3}
                                 </div>
                               );
                             } else if (approvedCount > 0) {
                               return (
-                                <div className=" px-3 h-5 rounded-full bg-[#ffccb5] border-2 border-white flex items-center justify-center text-[11px] font-black text-primary shadow-sm">
+                                <div className=" px-2 h-5 rounded-full bg-[#ffccb5] border-2 border-white flex items-center justify-center text-[11px] font-black text-primary shadow-sm">
                                   {approvedCount}
                                 </div>
                               );
@@ -326,10 +324,10 @@ function Activities() {
                       </div>
 
                       <div className="flex flex-col items-end">
-                        <span className="text-[10px] text-on-surface/40 font-bold uppercase tracking-wider">
+                        <span className="text-[10px] text-on-surface/40 font-light uppercase tracking-wider">
                           Hosted by
                         </span>
-                        <span className="text-sm font-bold text-primary">
+                        <span className="text-[12px] font-bold text-primary">
                           {activity.host?.username}
                         </span>
                       </div>

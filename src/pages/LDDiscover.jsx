@@ -8,7 +8,7 @@ import { useActivityMarkers } from "../hooks/useActivityMarkers";
 import useActivityStore from "../stores/activitiesStore";
 import useUserStore from "../stores/userStore";
 import NotificationModal from "../components/NotificationModal";
-import { SearchIcon, Notification, CalendarIcon, YourLocationIcon, MicIcon, LocationIcon, } from "../icons";
+import { SearchIcon, Notification, CalendarIcon, YourLocationIcon, MicIcon, LocationIcon, RighttIcon, } from "../icons";
 import PremiumModal from "../components/ads/PremiumModal"
 import { io, Socket } from 'socket.io-client'
 import Wishlist from "../components/profile/Wishlist";
@@ -367,9 +367,9 @@ const LDDiscover = () => {
             <div className="w-12 h-1.5 bg-gray-200 rounded-full -mt-2 " />
           </div>
 
-        <div className="px-8 pb-5 flex justify-between items-end border-b border-gray-50">
+        <div className="px-6 flex justify-between items-end border-b border-gray-50">
           <div>
-            <h2 className="text-xl font-bold text-gray-800 tracking-tight">
+            <h2 className="text-[18px] font-bold text-gray-800 tracking-tight">
               Discovery Activities
             </h2>
             <p className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">
@@ -389,7 +389,7 @@ const LDDiscover = () => {
                 animate={{ opacity: 1 }}
                 key={act.id}
                 onClick={() => navigate(`/activity-details?actid=${act.id}`)}
-                className="flex gap-4 p-4 bg-gray-50 rounded-2xl border border-gray-100 cursor-pointer active:scale-95 transition-transform"
+                className="flex gap-4 cursor-pointer active:scale-95 transition-transform"
               >
                 <img
                   src={act.coverPhoto || "https://via.placeholder.com/150"}
@@ -415,6 +415,9 @@ const LDDiscover = () => {
                     </span>
                   </div>
                 </div>
+
+                <RighttIcon className="w-7" />
+                
               </motion.div>
             ))}
           </AnimatePresence>

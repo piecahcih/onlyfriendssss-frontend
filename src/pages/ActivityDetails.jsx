@@ -69,7 +69,6 @@ function ActivityDetails() {
     );
   }
 
-  // const matchedCategory = categoryList.find((cat) => cat.id === currentActivity.category);
   // --- LOGIC การคำนวณสถานะ  ---
   const isHost = storeUser?.id === currentActivity.hostId;
 
