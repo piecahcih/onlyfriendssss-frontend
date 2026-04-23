@@ -69,7 +69,6 @@ function ActivityDetails() {
     );
   }
 
-  // const matchedCategory = categoryList.find((cat) => cat.id === currentActivity.category);
   // --- LOGIC การคำนวณสถานะ  ---
   const isHost = storeUser?.id === currentActivity.hostId;
 
@@ -156,15 +155,15 @@ function ActivityDetails() {
       <main className="max-w-2xl mx-auto px-6 space-y-6">
         {/* Tags */}
         <div className="flex flex-wrap gap-2.5">
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white shadow-sm text-xs font-bold">
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white shadow-sm text-xs font-bold">
 
             {currentActivity.isPublic ? " 🌎 Public  " : " 🔒 Private "}
           </div>
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white shadow-sm text-xs font-bold">
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white shadow-sm text-xs font-bold">
             <span className="text-lg">📍</span>
             1km
           </div>
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 text-primary shadow-sm text-xs font-bold border border-primary/20">
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary shadow-sm text-xs font-bold border border-primary/20">
             <span>{matchedCategory.icon}</span>
             {currentActivity?.category}
           </div>
@@ -182,7 +181,7 @@ function ActivityDetails() {
 
         {/* Title & Host */}
         <div className="space-y-2">
-          <h1 className="text-3xl font-black text-on-surface leading-tight">
+          <h1 className="text-[20px] font-black text-on-surface leading-tight">
             {currentActivity.title}
           </h1>
 
@@ -192,18 +191,18 @@ function ActivityDetails() {
                 <img
                   src={currentActivity.host?.profileImg || defaultProfile}
                   alt="host"
-                  className="w-12 h-12 rounded-full object-cover border-2 border-primary/20"
+                  className="w-10 h-10 rounded-full object-cover border-2 border-primary/20"
                 />
               </div>
               <div>
                 <p className="text-[10px] text-on-surface/40 font-medium">HOSTED BY</p>
-                <h4 className="font-bold text-sm">{currentActivity.host?.username}</h4>
+                <h4 className="font-bold text-[14px]">{currentActivity.host?.username}</h4>
               </div>
             </div>
 
           </div>
           {/* Description */}
-          <p className="text-on-surface/80 leading-relaxed font-medium">
+          <p className="text-on-surface/80 leading-relaxed font-medium ">
             {currentActivity.description || "No description provided."}
           </p>
 
@@ -274,7 +273,7 @@ function ActivityDetails() {
           {/* Header: Attendees Count */}
           <div className="flex items-center justify-between">
             <div className="flex items-baseline gap-2">
-              <span className="text-lg font-black text-on-surface">
+              <span className="text-[16px] font-black text-on-surface">
                 {attendeesCount}/{maxParticipants > 0 ? maxParticipants : "∞"} Will go
               </span>
               <span className="text-sm font-bold text-primary">

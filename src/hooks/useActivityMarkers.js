@@ -100,10 +100,10 @@ export function useActivityMarkers(mapRef, activities) {
     // ซูมให้เห็นภาพรวมเมื่อข้อมูลเปลี่ยน
     if (hasValidPins && mapRef.current) {
       mapRef.current.fitBounds(bounds, {
-        padding: 100,
-        maxZoom: 14,
-        duration: 1200,
-        linear: false,
+        padding: { top: 100, bottom: 450, left: 60, right: 60 },
+        maxZoom: 15,
+        duration: 2000,
+        essential: true,
       });
     }
   }, [activities, mapRef, navigate]);

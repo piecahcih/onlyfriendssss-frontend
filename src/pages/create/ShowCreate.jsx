@@ -54,7 +54,7 @@ function ShowCreate() {
 
       navigate('/')
       Swal.fire({
-        title: '<h2 class="text-[24px] font-bold text-neutral leading-tight">Activity Created Successfully</h2>',
+        title: '<h2 class="text-[18px] font-bold text-neutral leading-tight">Activity Created Successfully</h2>',
         confirmButtonColor: "#FC5100",
         width: '300px',
         padding: '1em',
@@ -86,7 +86,7 @@ function ShowCreate() {
       <header className="w-full top-0 sticky z-40 bg-base-200 shadow-[0_8px_32px_rgba(78,33,32,0.08)] flex items-center justify-between px-6 py-4 relative">
 
         <button type='button' onClick={() => hdlGoBack()}
-          className="text-[#a83100] hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-200 relative z-10">
+          className="text-secondary hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-200 relative z-10">
           <LeftIcon className='w-8' />
         </button>
 
@@ -108,21 +108,21 @@ function ShowCreate() {
               {groupStatus === true ?
                 <div className="flex items-center justify-between text-[14px] px-3 py-1 rounded-full bg-secondary w-fit">
                   <div className="flex items-center gap-2">
-                    <span className="text-[18px]">🌎</span>
+                    <span className="text-[14px]">🌎</span>
                     <p className="font-bold text-white">Public</p>
                   </div>
                 </div>
                 : <div className="flex items-center justify-between text-[14px] px-3 py-1 rounded-full bg-[#bf2802] w-fit">
                   <div className="flex items-center gap-2">
-                    <span className="text-[18px]">🔒</span>
+                    <span className="text-[14px]">🔒</span>
                     <p className="font-bold text-white">Private</p>
                   </div>
                 </div>}
             </button>
 
             {/* Category */}
-            <h3 className="px-4 py-1.5 w-fit rounded-3xl text-[14px] font-medium flex items-center gap-2 border border-secondary text-neutral shadow-md">
-              <span className='text-[16px]'>{selectedCategory.icon}</span> {selectedCategory.title}
+            <h3 className="px-4 py-1 w-fit rounded-3xl text-[14px] font-medium flex items-center gap-2 border border-secondary text-neutral shadow-md">
+              <span className='text-[14px]'>{selectedCategory.icon}</span> {selectedCategory.title}
             </h3>
           </div>
 
@@ -141,14 +141,14 @@ function ShowCreate() {
 
 
           {/* Date & Time Row */}
-          <h3 className="">
-            <span className=" text-xl">📅</span> {format(new Date(creatingActivity.eventStartTime), 'eee, dd MMM yyyy, HH:mm')}
+          <h3 className="text-[14px]">
+            <span className="text-[14px]">📅</span> {format(new Date(creatingActivity.eventStartTime), 'eee, dd MMM yyyy, HH:mm')}
             {creatingActivity.eventEndTime && (format(new Date(creatingActivity.eventEndTime), ' - eee, dd MMM yyyy, HH:mm'))}
           </h3>
 
 
           {/* Notes */}
-          <p className="font-light my-5 leading-relaxed">{creatingActivity.description}</p>
+          <p className="font-light my-5 leading-relaxed text-[14px]">{creatingActivity.description}</p>
 
           {/* maxParticipants */}
           <p className="font-light my-5 leading-relaxed">
@@ -158,9 +158,9 @@ function ShowCreate() {
           {/* Location Section */}
           <div className="space-y-4 mt-5">
             <div className="flex items-start gap-3">
-              <span className="text-2xl">📍</span>
+              <span className="text-[14px]">📍</span>
               <div className="flex flex-col">
-                <span className="font-extrabold text-neutral text-lg leading-tight">
+                <span className="font-extrabold text-neutral text-[14px] leading-tight">
                   {creatingActivity.placeName || "Selected Location"}
                 </span>
                 <span className="text-sm text-neutral/50 font-medium">
