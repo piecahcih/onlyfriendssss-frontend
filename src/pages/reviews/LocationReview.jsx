@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LeftIcon, YourLocationIcon, StarIcon } from '../../icons';
-import useReviewStore from '../../stores/reviewStore'; 
+import useReviewStore from '../../stores/reviewStore';
 import mockPfImg from '../../assets/default-profilepic.jpg';
 
 function LocationReview() {
@@ -97,12 +97,12 @@ function LocationReview() {
         </button>
       </div>
 
-      <main className="flex-1 px-6 -mt-31 relative z-10">
+      <main className="flex-1 px-6 -mt-28 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-[20px] p-7 shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-white"
-        >
+          className="bg-white/60 rounded-[20px] px-7 py-4 ">
+
           <div className="space-y-4">
             <div className="space-y-1">
               <span className="text-[10px] bai-jamjuree-bold text-primary uppercase tracking-[0.2em]">Popular Destination</span>
@@ -134,7 +134,7 @@ function LocationReview() {
               <a
                 href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(placeInfo?.placeName + " " + (placeInfo?.address || ""))}`}
                 target="_blank"
-                className="w-12 h-12 bg-primary text-white rounded-2xl flex items-center justify-center shadow-lg shadow-primary/30 active:scale-95 transition-all"
+                className="w-12 h-12 bg-primary text-white rounded-xl flex items-center justify-center "
               >
                 <YourLocationIcon className="w-6 h-6" />
               </a>
