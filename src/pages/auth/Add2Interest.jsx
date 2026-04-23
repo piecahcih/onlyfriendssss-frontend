@@ -11,8 +11,8 @@ function Add2Interest() {
   const navigate = useNavigate()
 
   const interests = [
-    "foodie", "camping", "slowlife", "health", "art",
-    "travel", "entertainment", "sport", "volunteer", "workstation"
+    "foodie 🍳", "camping 🏕️", "slowlife 🌿", "health 🥗", "art 🎨",
+    "travel✈️", "entertainment 🎬", "sport 🏀", "volunteer 🤝", "workstation 💻"
   ];
 
   // ดักห้ามเลือกเกิน 4 
