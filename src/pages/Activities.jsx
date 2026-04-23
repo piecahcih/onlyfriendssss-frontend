@@ -262,7 +262,7 @@ function Activities() {
                     <div className="flex flex-col gap-0.5">
                       <div className="flex items-center gap-3 text-on-surface/60">
                         <CalendarIcon className="w-4 text-primary" />
-                        <span className="text-[14px] font-medium">
+                        <span className="text-[11px] font-medium">
                           {format(
                             new Date(activity.eventStartTime),
                             "eee, dd MMM yyyy • p",
@@ -271,7 +271,7 @@ function Activities() {
                       </div>
                       <div className="flex items-center gap-3 text-on-surface/60">
                         <LocationIcon className="w-4 text-primary" />
-                        <span className="text-[14px] font-medium">
+                        <span className="text-[11px] font-medium">
                           {activity.place?.placeName}
                         </span>
                       </div>
@@ -290,7 +290,7 @@ function Activities() {
                               <img
                                 key={attendee.id || i}
                                 src={attendee.user?.profileImg}
-                                className="w-8 h-8 rounded-full border-2 border-white object-cover shadow-sm"
+                                className="w-8 h-8 rounded-full border border-white object-cover shadow-sm"
                                 alt="attendee"
                               />
                             ))}
@@ -302,7 +302,7 @@ function Activities() {
 
                             if (approvedCount > 3) {
                               return (
-                                <div className=" h-5 px-2 rounded-full bg-[#ffccb5] border-2 border-white flex items-center justify-center text-[11px] font-black text-primary shadow-sm">
+                                <div className=" h-5 px-2 rounded-full bg-[#ffccb5] border border-white flex items-center justify-center text-[11px] font-black text-primary shadow-sm">
                                   +{approvedCount - 3}
                                 </div>
                               );

@@ -162,13 +162,13 @@ function MapModal({ isOpen, onClose, onConfirm }) {
           <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto w-full flex flex-col gap-8 overflow-y-auto no-scrollbar">
             <section className="w-full relative">
               <div className="relative group">
-                <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
+                <div className="absolute inset-y-0 left-5 z-10 flex items-center pointer-events-none">
                     <SearchIcon className='w-5' />
                 </div>
                 <input 
                   value={searchQuery}
                   onChange={hdlSearch}
-                  className="w-full bg-white border-none outline-none ring-2 ring-[#e09c99]/20 focus:ring-[#a83100] py-3 pl-14 pr-14 rounded-full font-sans text-lg shadow-[0_4px_24px_rgba(78,33,32,0.04)] transition-all placeholder:text-[#4e2120]/40" 
+                  className="w-full bg-white/95 backdrop-blur-md border-none outline-none ring-2 ring-primary/10 focus:ring-primary py-2 pl-14 pr-14 rounded-full shadow-md text-gray-700 transition-all placeholder:text-gray-400" 
                   placeholder="Search for a place" 
                   type="text"
                 />
@@ -205,9 +205,9 @@ function MapModal({ isOpen, onClose, onConfirm }) {
             <MapContainer longitude={address.longitude} latitude={address.latitude} updateCoordinates={updateCoordinates}/>
 
             <div className="bg-white p-6 rounded-3xl shadow-sm border border-primary/5 space-y-2">
-               <h3 className="font-bold text-primary text-sm uppercase tracking-wider">Selected Address</h3>
-               <p className="font-bold text-lg text-neutral">{address.placeName || "Mark a location on map"}</p>
-               <p className="text-sm text-neutral/60">{address.address}</p>
+               <h3 className="font-bold text-primary text-[12px] uppercase tracking-wider">Selected Address</h3>
+               <p className="font-bold text-[16px] text-neutral">{address.placeName || "Mark a location on map"}</p>
+               <p className="text-[14px] text-neutral/60">{address.address}</p>
             </div>
 
             <div className="fixed bottom-0 left-0 w-full p-6 z-40 bg-linear-to-t from-base-200 via-base-200 to-transparent">

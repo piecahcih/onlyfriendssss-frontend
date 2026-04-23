@@ -32,19 +32,19 @@ function NavBar() {
     <div className='h-[78px] bg-base-200/80 backdrop-blur-md flex justify-between pt-4 px-5'>
         <NavLink to ='/'  className={NavStyle}>
             <HomeIcon className="w-7"/>
-            <p className="text-[bai-jamjuree-semibold] text-[12px]">Home</p>
+            <p className="text-[bai-jamjuree-semibold] text-[10px]">Home</p>
         </NavLink>
         <NavLink to ='/discover'   className={NavStyle}>
             {/* <DiscoveryIcon className="w-7"/> */}
             <SearchIcon className="w-7"/>
-            <p className="text-[bai-jamjuree-semibold] text-[12px]">Activities</p>
+            <p className="text-[bai-jamjuree-semibold] text-[10px]">Activities</p>
         </NavLink>
         <NavLink to ='/create'   className={NavStyle}>
-            <CreateIcon className="w-11"/>
+            <CreateIcon className="w-11 text-primary"/>
         </NavLink>
         <NavLink to ='/chat'   className={NavStyle}>
             <ChatIcon className="w-7"/>
-            <p className="text-[bai-jamjuree-semibold] text-[12px]">Chat</p>
+            <p className="text-[bai-jamjuree-semibold] text-[10px]">Chat</p>
         </NavLink>
         <NavLink to ='/profile' className={NavStyle}>
           {({ isActive }) => (
@@ -55,7 +55,7 @@ function NavBar() {
                   isActive ? "border-primary" : "border-secondary-content"
                 }`}
               />
-              <p className="text-[bai-jamjuree-semibold] text-[12px]">Profile</p>
+              <p className="text-[bai-jamjuree-semibold] text-[10px]">Profile</p>
             </>
           )}
         </NavLink>
