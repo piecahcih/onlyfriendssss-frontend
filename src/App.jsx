@@ -1,7 +1,7 @@
 import { RouterProvider } from "react-router";
 import { guestRouter, userRouter } from "./router/router";
 import useUserStore from "./stores/userStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import useSocketStore from "./stores/socketStore";
 import { useChatEvents } from "./hooks/useChatEvents";
@@ -10,10 +10,10 @@ import { Toast } from "./components/noti/Toast";
 
 
 function App() {
-  // const user = { email: 'peach@gmail.com'}
-  const user = useUserStore(st => st.user)
-  ////  ยังไม่ได้เพิ่ม routerAdim ให้พีชมาเพิ่มเอง
-  const finalRouter = !user ? guestRouter : userRouter
+  const user = useUserStore(st => st.user);
+  const finalRouter = !user ? guestRouter : userRouter;
+
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   useChatEvents();
   useNotification();

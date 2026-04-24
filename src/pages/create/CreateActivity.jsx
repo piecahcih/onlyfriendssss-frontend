@@ -132,7 +132,7 @@ function CreateActivity() {
         <button
           type="button"
           onClick={() => hdlGoBack()}
-          className="text-[#a83100] hover:opacity-80  active:scale-95 transition-transform duration-200 relative z-10"
+          className="text-secondary hover:opacity-80  active:scale-95 transition-transform duration-200 relative z-10"
         >
           <LeftIcon className="w-8" />
         </button>
@@ -155,14 +155,14 @@ function CreateActivity() {
             {groupStatus === true ? (
               <div className="flex items-center justify-between text-[14px] px-3 py-1 rounded-full bg-secondary w-fit">
                 <div className="flex items-center gap-2">
-                  <span className="text-[18px]">🌎</span>
+                  <span className="text-[16px]">🌎</span>
                   <p className="font-bold text-white">Public</p>
                 </div>
               </div>
             ) : (
               <div className="flex items-center justify-between text-[14px] px-3 py-1 rounded-full bg-[#bf2802] w-fit">
                 <div className="flex items-center gap-2">
-                  <span className="text-[18px]">🔒</span>
+                  <span className="text-[16px]">🔒</span>
                   <p className="font-bold text-white">Private</p>
                 </div>
               </div>
@@ -173,11 +173,11 @@ function CreateActivity() {
           <div className="space-y-2">
             <label className={lblTitleStyle}>Activity Name</label>
             <div className="relative">
-              <span className="absolute left-5 top-1/2 -translate-y-1/2 text-xl">
+              <span className="absolute left-5 top-1/2 -translate-y-1/2 text-[14px]">
                 ✏️
               </span>
               <input
-                className="w-full pl-14 pr-6 py-3 rounded-full bg-white border-none ring-2 ring-[#e09c99]/20 focus:ring-[#a83100] focus:ring-2 transition-all outline-none text-neutral placeholder:text-[#834c4b]/40"
+                className="text-[14px] w-full pl-14 pr-6 py-2 rounded-full bg-white border-none ring-2 ring-[#e09c99]/20 focus:ring-[#a83100] focus:ring-2 transition-all outline-none text-neutral placeholder:text-[#834c4b]/40"
                 placeholder="Morning Run in the Park"
                 type="text"
                 value={title}
@@ -216,12 +216,12 @@ function CreateActivity() {
               onClick={() => setIsMapOpen(true)}
               className="w-full relative flex items-center group transition-all active:scale-[0.98]"
             >
-              <span className="absolute left-5 top-1/2 -translate-y-1/2 text-xl z-10">
+              <span className="absolute left-5 top-1/2 -translate-y-1/2 text-[14px] z-10">
                 📍
               </span>
 
-              <div className="w-full pl-14 pr-6 py-3 rounded-full bg-white text-left ring-2 ring-[#e09c99]/20 group-hover:ring-[#e09c99]/40 group-focus:ring-[#a83100] transition-all text-neutral placeholder:text-[#834c4b]/40">
-                <span className="text-[#834c4b]/40">
+              <div className="w-full pl-14 pr-6 py-2 rounded-full bg-white text-left ring-2 ring-[#e09c99]/20 group-hover:ring-[#e09c99]/40 group-focus:ring-[#a83100] transition-all text-neutral placeholder:text-[#834c4b]/40">
+                <span className="text-[#834c4b]/40 text-[14px]">
                   {selectedLocation?.placeName || "Select a location"}
                 </span>
               </div>
@@ -232,15 +232,16 @@ function CreateActivity() {
           <div>
             <label className={lblTitleStyle}>Pick a Time</label>
             <div className="relative">
-              <span className="absolute left-5 top-1/2 -translate-y-1/2 text-xl">
+              <span className="absolute left-5 top-1/2 -translate-y-1/2 text-[14px]">
                 📅
               </span>
-              <input
-                className="w-full pl-14 pr-4 py-3 rounded-full bg-white border-none ring-2 ring-[#e09c99]/20 focus:ring-[#a83100] transition-all outline-none text-neutral text-sm"
-                type="datetime-local"
-                value={eventStartTime}
-                onChange={(e) => setEventStartTime(e.target.value)}
-              />
+              <div className="text-[14px] w-full pl-14 pr-6 py-2 rounded-full bg-white text-left ring-2 ring-[#e09c99]/20 group-hover:ring-[#e09c99]/40 group-focus:ring-[#a83100] transition-all text-neutral placeholder:text-[#834c4b]/40">
+                <input
+                  type="datetime-local"
+                  value={eventStartTime}
+                  onChange={(e) => setEventStartTime(e.target.value)}
+                />
+              </div>
             </div>
 
             {!hasEndTime ? (

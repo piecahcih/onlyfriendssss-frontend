@@ -1,9 +1,16 @@
 import axios from "axios"
 import useUserStore from "../stores/userStore"
 
+const BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3999"
+
 export const mainApi = axios.create({
-  baseURL: "http://localhost:3999/api"
+  baseURL: `${BASE_URL}/api`,
 })
+
+// export const mainApi = axios.create({
+//   baseURL: "http://localhost:3999/api",
+//   // baseURL: `${import.meta.env.VITE_BACKEND_URL}/api`
+// })
 
 mainApi.interceptors.request.use((config) => {
   const token = useUserStore.getState().token
@@ -93,10 +100,15 @@ export const markChatAsReadApi = (roomId) => mainApi.patch(`/chat/rooms/${roomId
 
 
 
-////////REVIEWS
-export const getUserApi = () => mainApi.get(`/user/${userId}`)
 
-export const getActivityRatingScoreApi = () => mainApi.get('/review/activity-score')
+
+
+////////REVIEWS
+export const getActivityRatingsApi = () => mainApi.get('/review/activity-scores')
+export const getUserRatingsApi = () => mainApi.get('/review/user-scores')
+export const getPlaceRatingsApi = () => mainApi.get('/review/place-scores')
+
+export const getUserApi = (userid) => mainApi.get(`/review/user/${userid}`)
 
 export const getAllUsersReviewsApi = () => mainApi.get('/review/users')
 export const getAllReviewsMeApi = () => mainApi.get('/review/who-reviews-me')
@@ -106,8 +118,8 @@ export const getActivityReviewsApi = (actid) => mainApi.get(`/review/activity/${
 export const getActivityReviewsByLocationApi = (placeid) => mainApi.get(`/review/place/${placeid}`)
 export const getSpecificReviewApi = (reviewid) => mainApi.get(`/${reviewid}`)
 
-export const createReviewActivityApi = (actid, body) => mainApi.post(`/activity/${actid}`, body)
-export const createReviewUserApi = (actid, receiverid, body) => mainApi.post(`/user/${actid}/${receiverid}`, body)
+export const createReviewActivityApi = (actid, body) => mainApi.post(`/review/activity/${actid}`, body)
+export const createReviewUserApi = (actid, receiverid, body) => mainApi.post(`/review/user/${actid}/${receiverid}`, body)
 
 
 ////////NOTIFICATIONS

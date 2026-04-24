@@ -22,6 +22,8 @@ import EditActivityDetails from "../pages/EditActivityDetails";
 import ActivitiesReview from "../pages/reviews/ActivitiesReview";
 import PeerReview from "../pages/reviews/PeerReview";
 import MemoryActivityDetails from "../pages/reviews/MemoryActivityDetails";
+import RatingReview from "../pages/reviews/RatingReview";
+import HomePage from "../pages/HomePage";
 
 
 const guestRouter = createBrowserRouter([
@@ -64,19 +66,15 @@ const userRouter = createBrowserRouter([
     children: [
       {
         index: true,
+        element: <HomePage />,
+      },
+      {
+        path: "discover",
         element: <LDDiscover />,
       },
       {
         path: "activities",
         element: <Activities />,
-      },
-      {
-        path: "reviews-activities",
-        element: <ActivitiesReview />,
-      },
-      {
-        path: "location-reviews",
-        element: <LocationReview />,
       },
       {
         path: "profile",
@@ -128,6 +126,21 @@ const userRouter = createBrowserRouter([
       {
         path: "reviews-peer",
         element: <PeerReview />,
+      },
+      {
+        path: "reviews-rating",
+        element: <RatingReview />,
+        
+      },
+
+        {
+        path: "reviews-activities",
+        element: <ActivitiesReview />,
+        },
+
+      {
+        path: "location-reviews",
+        element: <LocationReview />,
       },
     ],
   },
