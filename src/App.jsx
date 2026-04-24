@@ -5,6 +5,8 @@ import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import useSocketStore from "./stores/socketStore";
 import { useChatEvents } from "./hooks/useChatEvents";
+import { useNotification } from "./hooks/useNotification";
+import { Toast } from "./components/noti/Toast";
 
 
 function App() {
@@ -14,6 +16,7 @@ function App() {
   const finalRouter = !user ? guestRouter : userRouter
 
   useChatEvents();
+  useNotification();
 
   useEffect(() => {
     const { user, rememberMe, logout } = useUserStore.getState();
@@ -26,18 +29,19 @@ function App() {
   }, []);
 
   const { connectSocket } = useSocketStore();
+  const token = useUserStore(st => st.token);
 
   useEffect(() => {
-    const token = localStorage.getItem('token'); // หรือดึงจาก store
     if (token) {
       connectSocket(token);
     }
-  }, [user]);
+  }, [user, token, connectSocket]);
 
 
   return (
     <>
       <ToastContainer theme="colored" position="top-right" />
+      <Toast />
       <RouterProvider router={finalRouter} />
     </>
   );

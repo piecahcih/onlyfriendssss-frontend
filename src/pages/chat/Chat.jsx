@@ -10,7 +10,7 @@ function Chat() {
   // const getChatRooms = useChatStore(state => state.getChatRooms)
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("all");
-  console.log('getChatRommsmaima', getChatRooms)
+
 
   useEffect(() => {
     getChatRooms()
@@ -20,21 +20,32 @@ function Chat() {
     navigate(-1);
   };
 
-  // กรองตามการค้นหาและแท็บ
-  const filteredRooms = (rooms || []).filter((room) => {
-    const matchesSearch = (room.name || "").toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesTab = activeTab === "all" || room.type === activeTab;
-    return matchesSearch && matchesTab;
-  });
+  // กรองตามการค้นหาและแท็บ พร้อมทั้งเรียงลำดับตามเวลาล่าสุด
+  const filteredRooms = (rooms || [])
+    .filter((room) => {
+      const matchesSearch = (room.name || "").toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesTab = activeTab === "all" || room.type === activeTab;
+      return matchesSearch && matchesTab;
+    })
+    .sort((a, b) => {
+      const timeA = new Date(a.lastMessage?.createdAt || 0).getTime();
+      const timeB = new Date(b.lastMessage?.createdAt || 0).getTime();
+      return timeB - timeA; // เรียงจากใหม่ไปเก่า
+    });
 
   const handleRoomClick = (room) => {
     const title = room.name || "Chat";
     setActiveRoom(room.id);
+    
+    // หา friendId สำหรับแชทส่วนตัว
+    const friendId = room.type === "PRIVATE" ? (room.targetUserId || room.friendId || room.friend?.id) : null;
+
     navigate(`/chat/${encodeURIComponent(title)}`, {
       state: {
         roomId: room.id,
         title: title,
-        icon: room.image
+        icon: room.image,
+        friendId: friendId // ส่ง id เพื่อนไปด้วย
       }
     });
   };

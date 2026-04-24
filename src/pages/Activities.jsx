@@ -12,6 +12,7 @@ import { format } from "date-fns";
 import NotificationModal from "../components/NotificationModal";
 import { NavLink } from "react-router";
 import Wishlist from "../components/profile/Wishlist";
+import useNotificationStore from "../stores/notificationStore";
 
 function Activities() {
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -80,6 +81,7 @@ function Activities() {
   );
 
   const [notiOpen, setNotiOpen] = useState(false);
+  const { unreadCount } = useNotificationStore();
 
   return (
     <div className="min-h-screen bg-base-200 pb-24">
@@ -169,9 +171,11 @@ function Activities() {
             className="relative p-4 w-fit h rounded-full bg-white ring-2 ring-[#e09c99]/20 shadow-sm active:scale-95 transition-all"
           >
             <Notification className="w-6 h-6" />
-            <span className="absolute top-2 right-2 w-5 h-5 bg-primary flex items-center justify-center text-[10px] font-bold text-white border-2 border-white rounded-full">
-              1
-            </span>
+            {unreadCount > 0 && (
+              <span className="absolute top-2 right-2 w-5 h-5 bg-primary flex items-center justify-center text-[10px] font-bold text-white border-2 border-white rounded-full">
+                {unreadCount}
+              </span>
+            )}
           </button>
         </div>
 

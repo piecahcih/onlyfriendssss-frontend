@@ -21,6 +21,7 @@ function InsideChat() {
   const roomId = state?.roomId;
   const chatTitle = state?.title || state?.name || "Chat Room";
   const chatIcon = state?.icon || state?.image;
+  const friendId = state?.friendId || state?.id; // ดึง id เพื่อนจาก state
 
   const [inputText, setInputText] = useState("");
   const messagesEndRef = useRef(null);
@@ -90,25 +91,30 @@ function InsideChat() {
           <LeftIcon className="w-8 h-8 fill-current" />
         </button>
 
-        <div className="avatar shrink-0">
-          <div className="w-10 h-10 rounded-full border border-primary/10 overflow-hidden bg-gray-100 shadow-inner">
-            <img
-              src={chatIcon || defaultProfile}
-              alt="chat-icon"
-              className="w-full h-full object-cover"
-            />
+        <div 
+          className={`flex items-center gap-3 flex-1 min-w-0 ${friendId ? "cursor-pointer" : ""}`}
+          onClick={() => friendId && navigate(`/user/${friendId}`)}
+        >
+          <div className="avatar shrink-0">
+            <div className="w-10 h-10 rounded-full border border-primary/10 overflow-hidden bg-gray-100 shadow-inner">
+              <img
+                src={chatIcon || defaultProfile}
+                alt="chat-icon"
+                className="w-full h-full object-cover"
+              />
+            </div>
           </div>
-        </div>
 
-        <div className="flex-1 min-w-0">
-          <h2 className="text-neutral font-black truncate leading-tight text-sm">
-            {chatTitle}
-          </h2>
-          <div className="flex items-center gap-1.5">
-            <span className={`w-2 h-2 rounded-full ${isConnected ? "bg-success" : "bg-error"} shadow-sm`}></span>
-            <p className="text-[10px] text-base-content/40 font-bold uppercase tracking-widest">
-              {isConnected ? "Online" : "Connecting..."}
-            </p>
+          <div className="flex-1 min-w-0">
+            <h2 className="text-neutral font-black truncate leading-tight text-sm">
+              {chatTitle}
+            </h2>
+            <div className="flex items-center gap-1.5">
+              <span className={`w-2 h-2 rounded-full ${isConnected ? "bg-success" : "bg-error"} shadow-sm`}></span>
+              <p className="text-[10px] text-base-content/40 font-bold uppercase tracking-widest">
+                {isConnected ? "Online" : "Connecting..."}
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -117,7 +123,7 @@ function InsideChat() {
       <div className="flex-1 p-5 space-y-6 overflow-y-auto pb-32">
         {messages && messages.length > 0 ? (
           messages.map((msg, idx) => {
-            const senderId = msg.sender?.id || msg.senderId;
+            const senderId = msg.sender?.id || msg.sender?._id || msg.senderId;
             const isMe = String(senderId) === String(user?.id);
 
             return (
@@ -127,7 +133,10 @@ function InsideChat() {
               >
                 {/* รูปโปรไฟล์คนอื่น */}
                 {!isMe && (
-                  <div className="w-9 h-9 shrink-0 rounded-full overflow-hidden border-2 border-white shadow-sm bg-white mb-5">
+                  <div 
+                    className="w-9 h-9 shrink-0 rounded-full overflow-hidden border-2 border-white shadow-sm bg-white mb-5 cursor-pointer hover:opacity-80 transition-opacity"
+                    onClick={() => navigate(`/user/${senderId}`)}
+                  >
                     <ProfilePic
                       className="w-full h-full object-cover"
                       imgSrc={msg.sender?.profileImg || defaultProfile}
@@ -139,7 +148,10 @@ function InsideChat() {
 
                   {/* แสดงชื่อ USER สำหรับคนอื่น */}
                   {!isMe && (
-                    <span className="text-[10px] font-black text-secondary/60 ml-1 uppercase tracking-wider">
+                    <span 
+                      className="text-[10px] font-black text-secondary/60 ml-1 uppercase tracking-wider cursor-pointer hover:text-primary transition-colors"
+                      onClick={() => navigate(`/user/${senderId}`)}
+                    >
                       {msg.sender?.username || "Friend"}
                     </span>
                   )}

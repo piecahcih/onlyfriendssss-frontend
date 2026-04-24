@@ -73,7 +73,7 @@ export const getAllActivitiesJoinedByThisAccountApi = () => mainApi.get("/activi
 export const getActivityByIdApi = (activityid) => mainApi.get(`/activity/${activityid}`)
 export const getActivityByCategoryApi = (category) => mainApi.get(`/activity/category/${category}`)
 export const createActivityApi = (body) => mainApi.post("/activity", body)
-export const editActivityByIdApi = (activityid,body) => mainApi.patch(`/activity/${activityid}`, body)
+export const editActivityByIdApi = (activityid, body) => mainApi.patch(`/activity/${activityid}`, body)
 export const changeActivityStatusApi = (activityid, body) => mainApi.patch(`/activity/status/${activityid}`, body)
 export const cancelActivityStatusApi = (activityid) => mainApi.patch(`/activity/cancel/${activityid}`)
 export const deleteActivityByIdApi = (activityid) => mainApi.delete(`/activity/${activityid}`)
@@ -106,9 +106,14 @@ export const getActivityReviewsApi = (actid) => mainApi.get(`/review/activity/${
 export const getActivityReviewsByLocationApi = (placeid) => mainApi.get(`/review/place/${placeid}`)
 export const getSpecificReviewApi = (reviewid) => mainApi.get(`/${reviewid}`)
 
-export const createReviewActivityApi = (actid, body) => mainApi.post(`/activity/${actid}`,body)
-export const createReviewUserApi = (actid, receiverid, body) => mainApi.post(`/user/${actid}/${receiverid}`,body)
+export const createReviewActivityApi = (actid, body) => mainApi.post(`/activity/${actid}`, body)
+export const createReviewUserApi = (actid, receiverid, body) => mainApi.post(`/user/${actid}/${receiverid}`, body)
 
+
+////////NOTIFICATIONS
+export const getNotificationsApi = () => mainApi.get('/noti')
+export const markAsReadApi = (id) => mainApi.patch(`/noti/${id}/read`)
+export const markAllAsReadApi = () => mainApi.patch('/noti/read-all')
 
 
 export default mainApi;

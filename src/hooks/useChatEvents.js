@@ -20,17 +20,11 @@ export const useChatEvents = () => {
 
         });
 
-        // ดักฟังการแจ้งเตือนอื่นๆ
-        socket.on("notification", (data) => {
-
-        });
-
         // Cleanup function
         // เลิกดักฟังทุกอย่างเ
         return () => {
             socket.off("new_message");
             socket.off("user_typing");
-            socket.off("notification");
         };
     }, [socket, addMessage]);
 };

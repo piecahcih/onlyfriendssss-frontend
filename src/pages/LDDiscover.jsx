@@ -10,13 +10,15 @@ import useUserStore from "../stores/userStore";
 import NotificationModal from "../components/NotificationModal";
 import { SearchIcon, Notification, CalendarIcon, YourLocationIcon, MicIcon, } from "../icons";
 import PremiumModal from "../components/ads/PremiumModal"
-import { io, Socket } from 'socket.io-client'
+// import { io, Socket } from 'socket.io-client'
+import useNotificationStore from '../stores/notificationStore'
 
 const BACKEND_URL = "http://localhost:3999";
 
 const LDDiscover = () => {
   const navigate = useNavigate();
   const { mapContainerRef, mapRef, hdlGetCurrentLocation } = useMapHandler();
+  const { unreadCount } = useNotificationStore()
 
 
 
@@ -44,7 +46,7 @@ const LDDiscover = () => {
   const yPosition = step === "half" ? "0%" : "-60vh";
   const [searchText, setSearchText] = useState("");
   const [suggestOpen, setSuggestOpen] = useState(false);
-  const socketRef = useRef(null)
+  // const socketRef = useRef(null)
   const [settingForm, setSettingForm] = useState(false)
 
   useEffect(() => {
@@ -73,22 +75,22 @@ const LDDiscover = () => {
   //   }
   // }, [hdlGetCurrentLocation, user?.profileImg])
 
-  const connectSocket = () => {
-    console.log('tokenkub', token)
-    socketRef.current = io("http://localhost:3999", {
-      auth: { token }
-    })
-    socketRef.current.on("connect", () => {
-      console.log('Connected', socketRef.current.id)
-    })
-    return () => {
-      socketRef.current.disconnect()
-    }
-  }
+  // const connectSocket = () => {
+  //   console.log('tokenkub', token)
+  //   socketRef.current = io("http://localhost:3999", {
+  //     auth: { token }
+  //   })
+  //   socketRef.current.on("connect", () => {
+  //     console.log('Connected', socketRef.current.id)
+  //   })
+  //   return () => {
+  //     socketRef.current.disconnect()
+  //   }
+  // }
 
-  useEffect(() => {
-    connectSocket()
-  }, [])
+  // useEffect(() => {
+  //   connectSocket()
+  // }, [])
 
   const activitySuggestions = Array.isArray(activities)
     ? activities
@@ -235,10 +237,14 @@ const LDDiscover = () => {
               className="relative p-4 rounded-full bg-white/95 backdrop-blur-md shadow-xl active:scale-95 transition-all"
             >
               <Notification className="w-6 h-6 text-gray-600" />
-              <span className="absolute top-2 right-2 w-5 h-5 bg-primary flex items-center justify-center text-[10px] font-bold text-white border-2 border-white rounded-full">
-                1
-              </span>
+              {unreadCount > 0 && (  // แก้จาก hardcode 1
+                <span className="absolute top-2 right-2 w-5 h-5 bg-primary flex items-center justify-center text-[10px] font-bold text-white border-2 border-white rounded-full">
+                  {unreadCount}
+                </span>
+              )}
             </button>
+
+
           </div>
           {/* Categories Horizontal Scroll */}
           <section className="space-y-4 my-4 pointer-events-auto">
