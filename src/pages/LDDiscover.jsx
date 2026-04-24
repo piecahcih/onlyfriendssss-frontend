@@ -258,7 +258,7 @@ const LDDiscover = () => {
             </button>
           </div>
           {/* Categories Horizontal Scroll */}
-          <section className="space-y-4 my-2 z-50">
+          <section className="space-y-4 my-2 z-50 -mr-6">
             <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide scroll-smooth -mx-2 px-2">
               {categoryList.map((cat) => (
                 <button

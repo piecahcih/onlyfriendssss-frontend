@@ -10,18 +10,52 @@ function Add2Interest() {
   const completeRegistration = useUserStore(state => state.completeRegistration)
   const navigate = useNavigate()
 
-  const interests = [
-    { label: "foodie 🍳", value: "foodie" },
-    { label: "camping 🏕️", value: "camping" },
-    { label: "slowlife 🌿", value: "slowlife" },
-    { label: "health 🥗", value: "health" },
-    { label: "art 🎨", value: "art" },
-    { label: "travel ✈️", value: "travel" },
-    { label: "entertainment 🎬", value: "entertainment" },
-    { label: "sport 🏀", value: "sport" },
-    { label: "volunteer 🤝", value: "volunteer" },
-    { label: "workstation 💻", value: "workstation" }
-  ]
+const interests = [
+  { label: "foodie 🍳", value: "foodie" },
+  { label: "camping 🏕️", value: "camping" },
+  { label: "slowlife 🌿", value: "slowlife" },
+  { label: "health 🥗", value: "health" },
+  { label: "art 🎨", value: "art" },
+  { label: "travel ✈️", value: "travel" },
+  { label: "sport 🏀", value: "sport" },
+  { label: "volunteer 🤝", value: "volunteer" },
+  { label: "gaming 🎮", value: "gaming" },
+
+  // Food & Drink
+  { label: "cafe hopping ☕", value: "cafe_hopping" },
+  { label: "street food 🍢", value: "street_food" },
+  { label: "fine dining 🍷", value: "fine_dining" },
+  { label: "cooking & baking 👩‍🍳", value: "cooking_baking" },
+  { label: "drinks & nightout 🍻", value: "drinks_nightout" },
+
+  // Health & Active
+  { label: "gym & workout 💪", value: "gym_workout" },
+  { label: "yoga & pilates 🧘‍♀️", value: "yoga_pilates" },
+  { label: "running & marathon 🏃", value: "running_marathon" },
+  { label: "mental wellness 😌", value: "mental_wellness" },
+  { label: "team sports ⚽", value: "team_sports" },
+
+  // Art & Culture
+  { label: "museum & gallery 🏛️", value: "museum_gallery" },
+  { label: "photography 📸", value: "photography" },
+  { label: "crafting & DIY ✂️", value: "crafting_diy" },
+  { label: "live music 🎸", value: "live_music" },
+  { label: "book club 📚", value: "book_club" },
+
+  // Entertainment & Fun
+  { label: "movies & cinema 🍿", value: "movies_cinema" },
+  { label: "board games 🎲", value: "board_games" },
+  { label: "video games 🕹️", value: "video_games" },
+  { label: "karaoke 🎤", value: "karaoke" },
+  { label: "concerts & festivals 🎪", value: "concerts_festivals" },
+
+  // Travel & Adventure
+  { label: "backpacking 🎒", value: "backpacking" },
+  { label: "road trip 🚗", value: "road_trip" },
+  { label: "beach vibes 🏖️", value: "beach_vibes" },
+  { label: "hiking & trekking 🥾", value: "hiking_trekking" },
+  { label: "sightseeing 🗺️", value: "sightseeing" }
+];
 
   // ดักห้ามเลือกเกิน 4 
   const [selected, setSelected] = useState([])
@@ -59,7 +93,7 @@ function Add2Interest() {
 
   return (
     <div className="bg-base-200 min-h-screen">
-      <div className="m-auto w-full max-w-[375px] h-[700px] flex flex-col p-4 overflow-hidden relative">
+      <div className="mx-auto w-full max-w-[375px] h-[750px] flex flex-col px-4 pt-4 overflow-hidden relative">
         <button
           type="button"
           onClick={hdlGoBack}
@@ -72,9 +106,10 @@ function Add2Interest() {
           <h1 className="text-[32px] font-black bai-jamjuree-bold leading-tight text-gray-900">
             Pick up to 4<br />interests
           </h1>
+          <p>match activities with your interests</p>
         </div>
 
-        <div className="flex flex-wrap gap-3 overflow-y-auto max-h-[400px] no-scrollbar">
+        <div className="flex flex-wrap gap-3 overflow-y-auto no-scrollbar mt-5">
           {interests.map((item) => {
             const isSelected = selected.includes(item.value);
             return (
@@ -92,12 +127,12 @@ function Add2Interest() {
           })}
         </div>
 
-        <div className="mt-auto pt-6">
+        <div className="fixed bottom-0 left-0 z-40 w-full p-6">
           <button
             disabled={selected.length === 0}
             onClick={hdlSubmit}
             style={{ backgroundColor: '#FF7F50' }}
-            className={`w-full py-4 text-white rounded-full font-bold text-lg shadow-lg transition-opacity
+            className={`w-full py-4 rounded-full bg-linear-to-r from-primary to-secondary text-white font-bold text-lg shadow-[0_8px_32px_rgba(168,49,0,0.24)] active:scale-95 transition-all hover:scale-[1.05]
               ${selected.length === 0 ? 'opacity-50' : 'opacity-100 active:scale-[0.98]'}
             `}
           >
