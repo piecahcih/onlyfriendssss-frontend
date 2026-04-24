@@ -11,6 +11,7 @@ const useChatStore = create(
       unreadCounts: {},
 
       getChatRooms: async () => {
+
         try {
           const res = await getChatRoomsApi();
           // พยายามแกะข้อมูลจากหลายๆ
