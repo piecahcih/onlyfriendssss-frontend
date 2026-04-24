@@ -14,7 +14,7 @@ import { NavLink } from "react-router";
 import Wishlist from "../components/profile/Wishlist";
 import { useSpeechToText } from "../hooks/useSpeechToText";
 
-function Activities() {
+function ActivitiesList() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const categoryList = [
     { id: "all", title: "All", icon: "✨" },
@@ -84,7 +84,7 @@ function Activities() {
     setSuggestOpen(true);
   });
 
-
+  const [locationShown, setLocationShown] = useState(false)
 
 
   return (
@@ -161,6 +161,7 @@ function Activities() {
                           key={`loc-${placeName.id}`}
                           onClick={() => {
                             setSearchText(placeName);
+                            setLocationShown(true)
                             setSuggestOpen(false);
                           }}
                           className="px-6 py-4 hover:bg-primary/5 cursor-pointer flex items-center gap-4 border-b border-gray-50 last:border-none transition-colors"
@@ -212,14 +213,14 @@ function Activities() {
           </div>
         </section>
 
+        {locationShown && (
+          <div className="bg-amber-200">
+            {searchText}
+          </div>
+        )}
+
         {/* Activity Cards List */}
         <section className="space-y-6">
-          {/* <div className="flex items-center justify-between">
-            <h2 className="font-headline font-bold text-[18px] text-on-surface">
-              Trending now
-            </h2>
-            <button className="text-primary font-bold text-sm hover:underline">See all</button>
-          </div> */}
 
           <div className="space-y-6">
             {filteredActivities.map((activity) => (
@@ -228,7 +229,7 @@ function Activities() {
                 key={activity.id}
                 className="block"
               >
-                <div style={{ height: '230px' }} className="relative bg-amber-500 rounded-[18px] overflow-hidden shadow-md group">
+                <div className="h-[230px] relative bg-amber-500 rounded-[18px] overflow-hidden shadow-md group">
 
                     <img
                       src={activity?.coverPhoto}
@@ -345,4 +346,4 @@ function Activities() {
   );
 }
 
-export default Activities;
+export default ActivitiesList;
