@@ -4,7 +4,8 @@ import useUserStore from "../stores/userStore"
 const BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3999"
 
 export const mainApi = axios.create({
-  baseURL: `${BASE_URL}/api`,
+  baseURL: "http://localhost:3999/api",
+  // baseURL: `${BASE_URL}/api`,
 })
 
 // export const mainApi = axios.create({
@@ -71,8 +72,14 @@ export const leaveActivityApi = (activityId) => mainApi.delete(`/join/leave/${ac
 
 
 
+////////INTEREST
+export const getUserInterestApi = () => mainApi.get("/interest")
+
+
+
 ////////ACTIVITIES
 export const getAllCurrentActivitiesApi = () => mainApi.get("/activity")
+export const getUpcomingActivitiesApi = () => mainApi.get("/activity/upcoming-activities")
 export const getAllActivitiesApi = () => mainApi.get("/activity/all")
 export const getAllFinishedActivitiesOnThisAccountApi = () => mainApi.get("/activity/my-memories")
 export const getAllActivitiesCreatedByThisAccountApi = () => mainApi.get("/activity/my-created-activities")
