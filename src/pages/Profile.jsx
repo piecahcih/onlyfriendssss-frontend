@@ -1,9 +1,9 @@
 import { useEffect, useState, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue } from "framer-motion";
 import ProfilePic from "../components/profile/ProfilePic";
 import useUserStore from "../stores/userStore";
 import { SettingIcon, CloseIcon, CameraIcon, EditIcon } from "../icons";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router"; // แก้ไข: เพิ่ม useNavigate
 
 import MyActivityTab from "../components/profile/MyActivityTab";
 import useReviewStore from "../stores/reviewStore";
@@ -12,6 +12,7 @@ import { editProfileApi } from "../api/mainApi";
 const BACKEND_URL = "http://localhost:3999";
 
 const Profile = () => {
+  const navigate = useNavigate(); // แก้ไข: ประกาศ navigate
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
   const logout = useUserStore((state) => state.logout);
@@ -20,7 +21,6 @@ const Profile = () => {
   const deleteProfile = useUserStore((state) => state.deleteProfile);
 
   const [profileData, setProfileData] = useState(null);
-  console.log("profileData",profileData)
   const [isEditing, setIsEditing] = useState(false);
   const [settingForm, setSettingForm] = useState(false);
   const [editForm, setEditForm] = useState({});
@@ -29,11 +29,16 @@ const Profile = () => {
   const userRatings = useReviewStore((state) => state.userRatings);
   const getUserRatings = useReviewStore((state) => state.getUserRatings);
 
+  const [step, setStep] = useState("half");
+  const y = useMotionValue(0);
+
+  const yPosition = step === "half" ? "55vh" : "10vh";
   const fileInputRef = useRef(null);
 
+  // แก้ไข: รวม useEffect เป็นอันเดียว
   useEffect(() => {
     fetchUserProfile();
-    getUserRatings(); 
+    getUserRatings();
   }, []);
 
   const fetchUserProfile = async () => {
@@ -41,8 +46,6 @@ const Profile = () => {
       const response = await getProfile();
       const data =
         response.data.user?.data || response.data.user || response.data;
-      console.log("Gender from API:", data);
-
       setProfileData(data);
       setEditForm(data);
       setUser(data);
@@ -50,10 +53,6 @@ const Profile = () => {
       console.error("Fetch Profile Error:", error);
     }
   };
-
-  useEffect(() => {
-    fetchUserProfile();
-  }, []);
 
   const handleEditOpen = () => {
     setEditForm({ ...profileData });
@@ -66,7 +65,7 @@ const Profile = () => {
   const hdlLogout = () => {
     sessionStorage.removeItem("hasSeenPremium");
     logout();
-  }
+  };
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -83,7 +82,6 @@ const Profile = () => {
       }
 
       const response = await editProfileApi(formData);
-
       const updatedUser = response.data.data;
 
       if (updatedUser.profileImg) {
@@ -124,14 +122,13 @@ const Profile = () => {
   };
 
   const hdlDeleteAccount = async () => {
-    if (window.confirm("คุณแน่ใจหรือไม่ว่าต้องการลบบัญชี? การกระทำนี้ไม่สามารถย้อนกลับได้")) {
+    if (window.confirm("คุณแน่ใจหรือไม่ว่าต้องการลบบัญชี?")) {
       try {
         await deleteProfile();
-        alert("ลบบัญชีของคุณเรียบร้อยแล้ว");
+        alert("ลบบัญชีเรียบร้อยแล้ว");
         logout();
         navigate("/");
       } catch (error) {
-        console.error("Delete Account Error:", error);
         alert(error.response?.data?.message || "ไม่สามารถลบบัญชีได้");
       }
     }
@@ -141,34 +138,50 @@ const Profile = () => {
 
   const getFullImgPath = (path) => {
     if (!path) return null;
-
-    if (typeof path !== "string" || path.startsWith("data:")) {
-      return path;
-    }
-
-    if (path.startsWith("http")) {
-      return path;
-    }
-
+    if (typeof path !== "string" || path.startsWith("data:")) return path;
+    if (path.startsWith("http")) return path;
     return `${BACKEND_URL}${path}`;
   };
 
   if (!profileData)
     return (
-      <div className="flex h-screen items-center justify-center">
-        Loading...
+      <div className="flex h-screen items-center justify-center bg-black">
+        <span className="loading loading-spinner loading-lg text-primary"></span>
       </div>
     );
 
-    // const hdlRating = () => {
-    //     navigate("/reviews-rating")
-    // }
-  const currentRatingInfo = userRatings.find(u => u.id === profileData?.id);
+  const currentRatingInfo = userRatings.find((u) => u.id === profileData?.id);
   const averageScore = currentRatingInfo?.averageRating || "0.0";
 
   return (
-    <div className="bg-base-200 min-h-screen flex flex-col font-sans pb-24 relative overflow-x-hidden">
-      {/* --- EDIT MODAL --- */}
+    <div className="min-h-screen bg-black relative overflow-hidden">
+      {/* --- BACKGROUND IMAGE --- */}
+      <div className="fixed inset-0 -z-10">
+        <img
+          src={getFullImgPath(profileData?.profileImg)}
+          className="w-full h-full object-cover  scale-110 "
+          alt="background"
+        />
+        <div className="absolute inset-0 bg-linear-to-b from-black/20 via-transparent to-black/60" />
+      </div>
+
+      {/* --- TOP ACTIONS --- */}
+      <div className="fixed top-6 right-6 flex z-50">
+        <button
+          onClick={handleEditOpen}
+          className="p-2 bg-white/20 backdrop-blur-md  text-black  active:scale-90 transition-all"
+        >
+          <EditIcon className="w-5 h-5" />
+        </button>
+        <button
+          onClick={handleSettingOpen}
+          className="p-2 bg-white/20 backdrop-blur-md  text-black active:scale-90 transition-all"
+        >
+          <SettingIcon className="w-5 h-5" />
+        </button>
+      </div>
+
+      {/* --- MODALS (KEEPING YOUR EXISTING LOGIC) --- */}
       <AnimatePresence>
         {isEditing && (
           <>
@@ -177,44 +190,39 @@ const Profile = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsEditing(false)}
-              className="fixed inset-0 bg-black/50 z-[100] backdrop-blur-sm"
+              className="fixed inset-0 bg-black/80 z-[100] backdrop-blur-sm"
             />
             <motion.div
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed bottom-0 left-0 right-0 bg-white z-[101] rounded-t-[40px] p-8 shadow-2xl max-h-[90vh] overflow-y-auto"
+              className="fixed bottom-0 left-0 right-0 bg-white z-[101] rounded-t-[40px] p-8 max-h-[90vh] overflow-y-auto"
             >
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-[20px] bai-jamjuree-bold text-neutral-focus">
+                <h2 className="text-2xl font-black text-neutral">
                   Edit Profile
                 </h2>
                 <button
                   onClick={() => setIsEditing(false)}
-                  className="p-2 rounded-full hover:bg-gray-200 transition-colors"
+                  className="p-2 bg-gray-100 rounded-full"
                 >
-                  <CloseIcon className="w-6 h-6 text-gray-500" />
+                  <CloseIcon className="w-5 h-5" />
                 </button>
               </div>
-
-              <form onSubmit={handleSave} className="space-y-5">
-                <div className="flex flex-col items-center mb-4">
-                  <div className="relative group">
-                    <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-primary/10 shadow-inner bg-gray-50">
-                      <ProfilePic
-                        imgSrc={
-                          previewImage || getFullImgPath(editForm?.profileImg) || data.profileImg
-                        }
-                      />
-                    </div>
-                    <button
-                      type="button"
-                      onClick={triggerFileInput}
-                      className="absolute inset-0 bg-black/30 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
+              <form onSubmit={handleSave} className="space-y-6">
+                <div className="flex flex-col items-center">
+                  <div
+                    className="relative w-28 h-28 rounded-full overflow-hidden border-4 border-primary/20 shadow-xl"
+                    onClick={triggerFileInput}
+                  >
+                    <ProfilePic
+                      imgSrc={
+                        previewImage || getFullImgPath(editForm?.profileImg)
+                      }
+                    />
+                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-all">
                       <CameraIcon className="w-8 h-8 text-white" />
-                    </button>
+                    </div>
                   </div>
                   <input
                     type="file"
@@ -223,82 +231,55 @@ const Profile = () => {
                     className="hidden"
                     accept="image/*"
                   />
-                  <p className="text-[10px] bai-jamjuree-medium text-gray-400 mt-2 uppercase">
-                    Tap to change photo
-                  </p>
                 </div>
-
-                <div>
-                  <label className="block text-sm bai-jamjuree-semibold text-gray-500 mb-1.5 ml-1">
-                    Username
-                  </label>
+                <div className="space-y-4">
                   <input
                     name="username"
                     value={editForm.username || ""}
                     onChange={handleChange}
-                    className="w-full px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20"
+                    placeholder="Username"
+                    className="input input-bordered w-full rounded-2xl"
                   />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm bai-jamjuree-semibold text-gray-500 mb-1.5 ml-1">
-                      First Name
-                    </label>
+                  <div className="grid grid-cols-2 gap-4">
                     <input
                       name="firstName"
                       value={editForm.firstName || ""}
                       onChange={handleChange}
-                      className="w-full px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20"
+                      placeholder="First Name"
+                      className="input input-bordered w-full rounded-2xl"
                     />
-                  </div>
-                  <div>
-                    <label className="block text-sm bai-jamjuree-semibold text-gray-500 mb-1.5 ml-1">
-                      Last Name
-                    </label>
                     <input
                       name="lastName"
                       value={editForm.lastName || ""}
                       onChange={handleChange}
-                      className="w-full px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20"
+                      placeholder="Last Name"
+                      className="input input-bordered w-full rounded-2xl"
                     />
                   </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm bai-jamjuree-semibold text-gray-500 mb-1.5 ml-1">
-                    Gender
-                  </label>
                   <select
                     name="gender"
                     value={editForm.gender || "MALE"}
                     onChange={handleChange}
-                    className="w-full px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20"
+                    className="select select-bordered w-full rounded-2xl"
                   >
                     <option value="MALE">MALE</option>
                     <option value="FEMALE">FEMALE</option>
                     <option value="OTHER">OTHER</option>
                   </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm bai-jamjuree-semibold text-gray-500 mb-1.5 ml-1">
-                    Bio
-                  </label>
                   <textarea
                     name="bio"
                     value={editForm.bio || ""}
                     onChange={handleChange}
+                    placeholder="Bio"
+                    className="textarea textarea-bordered w-full rounded-2xl resize-none"
                     rows="3"
-                    className="w-full px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
-
                 <button
                   type="submit"
-                  className="w-full py-4 bg-primary text-white rounded-2xl bai-jamjuree-bold shadow-lg shadow-primary/30 active:scale-95 transition-all mt-4"
+                  className="btn btn-primary w-full h-14 rounded-2xl font-black text-lg"
                 >
-                  SAVE
+                  SAVE CHANGES
                 </button>
               </form>
             </motion.div>
@@ -306,7 +287,6 @@ const Profile = () => {
         )}
       </AnimatePresence>
 
-      {/* --- SETTING MODAL --- */}
       <AnimatePresence>
         {settingForm && (
           <>
@@ -315,38 +295,38 @@ const Profile = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSettingForm(false)}
-              className="fixed inset-0 bg-black/50 z-[100] backdrop-blur-sm"
+              className="fixed inset-0 bg-black/80 z-[100] backdrop-blur-sm"
             />
             <motion.div
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed bottom-0 left-0 right-0 bg-white z-[101] rounded-t-[40px] p-8 shadow-2xl"
+              className="fixed bottom-0
+      left-0 right-0 bg-white z-[101] rounded-t-[40px] p-8 shadow-2xl"
             >
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-[20px] bai-jamjuree-bold text-neutral-focus">
-                  Settings
-                </h2>
+              <div className="flex justify-between items-center mb-8">
+                <h2 className="text-2xl font-black text-neutral">Settings</h2>
                 <button
                   onClick={() => setSettingForm(false)}
-                  className="p-2 rounded-full hover:bg-gray-200 transition-colors"
+                  className="p-2 bg-gray-100 rounded-full"
                 >
-                  <CloseIcon className="w-6 h-6 text-gray-500" />
+                  <CloseIcon className="w-5 h-5" />
                 </button>
               </div>
-              <div className="flex flex-col gap-4 items-start text-[18px]">
+              <div className="flex flex-col gap-3">
                 <button
                   onClick={hdlLogout}
-                  className="font-medium text-neutral-focus"
+                  className="btn btn-ghost justify-start text-lg font-bold rounded-2xl h-14
+      hover:bg-primary/5 hover:text-primary transition-all"
                 >
-                  Log out
+                  🚪 Log out
                 </button>
                 <button
                   onClick={hdlDeleteAccount}
-                  className="font-medium text-error hover:opacity-70 transition-all"
+                  className="btn btn-ghost justify-start text-lg font-bold
+      rounded-2xl h-14 text-error hover:bg-error/5 transition-all"
                 >
-                  Delete Account
+                  🗑️ Delete Account
                 </button>
               </div>
             </motion.div>
@@ -354,102 +334,120 @@ const Profile = () => {
         )}
       </AnimatePresence>
 
-      {/* --- HEADER --- */}
-      <div className="pt-8 pb-4 text-center relative flex items-center justify-center">
-        <div className="absolute right-6 top-4 flex gap-2">
-          <button
-            onClick={handleEditOpen}
-            className="p-2 bg-white rounded-full shadow-sm text-primary active:scale-90 transition-all"
-          >
-            <EditIcon className="w-5 h-5" />
-          </button>
-          <button
-            onClick={handleSettingOpen}
-            className="p-2 bg-white rounded-full shadow-sm text-primary active:scale-90 transition-all"
-          >
-            <SettingIcon className="w-5 h-5" />
-          </button>
-        </div>
-      </div>
+      {/* --- BOTTOM SHEET --- */}
 
-      {/* --- PROFILE INFO --- */}
-      <div className="px-6 flex flex-col">
-        <div className="flex items-center w-full gap-4 mb-6">
-          <div style={{ width: '112px', height: '112px', borderRadius: '100%', overflow: "hidden" }}>
-            <ProfilePic imgSrc={getFullImgPath(profileData?.profileImg) || data.profileImg} />
-          </div>
-          <div className="flex-1 flex flex-col">
-            <h2 className="text-xl bai-jamjuree-bold text-neutral mb-2">
+      {/* <motion.div 
+        animate={{ opacity: step === "high" ? 1 : 0 }}
+        className="fixed inset-0 bg-black/20 backdrop-blur-sm z-30 pointer-events-none"
+        /> */}
+      
+     <motion.div
+  initial={{ y: "100vh" }}
+  animate={{ y: yPosition }}
+  // ยุบ style มารวมกันที่เดียว
+  style={{ 
+    y, 
+    height: "90vh",
+    
+  }} 
+  transition={{ type: "spring", damping: 25, stiffness: 200 }}
+  drag="y"
+  dragConstraints={{ top: 0, bottom: 0 }}
+  dragElastic={0.05}
+  onDragEnd={(_, info) => {
+    if (info.offset.y < -100 || info.velocity.y < -500) setStep("high");
+    else if (info.offset.y > 100 || info.velocity.y > 500) setStep("half");
+  }}
+        className="fixed inset-x-0 bottom-0 w-full max-w-lg h-[95vh] bg-black/40 backdrop-blur-md rounded-3xl    
+         shadow-[0_-20px_50px_rgba(0,0,0,0.3)] border-t border-white/20 z-40 flex flex-col overflow-hidden"
+      >
+  <div className="w-16 h-1.5 bg-white/30 rounded-full mx-auto flex-shrink-0" />
+
+        <div className="overflow-y-auto px-8 pb-32 scrollbar-hide">
+          {/* Profile Content */}
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-black text-white tracking-tight mb-1">
               {profileData?.username}
             </h2>
-            <div className="bg-primary w-full rounded-[30px] py-3 flex justify-around text-white shadow-lg">
+            <p className="text-sm font-bold text-white uppercase tracking-[0.2em]">
+              {profileData?.firstName} {profileData?.lastName}
+            </p>
 
-               <NavLink
+            {/* Premium Stats Bar */}
+            <div className="flex items-center justify-around  p-2 " >
+              <NavLink
                 to="/reviews-rating"
-                className="flex flex-col items-center flex-1"
+                className="flex flex-col items-center flex-1 group"
               >
-                <span className="text-lg bai-jamjuree-bold">
+                <span className="text-2xl font-black text-primary group-active:scale-90 transition-transform">
                   {averageScore}
                 </span>
-                <span className="text-[10px] bai-jamjuree-medium opacity-90">
-                  Rating 
+                <span className="text-[10px] font-black text-white uppercase tracking-wider mt-1">
+                  Rating
                 </span>
               </NavLink>
-              
-              <div className="flex flex-col items-center border-r border-white/30 flex-1">
-                <span className="text-lg bai-jamjuree-bold">
+
+              {/* <div className="w-px h-10 bg-white/10" /> */}
+              <div className="flex flex-col items-center flex-1">
+                <span className="text-2xl font-black text-white">
                   {profileData?._count?.createdActivities || 0}
                 </span>
-                <span className="text-[10px] bai-jamjuree-medium opacity-90">
+                <span className="text-[10px] font-black text-white uppercase tracking-wider mt-1">
                   Events
                 </span>
               </div>
+              <div className="w-px h-10 bg-white/10" />
               <NavLink
                 to="/friendlist"
-                className="flex flex-col items-center flex-1"
+                className="flex flex-col items-center flex-1 group"
               >
-                <span className="text-lg bai-jamjuree-bold">
+                <span
+                  className="text-2xl font-black text-white group-active:scale-90 transition-transform"
+                >
                   {profileData?._count?.receivedFriendRequests || 0}
                 </span>
-                <span className="text-[10px] bai-jamjuree-medium opacity-90">
+                <span className="text-[10px] font-black text-white uppercase tracking-wider mt-1">
                   Friends
                 </span>
               </NavLink>
             </div>
           </div>
-        </div>
 
-        {/* <button
-          onClick={handleRequestFriend}
-          className="bg-secondary text-white w-full py-3 rounded-2xl bai-jamjuree-semibold mb-6 shadow-md active:scale-95 transition-transform">
-          {profileData.isFriend ? "Friend ✔" : "Request to be Friend +"}
-        </button> */}
-
-        <div className="w-full text-left space-y-2 mb-6">
-          <div className="flex justify-between items-start">
-            <p className="text-sm bai-jamjuree-medium text-neutral leading-relaxed max-w-[80%]">
-              {profileData?.bio || "No bio available"}
+          {/* About Section */}
+          <div className="bg-amber-50 p-8  relative overflow-hidden">
+            {/* <div className="absolute top-0 right-0 w-20 h-20 bg-primary/10 blur-2xl -z-10" /> */}
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="text-xs font-black text-white uppercase tracking-[0.3em]">
+                Identity
+              </h3>
+              <span
+                className="text-[10px] px-4 py-1.5 bg-primary text-white rounded-full font-black uppercase
+      shadow-lg shadow-primary/20"
+              >
+                {profileData?.gender || "Secret"}
+              </span>
+            </div>
+            <p className="text-white font-medium leading-relaxed italic text-lg">
+              "{profileData?.bio || "Tell Me About Yourself..."}"
             </p>
-            <span className="text-[10px] px-2 py-1 bg-gray-100 rounded-md text-gray-400 font-bold uppercase tracking-wider">
-              {profileData?.gender === "MALE" ? "MALE" :
-                profileData?.gender === "FEMALE" ? "FEMALE" :
-                  profileData?.gender === "OTHER" ? "OTHER" : "N/A"}
-            </span>
           </div>
 
+          {/* Activity Section */}
+          <div className="mt-1">
+            <MyActivityTab />
 
+          </div>
 
-          {/* ปุ่มชั่วคราวเทสหน้า Location Review */}
-          <NavLink 
-            to="/location-reviews?placeid=8" 
-            className="btn btn-sm btn-outline btn-primary w-full rounded-xl mt-4"
+          {/* Location Button */}
+          <NavLink
+            to="/location-reviews?placeid=8"
+            className="btn btn-ghost w-full rounded-2xl h-16 font-black
+      text-primary bg-primary/10 border-none mt-6 hover:bg-primary/20"
           >
-            Location Review Test (Place ID: 8)
+            📍 Explore Places
           </NavLink>
         </div>
-      </div>
-
-      <MyActivityTab />
+      </motion.div>
     </div>
   );
 };
