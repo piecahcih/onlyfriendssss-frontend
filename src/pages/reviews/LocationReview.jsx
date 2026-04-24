@@ -91,17 +91,17 @@ function LocationReview() {
 
         <button
           onClick={hdlGoBack}
-          className="absolute top-6 left-6 w-10 h-10 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center text-white border border-white/30 active:scale-90 transition-all z-50"
+          className="absolute top-6 left-6 w-10 h-10 rounded-full flex items-center justify-center text-white active:scale-90 transition-all z-50"
         >
-          <LeftIcon className="w-5 h-5" />
+          <LeftIcon className="w-8" />
         </button>
       </div>
 
-      <main className="flex-1 px-6 -mt-28 relative z-10">
+      <main className="flex-1 px-6 -mt-40 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white/60 rounded-[20px] px-7 py-4 ">
+          className="bg-white rounded-[12px] px-7 py-4 ">
 
           <div className="space-y-4">
             <div className="space-y-1">

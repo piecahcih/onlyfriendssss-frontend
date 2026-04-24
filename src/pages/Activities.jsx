@@ -214,12 +214,12 @@ function Activities() {
 
         {/* Activity Cards List */}
         <section className="space-y-6">
-          <div className="flex items-center justify-between">
+          {/* <div className="flex items-center justify-between">
             <h2 className="font-headline font-bold text-[18px] text-on-surface">
               Trending now
             </h2>
-            {/* <button className="text-primary font-bold text-sm hover:underline">See all</button> */}
-          </div>
+            <button className="text-primary font-bold text-sm hover:underline">See all</button>
+          </div> */}
 
           <div className="space-y-6">
             {filteredActivities.map((activity) => (
@@ -228,7 +228,7 @@ function Activities() {
                 key={activity.id}
                 className="block"
               >
-                <div className="h-50 relative bg-amber-500 rounded-[18px] overflow-hidden shadow-md group">
+                <div style={{ height: '230px' }} className="relative bg-amber-500 rounded-[18px] overflow-hidden shadow-md group">
 
                     <img
                       src={activity?.coverPhoto}
@@ -259,9 +259,9 @@ function Activities() {
                     </h3>
                     
 
-                    <div className="flex flex-col gap-0.5">
+                    <div className="flex flex-col mt-1">
                       <div className="flex items-center gap-3 text-on-surface/60">
-                        <CalendarIcon className="w-4 text-primary" />
+                        <CalendarIcon className="w-3.5 text-primary" />
                         <span className="text-[11px] font-medium">
                           {format(
                             new Date(activity.eventStartTime),
@@ -270,14 +270,14 @@ function Activities() {
                         </span>
                       </div>
                       <div className="flex items-center gap-3 text-on-surface/60">
-                        <LocationIcon className="w-4 text-primary" />
+                        <LocationIcon className="w-3.5 text-primary" />
                         <span className="text-[11px] font-medium">
                           {activity.place?.placeName}
                         </span>
                       </div>
                     </div>
 
-                    <div className="pt-4 flex items-center justify-between">
+                    <div className="mt-3 flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="flex -space-x-3.5 items-center">
                           {(

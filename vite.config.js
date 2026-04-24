@@ -8,7 +8,7 @@ export default defineConfig({
     host: true,
     port: 5173,
     allowedHosts: [
-      'faq-dates-craft-graphs.trycloudflare.com'
+      'organize-riders-describe-marker.trycloudflare.com'
     ]
   }
 })
