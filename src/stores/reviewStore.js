@@ -1,12 +1,15 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { createReviewActivityApi, createReviewUserApi, getActivityReviewsApi, getActivityReviewsByLocationApi, getAllActivitiesReviewsApi, getAllReviewsMeApi, getAllUsersReviewsApi, getSpecificReviewApi, getUserApi } from "../api/mainApi";
+import { createReviewActivityApi, createReviewUserApi, getActivityRatingsApi, getActivityReviewsApi, getActivityReviewsByLocationApi, getAllActivitiesReviewsApi, getAllReviewsMeApi, getAllUsersReviewsApi, getPlaceRatingsApi, getSpecificReviewApi, getUserApi, getUserRatingsApi } from "../api/mainApi";
 
 const useReviewStore = create(persist((set, get) => ({
   reviews: [],
-  selectedUser: [],
-  currentReview: null,
-  rating: [],
+   selectedUser: null,
+   currentReview: null,
+   activityRatings: [],
+   userRatings: [],
+   placeRatings: [],
+
   getUser: async (userId) => {
     console.log('first',userId)
     const res = await getUserApi(userId);
@@ -14,6 +17,24 @@ const useReviewStore = create(persist((set, get) => ({
      set({ selectedUser: res.data.user });
      return res;
   },
+
+  // ดึงคะแนนเฉลี่ยต่างๆ
+  getActivityRatings: async () => {
+   const res = await getActivityRatingsApi();
+  set({ activityRatings: res.data });
+   return res;
+   },
+  getUserRatings: async () => {
+  const res = await getUserRatingsApi();
+   set({ userRatings: res.data });
+    return res;
+   },
+  getPlaceRatings: async () => {
+   const res = await getPlaceRatingsApi();
+   set({ placeRatings: res.data });
+   return res;
+  },
+
   getAllUsersReviews: async () => {
     const res = await getAllUsersReviewsApi()
     set({ reviews: res.data.reviews })

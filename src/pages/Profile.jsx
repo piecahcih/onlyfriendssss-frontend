@@ -6,6 +6,7 @@ import { SettingIcon, CloseIcon, CameraIcon, EditIcon } from "../icons";
 import { NavLink } from "react-router";
 
 import MyActivityTab from "../components/profile/MyActivityTab";
+import useReviewStore from "../stores/reviewStore";
 import { editProfileApi } from "../api/mainApi";
 
 const BACKEND_URL = "http://localhost:3999";
@@ -19,13 +20,21 @@ const Profile = () => {
   const deleteProfile = useUserStore((state) => state.deleteProfile);
 
   const [profileData, setProfileData] = useState(null);
+  console.log("profileData",profileData)
   const [isEditing, setIsEditing] = useState(false);
   const [settingForm, setSettingForm] = useState(false);
   const [editForm, setEditForm] = useState({});
   const [previewImage, setPreviewImage] = useState(null);
 
+  const userRatings = useReviewStore((state) => state.userRatings);
+  const getUserRatings = useReviewStore((state) => state.getUserRatings);
+
   const fileInputRef = useRef(null);
 
+  useEffect(() => {
+    fetchUserProfile();
+    getUserRatings(); 
+  }, []);
 
   const fetchUserProfile = async () => {
     try {
@@ -150,6 +159,12 @@ const Profile = () => {
         Loading...
       </div>
     );
+
+    // const hdlRating = () => {
+    //     navigate("/reviews-rating")
+    // }
+  const currentRatingInfo = userRatings.find(u => u.id === profileData?.id);
+  const averageScore = currentRatingInfo?.averageRating || "0.0";
 
   return (
     <div className="bg-base-200 min-h-screen flex flex-col font-sans pb-24 relative overflow-x-hidden">
@@ -368,14 +383,19 @@ const Profile = () => {
               {profileData?.username}
             </h2>
             <div className="bg-primary w-full rounded-[30px] py-3 flex justify-around text-white shadow-lg">
-              <div className="flex flex-col items-center border-r border-white/30 flex-1">
+
+               <NavLink
+                to="/reviews-rating"
+                className="flex flex-col items-center flex-1"
+              >
                 <span className="text-lg bai-jamjuree-bold">
-                  {profileData?.trustScore || 0}
+                  {averageScore}
                 </span>
                 <span className="text-[10px] bai-jamjuree-medium opacity-90">
-                  Rating
+                  Rating 
                 </span>
-              </div>
+              </NavLink>
+              
               <div className="flex flex-col items-center border-r border-white/30 flex-1">
                 <span className="text-lg bai-jamjuree-bold">
                   {profileData?._count?.createdActivities || 0}

@@ -11,9 +11,12 @@ function PeerReview() {
   console.log('userId', userId)
   const actid = searchParams.get("actid");
 
-  const getUser = useReviewStore((state) => state.getUser);
-  const selectedUser = useReviewStore((state) => state.selectedUser);
-  const reviewUser = useReviewStore((state) => state.reviewUser);
+   const getUser = useReviewStore((state) => state.getUser);
+   const selectedUser = useReviewStore((state) => state.selectedUser);
+   const createReviewUser = useReviewStore((state) => state.createReviewUser);
+
+   
+   
 
 
   const [rating, setRating] = useState(0);
@@ -45,7 +48,7 @@ function PeerReview() {
     }
     try {
       setLoading(true);
-      await reviewUser(actid, userId, { rating, comment });
+      await createReviewUser(actid, userId, { rating, comment });
       alert("Review submitted successfully!");
       navigate(`/memory-activity-details?actid=${actid}`);
     } catch (error) {
