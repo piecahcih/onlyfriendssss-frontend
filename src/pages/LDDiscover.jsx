@@ -319,7 +319,7 @@ const LDDiscover = () => {
             if (offsetY < -150 || velocityY < -500 || isAtTop) {
               setStep("high");
               // Smooth transition to activities
-              setTimeout(() => navigate("/activities"), 200);
+              setTimeout(() => navigate("/activities-list"), 200);
             } else if (offsetY < -50 || velocityY < -300) {
               setStep("high");
             }
@@ -328,7 +328,7 @@ const LDDiscover = () => {
               setStep("half");
             } else if (offsetY < 0 || velocityY < -200 || isAtTop) {
               // Already at top, any upward intent navigates
-              navigate("/activities");
+              navigate("/activities-list");
             }
           }
         }}
