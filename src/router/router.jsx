@@ -24,6 +24,7 @@ import PeerReview from "../pages/reviews/PeerReview";
 import MemoryActivityDetails from "../pages/reviews/MemoryActivityDetails";
 import RatingReview from "../pages/reviews/RatingReview";
 import HomePage from "../pages/HomePage";
+import ProfileN from "../pages/Profile";
 
 const guestRouter = createBrowserRouter([
   {
