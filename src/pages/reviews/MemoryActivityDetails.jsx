@@ -100,8 +100,8 @@ function MemoryActivityDetails() {
   };
 
   const hdlActivityReview = () => {
-        navigate("/reviews-activities")
-    }
+    navigate(`/reviews-activities?actid=${actid}`);
+  };
  const hdlPeerReview = () => {
      console.log("Checking data before navigate:", selectedParticipant); 
      console.log('selectedParticipant', selectedParticipant)

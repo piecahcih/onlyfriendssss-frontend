@@ -1,15 +1,18 @@
 import { RouterProvider } from "react-router";
 import { guestRouter, userRouter } from "./router/router";
 import useUserStore from "./stores/userStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
-
+import useSocketStore from "./stores/socketStore";
+import { useChatEvents } from "./hooks/useChatEvents";
 
 function App() {
-  // const user = { email: 'peach@gmail.com'}
-  const user = useUserStore(st => st.user)
-  ////  ยังไม่ได้เพิ่ม routerAdim ให้พีชมาเพิ่มเอง
-  const finalRouter = !user ? guestRouter : userRouter
+  const user = useUserStore(st => st.user);
+  const finalRouter = !user ? guestRouter : userRouter;
+
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  useChatEvents();
 
   useEffect(() => {
     const { user, rememberMe, logout } = useUserStore.getState();
@@ -20,6 +23,24 @@ function App() {
     }
     sessionStorage.setItem("session_active", "true");
   }, []);
+
+  const { connectSocket } = useSocketStore();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      connectSocket(token);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (user && window.location.pathname === "/") {
+      setIsRedirecting(true);
+      window.location.replace("/welcome");
+    }
+  }, [user]);
+
+  if (isRedirecting) return null;
 
   return (
     <>

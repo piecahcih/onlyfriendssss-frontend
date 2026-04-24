@@ -2,16 +2,12 @@ import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ProfilePic from "../components/profile/ProfilePic";
 import useUserStore from "../stores/userStore";
-import {
-  SettingIcon,
-  CloseIcon,
-  CameraIcon,
-  EditIcon,
-} from "../icons";
+import { SettingIcon, CloseIcon, CameraIcon, EditIcon } from "../icons";
 import { NavLink } from "react-router";
 
 import MyActivityTab from "../components/profile/MyActivityTab";
 import useReviewStore from "../stores/reviewStore";
+import { editProfileApi } from "../api/mainApi";
 
 const BACKEND_URL = "http://localhost:3999";
 
@@ -55,6 +51,10 @@ const Profile = () => {
     }
   };
 
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
   const handleEditOpen = () => {
     setEditForm({ ...profileData });
     setPreviewImage(null);
@@ -82,7 +82,8 @@ const Profile = () => {
         formData.append("profileImg", editForm.profileImg);
       }
 
-      const response = await updateProfile(formData);
+      const response = await editProfileApi(formData);
+
       const updatedUser = response.data.data;
 
       if (updatedUser.profileImg) {
@@ -139,7 +140,7 @@ const Profile = () => {
   const triggerFileInput = () => fileInputRef.current.click();
 
   const getFullImgPath = (path) => {
-    if (!path) return "/default-avatar.png";
+    if (!path) return null;
 
     if (typeof path !== "string" || path.startsWith("data:")) {
       return path;
@@ -186,7 +187,7 @@ const Profile = () => {
               className="fixed bottom-0 left-0 right-0 bg-white z-[101] rounded-t-[40px] p-8 shadow-2xl max-h-[90vh] overflow-y-auto"
             >
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl bai-jamjuree-bold text-neutral-focus">
+                <h2 className="text-[20px] bai-jamjuree-bold text-neutral-focus">
                   Edit Profile
                 </h2>
                 <button
@@ -203,7 +204,7 @@ const Profile = () => {
                     <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-primary/10 shadow-inner bg-gray-50">
                       <ProfilePic
                         imgSrc={
-                          previewImage || getFullImgPath(editForm?.profileImg)
+                          previewImage || getFullImgPath(editForm?.profileImg) || data.profileImg
                         }
                       />
                     </div>
@@ -324,7 +325,7 @@ const Profile = () => {
               className="fixed bottom-0 left-0 right-0 bg-white z-[101] rounded-t-[40px] p-8 shadow-2xl"
             >
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl bai-jamjuree-bold text-neutral-focus">
+                <h2 className="text-[20px] bai-jamjuree-bold text-neutral-focus">
                   Settings
                 </h2>
                 <button
@@ -374,8 +375,8 @@ const Profile = () => {
       {/* --- PROFILE INFO --- */}
       <div className="px-6 flex flex-col">
         <div className="flex items-center w-full gap-4 mb-6">
-          <div className="w-28 h-28 rounded-full overflow-hidden shadow-md flex-shrink-0 bg-white">
-            <ProfilePic imgSrc={getFullImgPath(profileData?.profileImg)} />
+          <div style={{ width: '112px', height: '112px', borderRadius: '100%', overflow: "hidden" }}>
+            <ProfilePic imgSrc={getFullImgPath(profileData?.profileImg) || data.profileImg} />
           </div>
           <div className="flex-1 flex flex-col">
             <h2 className="text-xl bai-jamjuree-bold text-neutral mb-2">
@@ -435,6 +436,16 @@ const Profile = () => {
                   profileData?.gender === "OTHER" ? "OTHER" : "N/A"}
             </span>
           </div>
+
+
+
+          {/* ปุ่มชั่วคราวเทสหน้า Location Review */}
+          <NavLink 
+            to="/location-reviews?placeid=8" 
+            className="btn btn-sm btn-outline btn-primary w-full rounded-xl mt-4"
+          >
+            Location Review Test (Place ID: 8)
+          </NavLink>
         </div>
       </div>
 

@@ -26,12 +26,12 @@ function Wishlist({ activityId }) {
   return (
     <button
       onClick={handleToggleLike}
-      className="absolute bottom-4 right-4 p-2 rounded-full bg-white text-primary shadow-lg active:scale-90 transition-transform z-10"
+      className="absolute top-4 right-4 p-1.5 rounded-full bg-white/90 text-primary shadow-lg active:scale-90 transition-transform z-10"
     >
       {isFavorite ? (
-        <HeartIcon className="h-[28px] ml-auto text-red-500" />
+        <HeartIcon className="h-[20px] ml-auto text-red-500" />
       ) : (
-        <HeartLineIcon className="h-[28px] ml-auto text-neutral opacity-80" />
+        <HeartLineIcon className="h-[20px] ml-auto text-neutral opacity-80" />
       )}
     </button>
   )

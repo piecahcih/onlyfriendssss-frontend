@@ -11,7 +11,9 @@ const useReviewStore = create(persist((set, get) => ({
    placeRatings: [],
 
   getUser: async (userId) => {
-     const res = await getUserApi(userId);
+    console.log('first',userId)
+    const res = await getUserApi(userId);
+    console.log('back')
      set({ selectedUser: res.data.user });
      return res;
   },

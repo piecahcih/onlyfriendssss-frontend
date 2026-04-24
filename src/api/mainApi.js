@@ -1,9 +1,16 @@
 import axios from "axios"
 import useUserStore from "../stores/userStore"
 
+const BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3999"
+
 export const mainApi = axios.create({
-  baseURL: "http://localhost:3999/api"
+  baseURL: `${BASE_URL}/api`,
 })
+
+// export const mainApi = axios.create({
+//   baseURL: "http://localhost:3999/api",
+//   // baseURL: `${import.meta.env.VITE_BACKEND_URL}/api`
+// })
 
 mainApi.interceptors.request.use((config) => {
   const token = useUserStore.getState().token
@@ -57,8 +64,9 @@ export const deleteProfileApi = (id) => mainApi.delete("/account/profile", id)
 
 ////////JOIN ACTIVITY (เพิ่มใหม่ตรงนี้)
 export const joinActivityApi = (activityId) => mainApi.post("/join", { activityId });
-export const manageJoinRequestApi = (requestId, status) => mainApi.patch("/join/manage-request", { requestId, status
-      });
+export const manageJoinRequestApi = (requestId, status) => mainApi.patch("/join/manage-request", {
+  requestId, status
+});
 export const leaveActivityApi = (activityId) => mainApi.delete(`/join/leave/${activityId}`);
 
 
@@ -83,6 +91,14 @@ export const getAllWishlist = () => mainApi.get('/wishlist')
 export const addWishlist = (activityId) => mainApi.post('/wishlist', { activityId })
 export const deleteWishlist = (activityId) => mainApi.delete(`/wishlist/${activityId}`)
 
+////Chat
+export const getChatRoomsApi = () => mainApi.get("/chat/rooms");
+export const getChatHistoryApi = (roomId) => mainApi.get(`/chat/messages/${roomId}`);
+export const getOrCreatePrivateRoomApi = (friendId) => mainApi.post("/chat/rooms/private", { friendId });
+export const markChatAsReadApi = (roomId) => mainApi.patch(`/chat/rooms/${roomId}/read`);
+
+
+
 
 
 
@@ -102,7 +118,7 @@ export const getActivityReviewsApi = (actid) => mainApi.get(`/review/activity/${
 export const getActivityReviewsByLocationApi = (placeid) => mainApi.get(`/review/place/${placeid}`)
 export const getSpecificReviewApi = (reviewid) => mainApi.get(`/${reviewid}`)
 
-export const createReviewActivityApi = (actid, body) => mainApi.post(`/activity/${actid}`,body)
+export const createReviewActivityApi = (actid, body) => mainApi.post(`/review/activity/${actid}`,body)
 export const createReviewUserApi = (actid, receiverid, body) => mainApi.post(`/review/user/${actid}/${receiverid}`,body)
 
 

@@ -65,7 +65,8 @@ function MapContainer({longitude, latitude, updateCoordinates}) {
       <Map
         {...viewport}
         mapboxAccessToken={TOKEN}
-        mapStyle="mapbox://styles/mapbox/streets-v12"
+        // mapStyle="mapbox://styles/mapbox/streets-v12"
+        mapStyle="mapbox://styles/mapbox/outdoors-v12"
         onMove={(event) => {
           setViewport(event.viewState);
         }}
