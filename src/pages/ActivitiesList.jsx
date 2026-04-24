@@ -15,7 +15,7 @@ import Wishlist from "../components/profile/Wishlist";
 import useNotificationStore from "../stores/notificationStore";
 import { useSpeechToText } from "../hooks/useSpeechToText";
 
-function Activities() {
+function ActivitiesList() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const categoryList = [
     { id: "all", title: "All", icon: "✨" },
@@ -230,7 +230,7 @@ function Activities() {
                 key={activity.id}
                 className="block"
               >
-                <div style={{ height: '230px' }} className="relative bg-amber-500 rounded-[18px] overflow-hidden shadow-md group">
+                <div className="h-[230px] relative bg-amber-500 rounded-[18px] overflow-hidden shadow-md group">
 
                   <img
                     src={activity?.coverPhoto}
@@ -347,4 +347,4 @@ function Activities() {
   );
 }
 
-export default Activities;
+export default ActivitiesList;

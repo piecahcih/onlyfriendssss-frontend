@@ -4,7 +4,6 @@ import Register from "../pages/auth/Register";
 import IdenVeri from "../pages/auth/IdenVeri";
 import UserLayout from "../layouts/UserLayout";
 import LDDiscover from "../pages/LDDiscover";
-import Activities from "../pages/Activities";
 import Chat from "../pages/chat/Chat";
 import Profile from "../pages/Profile";
 import Login from "../pages/auth/Login";
@@ -24,6 +23,7 @@ import PeerReview from "../pages/reviews/PeerReview";
 import MemoryActivityDetails from "../pages/reviews/MemoryActivityDetails";
 import RatingReview from "../pages/reviews/RatingReview";
 import HomePage from "../pages/HomePage";
+import ActivitiesList from "../pages/ActivitiesList";
 
 
 const guestRouter = createBrowserRouter([
@@ -73,8 +73,8 @@ const userRouter = createBrowserRouter([
         element: <LDDiscover />,
       },
       {
-        path: "activities",
-        element: <Activities />,
+        path: "activities-list",
+        element: <ActivitiesList />,
       },
       {
         path: "profile",
