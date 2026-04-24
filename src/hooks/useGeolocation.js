@@ -17,7 +17,7 @@ export function useMapHandler() {
       if (userMarkerRef.current) userMarkerRef.current.remove();
 
       const el = document.createElement("div");
-      el.style.cssText = `width: 50px; height: 50px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 15px rgba(0,0,0,0.3); overflow: hidden;`;
+      el.style.cssText = `width: 50px; height: 50px; border-radius: 50%; border: 3px solid red; box-shadow: 0 0 15px rgba(0,0,0,0.3); overflow: hidden;`;
       el.innerHTML = `<img src="${imgUrl}" style="width: 100%; height: 100%; object-fit: cover;" />`;
 
       userMarkerRef.current = new mapboxgl.Marker(el)
