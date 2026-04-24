@@ -1,9 +1,10 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { googleLoginApi, loginApi, getProfileApi, editProfileApi, deleteProfileApi } from "../api/mainApi";
+import { googleLoginApi, loginApi, getProfileApi, editProfileApi, deleteProfileApi, getUserInterestApi } from "../api/mainApi";
 
 const useUserStore = create(persist((set, get) => ({
   user: null,
+  interests: [],
   token: "",
   rememberMe: false,
   registeringUser: null, //ไว้ใช้สมัครสมาชิก 3 หน้า
@@ -15,7 +16,7 @@ const useUserStore = create(persist((set, get) => ({
   }),
   login: async (body) => {
     const res = await loginApi(body);
-    set({ token: res.data.token, user: res.data.user });
+    await set({ token: res.data.token, user: res.data.user });
     return res;
   },
   loginWithGoogle: async (idToken, userData) => {
@@ -27,13 +28,13 @@ const useUserStore = create(persist((set, get) => ({
     set({ token: "", user: null });
     localStorage.removeItem("OFsssUserState");
   },
-
+  
   setUser: (userData) => set({ user: userData }),
-
+  
   getProfile: async () => {
     try {
       const res = await getProfileApi();
-
+      
       const userData = res.data.user || res.data;
       set({ user: userData });
       return res;
@@ -42,11 +43,11 @@ const useUserStore = create(persist((set, get) => ({
       throw error;
     }
   },
-
+  
   updateProfile: async (formData) => {
     try {
       const res = await editProfileApi(formData);
-
+      
       const updatedUser = res.data.data || res.data.user || res.data;
       set({ user: updatedUser });
       return res;
@@ -55,11 +56,11 @@ const useUserStore = create(persist((set, get) => ({
       throw error;
     }
   },
-
+  
   deleteProfile: async () => {
     try {
       const res = await deleteProfileApi();
-
+      
       get().logout();
       return res;
     } catch (error) {
@@ -67,6 +68,14 @@ const useUserStore = create(persist((set, get) => ({
       throw error;
     }
   },
+
+  getUserInterest: async () => {
+    const res = await getUserInterestApi()
+    console.log('intereststore', res)
+
+    set({ interests: res.data.interests })
+  },
+  
 
 }), { name: "OFsssUserState", storage: createJSONStorage(() => localStorage) }));
 
