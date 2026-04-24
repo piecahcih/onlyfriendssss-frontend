@@ -328,7 +328,7 @@ const LDDiscover = () => {
               setStep("half");
             } else if (offsetY < 0 || velocityY < -200 || isAtTop) {
               // Already at top, any upward intent navigates
-              navigate("/activities");
+              navigate("/activities-list");
             }
           }
         }}

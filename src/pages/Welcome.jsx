@@ -11,6 +11,10 @@ function Welcome() {
   const [settingForm, setSettingForm] = useState(false)
   const navigate = useNavigate()
 
+  const handleContinue = () => {
+    sessionStorage.setItem("hasSeenWelcome", "true")
+  }
+
   useEffect(() => {
     if (user) {
       toast.success('Login Success')
@@ -19,7 +23,7 @@ function Welcome() {
 
   return (
     <div className='bg-base-200 min-h-screen relative'>
-      <Link to='/lddiscover'>
+      <Link to='/' onClick={handleContinue}>
         <div className='w-8 h-8 absolute right-4 top-3'>
           <CloseIcon />
         </div>
@@ -38,7 +42,7 @@ function Welcome() {
             find friends, travel & see the world
           </p>
 
-          <Link to='/lddiscover'>
+          <Link to='/' onClick={handleContinue}>
             <div className="w-full max-w-xs border border-orange-200 rounded-3xl p-4 flex items-center gap-4 bg-white shadow-sm 
                   transition-all duration-300 ease-in-out 
                   hover:shadow-md hover:scale-[1.02] hover:bg-orange-50/30 active:scale-95">
@@ -67,7 +71,7 @@ function Welcome() {
         </div>
 
         <div className="w-full max-w-sm mt-auto mb-4">
-          <Link to='/lddiscover'>
+          <Link to='/' onClick={handleContinue}>
             <button className="w-full bg-[#FF7B4C] hover:bg-[#ff6a33] text-white py-4 rounded-full font-bold text-lg transition-colors shadow-lg">
               Continue
             </button>
