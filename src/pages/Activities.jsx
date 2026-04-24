@@ -228,7 +228,7 @@ function Activities() {
                 key={activity.id}
                 className="block"
               >
-                <div style={{ height: '230px' }} className="relative bg-amber-500 rounded-[18px] overflow-hidden shadow-md group">
+                <div className="h-50 relative bg-amber-500 rounded-[18px] overflow-hidden shadow-md group">
 
                     <img
                       src={activity?.coverPhoto}

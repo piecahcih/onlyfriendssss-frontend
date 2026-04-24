@@ -100,10 +100,15 @@ export const markChatAsReadApi = (roomId) => mainApi.patch(`/chat/rooms/${roomId
 
 
 
-////////REVIEWS
-export const getUserApi = (userid) => mainApi.get(`/review/user/${userid}`)
 
-export const getActivityRatingScoreApi = () => mainApi.get('/review/activity-score')
+
+
+////////REVIEWS
+export const getActivityRatingsApi = () => mainApi.get('/review/activity-scores')
+export const getUserRatingsApi = () => mainApi.get('/review/user-scores')
+export const getPlaceRatingsApi = () => mainApi.get('/review/place-scores')
+
+export const getUserApi = (userid) => mainApi.get(`/review/user/${userid}`)
 
 export const getAllUsersReviewsApi = () => mainApi.get('/review/users')
 export const getAllReviewsMeApi = () => mainApi.get('/review/who-reviews-me')
