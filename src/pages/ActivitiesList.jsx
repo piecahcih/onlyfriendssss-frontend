@@ -86,7 +86,7 @@ function ActivitiesList() {
     setSuggestOpen(true);
   });
 
-
+  const [locationShown, setLocationShown] = useState(false)
 
 
   return (
@@ -162,6 +162,7 @@ function ActivitiesList() {
                           key={`loc-${placeName.id}`}
                           onClick={() => {
                             setSearchText(placeName);
+                            setLocationShown(true)
                             setSuggestOpen(false);
                           }}
                           className="px-6 py-4 hover:bg-primary/5 cursor-pointer flex items-center gap-4 border-b border-gray-50 last:border-none transition-colors"
@@ -214,14 +215,14 @@ function ActivitiesList() {
           </div>
         </section>
 
+        {locationShown && (
+          <div className="bg-amber-200">
+            {searchText}
+          </div>
+        )}
+
         {/* Activity Cards List */}
         <section className="space-y-6">
-          {/* <div className="flex items-center justify-between">
-            <h2 className="font-headline font-bold text-[18px] text-on-surface">
-              Trending now
-            </h2>
-            <button className="text-primary font-bold text-sm hover:underline">See all</button>
-          </div> */}
 
           <div className="space-y-6">
             {filteredActivities.map((activity) => (
