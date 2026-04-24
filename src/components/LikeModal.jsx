@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { LeftIcon, Notification } from '../icons'
 
-function NotificationModal({isOpen, onClose}) {
+function LikeModal({isOpen, onClose}) {
 
   return (
     <AnimatePresence>
@@ -21,16 +21,16 @@ function NotificationModal({isOpen, onClose}) {
                     </button>
             
                     <h1 className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 tracking-[-0.02em] font-bold text-[20px] whitespace-nowrap">
-                        Notifications
+                        Wish Lists
                     </h1>
             
                     <div className="w-8"></div>
                 </header>    
 
-                <div className="flex flex-col gap-3 items-center justify-center my-50">
+                {/* <div className="flex flex-col gap-3 items-center justify-center my-50">
                     <Notification className='w-20 text-secondary/75' />
                     <h1 className='font-bold text-[18px]'>You don't have any notification!</h1>
-                </div>
+                </div> */}
 
             </motion.div>
         )}
@@ -38,4 +38,4 @@ function NotificationModal({isOpen, onClose}) {
   )
 }
 
-export default NotificationModal
+export default LikeModal
