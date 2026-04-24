@@ -32,7 +32,7 @@ const Profile = () => {
   const [step, setStep] = useState("half");
   const y = useMotionValue(0);
 
-  const yPosition = step === "half" ? "60vh" : "10vh";
+  const yPosition = step === "half" ? "55vh" : "10vh";
   const fileInputRef = useRef(null);
 
   // แก้ไข: รวม useEffect เป็นอันเดียว
@@ -44,7 +44,8 @@ const Profile = () => {
   const fetchUserProfile = async () => {
     try {
       const response = await getProfile();
-      const data = response.data.user?.data || response.data.user || response.data;
+      const data =
+        response.data.user?.data || response.data.user || response.data;
       setProfileData(data);
       setEditForm(data);
       setUser(data);
@@ -64,7 +65,7 @@ const Profile = () => {
   const hdlLogout = () => {
     sessionStorage.removeItem("hasSeenPremium");
     logout();
-  }
+  };
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -142,18 +143,18 @@ const Profile = () => {
     return `${BACKEND_URL}${path}`;
   };
 
-  if (!profileData) return (
-    <div className="flex h-screen items-center justify-center bg-black">
-      <span className="loading loading-spinner loading-lg text-primary"></span>
-    </div>
-  );
+  if (!profileData)
+    return (
+      <div className="flex h-screen items-center justify-center bg-black">
+        <span className="loading loading-spinner loading-lg text-primary"></span>
+      </div>
+    );
 
-  const currentRatingInfo = userRatings.find(u => u.id === profileData?.id);
+  const currentRatingInfo = userRatings.find((u) => u.id === profileData?.id);
   const averageScore = currentRatingInfo?.averageRating || "0.0";
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">
-
       {/* --- BACKGROUND IMAGE --- */}
       <div className="fixed inset-0 -z-10">
         <img
@@ -166,10 +167,16 @@ const Profile = () => {
 
       {/* --- TOP ACTIONS --- */}
       <div className="fixed top-6 right-6 flex z-50">
-        <button onClick={handleEditOpen} className="p-2 bg-white/20 backdrop-blur-md  text-white  active:scale-90 transition-all">
+        <button
+          onClick={handleEditOpen}
+          className="p-2 bg-white/20 backdrop-blur-md  text-black  active:scale-90 transition-all"
+        >
           <EditIcon className="w-5 h-5" />
         </button>
-        <button onClick={handleSettingOpen} className="p-2 bg-white/20 backdrop-blur-md  text-white active:scale-90 transition-all">
+        <button
+          onClick={handleSettingOpen}
+          className="p-2 bg-white/20 backdrop-blur-md  text-black active:scale-90 transition-all"
+        >
           <SettingIcon className="w-5 h-5" />
         </button>
       </div>
@@ -178,46 +185,103 @@ const Profile = () => {
       <AnimatePresence>
         {isEditing && (
           <>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() =>
-              setIsEditing(false)} className="fixed inset-0 bg-black/80 z-[100] backdrop-blur-sm" />
-            <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} className="fixed bottom-0
-      left-0 right-0 bg-white z-[101] rounded-t-[40px] p-8 max-h-[90vh] overflow-y-auto">
-                <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-black text-neutral">Edit Profile</h2>
-                    <button onClick={() => setIsEditing(false)} className="p-2 bg-gray-100 rounded-full"><CloseIcon
-      className="w-5 h-5"/></button>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsEditing(false)}
+              className="fixed inset-0 bg-black/80 z-[100] backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              className="fixed bottom-0 left-0 right-0 bg-white z-[101] rounded-t-[40px] p-8 max-h-[90vh] overflow-y-auto"
+            >
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-black text-neutral">
+                  Edit Profile
+                </h2>
+                <button
+                  onClick={() => setIsEditing(false)}
+                  className="p-2 bg-gray-100 rounded-full"
+                >
+                  <CloseIcon className="w-5 h-5" />
+                </button>
+              </div>
+              <form onSubmit={handleSave} className="space-y-6">
+                <div className="flex flex-col items-center">
+                  <div
+                    className="relative w-28 h-28 rounded-full overflow-hidden border-4 border-primary/20 shadow-xl"
+                    onClick={triggerFileInput}
+                  >
+                    <ProfilePic
+                      imgSrc={
+                        previewImage || getFullImgPath(editForm?.profileImg)
+                      }
+                    />
+                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-all">
+                      <CameraIcon className="w-8 h-8 text-white" />
+                    </div>
+                  </div>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileChange}
+                    className="hidden"
+                    accept="image/*"
+                  />
                 </div>
-                <form onSubmit={handleSave} className="space-y-6">
-                    <div className="flex flex-col items-center">
-                        <div className="relative w-28 h-28 rounded-full overflow-hidden border-4 border-primary/20
-      shadow-xl" onClick={triggerFileInput}>
-                            <ProfilePic imgSrc={previewImage || getFullImgPath(editForm?.profileImg)} />
-                            <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0
-      hover:opacity-100 transition-all"><CameraIcon className="w-8 h-8 text-white"/></div>
-                        </div>
-                        <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden"
-      accept="image/*" />
-                    </div>
-                    <div className="space-y-4">
-                        <input name="username" value={editForm.username || ""} onChange={handleChange}
-      placeholder="Username" className="input input-bordered w-full rounded-2xl" />
-                        <div className="grid grid-cols-2 gap-4">
-                            <input name="firstName" value={editForm.firstName || ""} onChange={handleChange}
-      placeholder="First Name" className="input input-bordered w-full rounded-2xl" />
-                            <input name="lastName" value={editForm.lastName || ""} onChange={handleChange}
-      placeholder="Last Name" className="input input-bordered w-full rounded-2xl" />
-                        </div>
-                        <select name="gender" value={editForm.gender || "MALE"} onChange={handleChange}
-      className="select select-bordered w-full rounded-2xl">
-                            <option value="MALE">MALE</option><option value="FEMALE">FEMALE</option><option
-      value="OTHER">OTHER</option>
-                        </select>
-                        <textarea name="bio" value={editForm.bio || ""} onChange={handleChange} placeholder="Bio"
-      className="textarea textarea-bordered w-full rounded-2xl resize-none" rows="3" />
-                    </div>
-                    <button type="submit" className="btn btn-primary w-full h-14 rounded-2xl font-black text-lg">SAVE
-      CHANGES</button>
-                </form>
+                <div className="space-y-4">
+                  <input
+                    name="username"
+                    value={editForm.username || ""}
+                    onChange={handleChange}
+                    placeholder="Username"
+                    className="input input-bordered w-full rounded-2xl"
+                  />
+                  <div className="grid grid-cols-2 gap-4">
+                    <input
+                      name="firstName"
+                      value={editForm.firstName || ""}
+                      onChange={handleChange}
+                      placeholder="First Name"
+                      className="input input-bordered w-full rounded-2xl"
+                    />
+                    <input
+                      name="lastName"
+                      value={editForm.lastName || ""}
+                      onChange={handleChange}
+                      placeholder="Last Name"
+                      className="input input-bordered w-full rounded-2xl"
+                    />
+                  </div>
+                  <select
+                    name="gender"
+                    value={editForm.gender || "MALE"}
+                    onChange={handleChange}
+                    className="select select-bordered w-full rounded-2xl"
+                  >
+                    <option value="MALE">MALE</option>
+                    <option value="FEMALE">FEMALE</option>
+                    <option value="OTHER">OTHER</option>
+                  </select>
+                  <textarea
+                    name="bio"
+                    value={editForm.bio || ""}
+                    onChange={handleChange}
+                    placeholder="Bio"
+                    className="textarea textarea-bordered w-full rounded-2xl resize-none"
+                    rows="3"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="btn btn-primary w-full h-14 rounded-2xl font-black text-lg"
+                >
+                  SAVE CHANGES
+                </button>
+              </form>
             </motion.div>
           </>
         )}
@@ -225,21 +289,45 @@ const Profile = () => {
 
       <AnimatePresence>
         {settingForm && (
-            <>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() =>
-              setSettingForm(false)} className="fixed inset-0 bg-black/80 z-[100] backdrop-blur-sm" />
-            <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} className="fixed bottom-0
-      left-0 right-0 bg-white z-[101] rounded-t-[40px] p-8 shadow-2xl">
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSettingForm(false)}
+              className="fixed inset-0 bg-black/80 z-[100] backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              className="fixed bottom-0
+      left-0 right-0 bg-white z-[101] rounded-t-[40px] p-8 shadow-2xl"
+            >
               <div className="flex justify-between items-center mb-8">
                 <h2 className="text-2xl font-black text-neutral">Settings</h2>
-                <button onClick={() => setSettingForm(false)} className="p-2 bg-gray-100 rounded-full"><CloseIcon
-      className="w-5 h-5"/></button>
+                <button
+                  onClick={() => setSettingForm(false)}
+                  className="p-2 bg-gray-100 rounded-full"
+                >
+                  <CloseIcon className="w-5 h-5" />
+                </button>
               </div>
               <div className="flex flex-col gap-3">
-                <button onClick={hdlLogout} className="btn btn-ghost justify-start text-lg font-bold rounded-2xl h-14
-      hover:bg-primary/5 hover:text-primary transition-all">🚪 Log out</button>
-                <button onClick={hdlDeleteAccount} className="btn btn-ghost justify-start text-lg font-bold
-      rounded-2xl h-14 text-error hover:bg-error/5 transition-all">🗑️ Delete Account</button>
+                <button
+                  onClick={hdlLogout}
+                  className="btn btn-ghost justify-start text-lg font-bold rounded-2xl h-14
+      hover:bg-primary/5 hover:text-primary transition-all"
+                >
+                  🚪 Log out
+                </button>
+                <button
+                  onClick={hdlDeleteAccount}
+                  className="btn btn-ghost justify-start text-lg font-bold
+      rounded-2xl h-14 text-error hover:bg-error/5 transition-all"
+                >
+                  🗑️ Delete Account
+                </button>
               </div>
             </motion.div>
           </>
@@ -247,76 +335,115 @@ const Profile = () => {
       </AnimatePresence>
 
       {/* --- BOTTOM SHEET --- */}
-      <motion.div
-        initial={{ y: "100vh" }}
-        animate={{ y: yPosition }}
-        style={{ y }}
-        transition={{ type: "spring", damping: 30, stiffness: 200 }}
-        drag="y"
-        dragConstraints={{ top: 0, bottom: 0 }}
-        dragElastic={0.1}
-        onDragEnd={(_, info) => {
-          if (info.offset.y < -50) setStep("high");
-          else if (info.offset.y > 50) setStep("half");
-        }}
-        className="fixed inset-x-0 bottom-0 h-[95vh] bg-black/40 backdrop-blur-2xl rounded-t-[45px]
-      shadow-[0_-20px_50px_rgba(0,0,0,0.3)] border-t border-white/20 z-40 flex flex-col overflow-hidden"
+
+      {/* <motion.div 
+        animate={{ opacity: step === "high" ? 1 : 0 }}
+        className="fixed inset-0 bg-black/20 backdrop-blur-sm z-30 pointer-events-none"
+        /> */}
+      
+     <motion.div
+  initial={{ y: "100vh" }}
+  animate={{ y: yPosition }}
+  // ยุบ style มารวมกันที่เดียว
+  style={{ 
+    y, 
+    height: "90vh",
+    
+  }} 
+  transition={{ type: "spring", damping: 25, stiffness: 200 }}
+  drag="y"
+  dragConstraints={{ top: 0, bottom: 0 }}
+  dragElastic={0.05}
+  onDragEnd={(_, info) => {
+    if (info.offset.y < -100 || info.velocity.y < -500) setStep("high");
+    else if (info.offset.y > 100 || info.velocity.y > 500) setStep("half");
+  }}
+        className="fixed inset-x-0 bottom-0 w-full max-w-lg h-[95vh] bg-black/40 backdrop-blur-md rounded-3xl    
+         shadow-[0_-20px_50px_rgba(0,0,0,0.3)] border-t border-white/20 z-40 flex flex-col overflow-hidden"
       >
-        <div className="w-16 h-1.5 bg-white/30 rounded-full mx-auto mt-5 mb-8 flex-shrink-0" />
+  <div className="w-16 h-1.5 bg-white/30 rounded-full mx-auto flex-shrink-0" />
 
         <div className="overflow-y-auto px-8 pb-32 scrollbar-hide">
           {/* Profile Content */}
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-black text-white tracking-tight mb-1">{profileData?.username}</h2>
-            <p className="text-sm font-bold text-white/50 uppercase tracking-[0.2em]">
+            <h2 className="text-3xl font-black text-white tracking-tight mb-1">
+              {profileData?.username}
+            </h2>
+            <p className="text-sm font-bold text-white uppercase tracking-[0.2em]">
               {profileData?.firstName} {profileData?.lastName}
             </p>
 
             {/* Premium Stats Bar */}
-            <div className="flex items-center justify-around mt-10 bg-white/5 rounded-[30px] p-6 border
-      border-white/10 shadow-inner">
-              <NavLink to="/reviews-rating" className="flex flex-col items-center flex-1 group">
-                <span className="text-2xl font-black text-primary group-active:scale-90
-      transition-transform">{averageScore}</span>
-                <span className="text-[10px] font-black text-white/40 uppercase tracking-wider mt-1">Rating</span>
+            <div className="flex items-center justify-around  p-2 " >
+              <NavLink
+                to="/reviews-rating"
+                className="flex flex-col items-center flex-1 group"
+              >
+                <span className="text-2xl font-black text-primary group-active:scale-90 transition-transform">
+                  {averageScore}
+                </span>
+                <span className="text-[10px] font-black text-white uppercase tracking-wider mt-1">
+                  Rating
+                </span>
               </NavLink>
-              <div className="w-px h-10 bg-white/10" />
+
+              {/* <div className="w-px h-10 bg-white/10" /> */}
               <div className="flex flex-col items-center flex-1">
-                <span className="text-2xl font-black text-white">{profileData?._count?.createdActivities || 0}</span>
-                <span className="text-[10px] font-black text-white/40 uppercase tracking-wider mt-1">Events</span>
+                <span className="text-2xl font-black text-white">
+                  {profileData?._count?.createdActivities || 0}
+                </span>
+                <span className="text-[10px] font-black text-white uppercase tracking-wider mt-1">
+                  Events
+                </span>
               </div>
               <div className="w-px h-10 bg-white/10" />
-              <NavLink to="/friendlist" className="flex flex-col items-center flex-1 group">
-                <span className="text-2xl font-black text-white group-active:scale-90
-      transition-transform">{profileData?._count?.receivedFriendRequests || 0}</span>
-                <span className="text-[10px] font-black text-white/40 uppercase tracking-wider mt-1">Friends</span>
+              <NavLink
+                to="/friendlist"
+                className="flex flex-col items-center flex-1 group"
+              >
+                <span
+                  className="text-2xl font-black text-white group-active:scale-90 transition-transform"
+                >
+                  {profileData?._count?.receivedFriendRequests || 0}
+                </span>
+                <span className="text-[10px] font-black text-white uppercase tracking-wider mt-1">
+                  Friends
+                </span>
               </NavLink>
             </div>
           </div>
 
           {/* About Section */}
-          <div className="bg-white/5 p-8 rounded-[35px] border border-white/10 mb-8 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-20 h-20 bg-primary/10 blur-2xl -z-10" />
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xs font-black text-white/30 uppercase tracking-[0.3em]">Identity</h3>
-              <span className="text-[10px] px-4 py-1.5 bg-primary text-white rounded-full font-black uppercase
-      shadow-lg shadow-primary/20">
+          <div className="bg-amber-50 p-8  relative overflow-hidden">
+            {/* <div className="absolute top-0 right-0 w-20 h-20 bg-primary/10 blur-2xl -z-10" /> */}
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="text-xs font-black text-white uppercase tracking-[0.3em]">
+                Identity
+              </h3>
+              <span
+                className="text-[10px] px-4 py-1.5 bg-primary text-white rounded-full font-black uppercase
+      shadow-lg shadow-primary/20"
+              >
                 {profileData?.gender || "Secret"}
               </span>
             </div>
-            <p className="text-white/80 font-medium leading-relaxed italic text-lg">
-              "{profileData?.bio || "Stay gold..."}"
+            <p className="text-white font-medium leading-relaxed italic text-lg">
+              "{profileData?.bio || "Tell Me About Yourself..."}"
             </p>
           </div>
 
           {/* Activity Section */}
-          <div className="mt-4">
-             {/* <MyActivityTab /> */}
+          <div className="mt-1">
+            <MyActivityTab />
+
           </div>
 
           {/* Location Button */}
-          <NavLink to="/location-reviews?placeid=8" className="btn btn-ghost w-full rounded-2xl h-16 font-black
-      text-primary bg-primary/10 border-none mt-6 hover:bg-primary/20">
+          <NavLink
+            to="/location-reviews?placeid=8"
+            className="btn btn-ghost w-full rounded-2xl h-16 font-black
+      text-primary bg-primary/10 border-none mt-6 hover:bg-primary/20"
+          >
             📍 Explore Places
           </NavLink>
         </div>
