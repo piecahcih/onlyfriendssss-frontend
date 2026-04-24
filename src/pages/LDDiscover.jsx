@@ -52,7 +52,6 @@ const LDDiscover = () => {
   const [searchText, setSearchText] = useState("");
   const [suggestOpen, setSuggestOpen] = useState(false);
   const socketRef = useRef(null)
-  const [settingForm, setSettingForm] = useState(false)
 
   useEffect(() => {
     selectedCategory === "all"
@@ -68,17 +67,6 @@ const LDDiscover = () => {
     }
   }, [hdlGetCurrentLocation, user?.profileImg]);
 
-  useEffect(() => {
-    const hasSeenInSession = sessionStorage.getItem("hasSeenPremium");
-
-    if (!hasSeenInSession) {
-      const timer = setTimeout(() => {
-        setSettingForm(true);
-        sessionStorage.setItem("hasSeenPremium", "true");
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [])
 
   useEffect(() => {
     if (hdlGetCurrentLocation) {
@@ -367,7 +355,7 @@ const LDDiscover = () => {
             <div className="w-12 h-1.5 bg-gray-200 rounded-full -mt-2 " />
           </div>
 
-        <div className="px-6 flex justify-between items-end border-b border-gray-50">
+        <div className="px-6 flex justify-between items-end border-b border-gray-50 -mt-1">
           <div>
             <h2 className="text-[18px] font-bold text-gray-800 tracking-tight">
               Discovery Activities
@@ -423,11 +411,6 @@ const LDDiscover = () => {
           </AnimatePresence>
         </div>
       </motion.div>
-
-      <PremiumModal
-        isOpen={settingForm}
-        onClose={() => setSettingForm(false)}
-      />
 
       <NotificationModal isOpen={notiOpen} onClose={() => setNotiOpen(false)} />
     </div>
