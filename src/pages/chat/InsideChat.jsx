@@ -127,9 +127,12 @@ function InsideChat() {
               >
                 {/* รูปโปรไฟล์คนอื่น */}
                 {!isMe && (
-                  <div className="w-9 h-9 shrink-0 rounded-full overflow-hidden border-2 border-white shadow-sm bg-white mb-5">
+                  <div
+                    className="w-9 h-9 shrink-0 rounded-full overflow-hidden border-2 border-white shadow-sm bg-white mb-5"
+                    onClick={() => navigate(`/friend-profile?userId=${senderId}`)}
+                  >
                     <ProfilePic
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover pointer-events-none"
                       imgSrc={msg.sender?.profileImg || defaultProfile}
                     />
                   </div>
@@ -169,7 +172,9 @@ function InsideChat() {
 
                 {/* รูปโปรไฟล์เราเอง */}
                 {isMe && (
-                  <div className="w-9 h-9 shrink-0 rounded-full overflow-hidden border-2 border-white shadow-sm bg-white mb-5">
+                  <div
+                    className="w-9 h-9 shrink-0 rounded-full overflow-hidden border-2 border-white shadow-sm bg-white mb-5"
+                  >
                     <ProfilePic
                       className="w-full h-full object-cover"
                       imgSrc={user?.profileImg || defaultProfile}

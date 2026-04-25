@@ -168,7 +168,12 @@ function Friendlist() {
                       className="dropdown-content z-[20] menu p-2 shadow bg-base-100 rounded-box w-40 border border-base-200"
                     >
                       <li>
-                        <a className="text-sm">View Profile</a>
+                        <a 
+                          className="text-sm cursor-pointer" 
+                          onClick={() => navigate(`/friend-profile?userId=${item.id}`)}
+                        >
+                          View Profile
+                        </a>
                       </li>
                       <li>
                         <a className="text-sm">Start Chat</a>
