@@ -11,17 +11,8 @@ function Add2Interest() {
   const navigate = useNavigate()
 
 const interests = [
-  { label: "foodie 🍳", value: "foodie" },
-  { label: "camping 🏕️", value: "camping" },
-  { label: "slowlife 🌿", value: "slowlife" },
-  { label: "health 🥗", value: "health" },
-  { label: "art 🎨", value: "art" },
-  { label: "travel ✈️", value: "travel" },
-  { label: "sport 🏀", value: "sport" },
-  { label: "volunteer 🤝", value: "volunteer" },
-  { label: "gaming 🎮", value: "gaming" },
-
   // Food & Drink
+  { label: "foodie 🍳", value: "foodie" },
   { label: "cafe hopping ☕", value: "cafe_hopping" },
   { label: "street food 🍢", value: "street_food" },
   { label: "fine dining 🍷", value: "fine_dining" },
@@ -29,13 +20,18 @@ const interests = [
   { label: "drinks & nightout 🍻", value: "drinks_nightout" },
 
   // Health & Active
+  { label: "slowlife 🌿", value: "slowlife" },
+  { label: "health 🥗", value: "health" },
+  { label: "sport 🏀", value: "sport" },
+  { label: "camping 🏕️", value: "camping" },
   { label: "gym & workout 💪", value: "gym_workout" },
   { label: "yoga & pilates 🧘‍♀️", value: "yoga_pilates" },
-  { label: "running & marathon 🏃", value: "running_marathon" },
+  { label: "running 🏃", value: "running" }, // Updated to match enum
   { label: "mental wellness 😌", value: "mental_wellness" },
   { label: "team sports ⚽", value: "team_sports" },
 
   // Art & Culture
+  { label: "art 🎨", value: "art" },
   { label: "museum & gallery 🏛️", value: "museum_gallery" },
   { label: "photography 📸", value: "photography" },
   { label: "crafting & DIY ✂️", value: "crafting_diy" },
@@ -43,6 +39,7 @@ const interests = [
   { label: "book club 📚", value: "book_club" },
 
   // Entertainment & Fun
+  { label: "gaming 🎮", value: "gaming" },
   { label: "movies & cinema 🍿", value: "movies_cinema" },
   { label: "board games 🎲", value: "board_games" },
   { label: "video games 🕹️", value: "video_games" },
@@ -50,6 +47,8 @@ const interests = [
   { label: "concerts & festivals 🎪", value: "concerts_festivals" },
 
   // Travel & Adventure
+  { label: "travel ✈️", value: "travel" },
+  { label: "volunteer 🤝", value: "volunteer" },
   { label: "backpacking 🎒", value: "backpacking" },
   { label: "road trip 🚗", value: "road_trip" },
   { label: "beach vibes 🏖️", value: "beach_vibes" },

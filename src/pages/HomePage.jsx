@@ -90,7 +90,7 @@ function HomePage() {
         <div className="mt-5 flex overflow-x-auto gap-4 scrollbar-hide -mr-6">
           {upcomingActivities?.length > 0 ? (
             upcomingActivities.map((act) => (
-              <NavLink to={`/activity-details?actid=${act.id}`} key={act.id} className="relative w-[280px] shrink-0 snap-start">
+              <NavLink to={`/activity-details?actid=${act.id}`} key={act.id} className="relative w-[285px] shrink-0 snap-start">
                 <div className="h-35 rounded-[14px] mb-3 overflow-hidden">
                   <img src={act.coverPhoto} alt="Activity" className='w-full h-full object-cover' />
                 </div>
