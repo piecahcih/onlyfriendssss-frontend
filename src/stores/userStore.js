@@ -83,11 +83,6 @@ const useUserStore = create(persist((set, get) => ({
     set({ suggests: res.data.suggests })
   },
   
-  theme: "light",
-  toggleTheme: () => {
-    const newTheme = get().theme === 'light' ? 'dark' : 'light'
-    set({ theme: newTheme })
-  }
 
 }), { name: "OFsssUserState", storage: createJSONStorage(() => localStorage) }));
 

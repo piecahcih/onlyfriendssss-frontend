@@ -110,30 +110,6 @@
   --color-error: #cf0000;
 }
 
-@plugin "daisyui/theme" {
-  name: "dark";
-
-  /* Dark mode backgrounds */
-  --color-base-100: #121212; /* Main dark background */
-  --color-base-200: #1a1a1a; /* Secondary surface */
-  --color-base-300: #2d2d2d; /* Cards / Borders */
-  --color-base-content: #e5e5e5; /* Main light text */
-
-  /* Preserve your Brand Orange */
-  --color-primary: #fc5100;
-  --color-primary-focus: #ff6b21;
-  --color-primary-content: #ffffff;
-
-  /* Adjust Neutral and Secondary for contrast */
-  --color-secondary: #333333;
-  --color-secondary-content: #a0a0a0;
-  --color-neutral: #d1d1d1;
-  --color-neutral-content: #121212;
-  
-  --color-dynamic-white: #000000;
-  --color-dynamic-black: #ffffff;
-}
-
 /* ดึงปุ่มควบคุม Mapbox ขึ้นมาจากขอบล่าง 100px เพื่อไม่ให้โดนแถบสีส้มบัง */
 .mapboxgl-ctrl-bottom-right {
   bottom: 120px !important;
