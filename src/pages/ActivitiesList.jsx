@@ -83,11 +83,13 @@ function ActivitiesList() {
 
   const { isListening, toggleListening, isSupported } = useSpeechToText((transcript) => {
     setSearchText(transcript);
+    setLocationShown(false);
     setSuggestOpen(true);
   });
 
   const [locationShown, setLocationShown] = useState(false)
-
+  const selectLocation = activities.filter((act) => act?.place?.placeName.toLowerCase() === searchText.toLowerCase())
+  console.log('selectLocation', selectLocation)
 
   return (
     <div className="min-h-screen bg-base-200 pb-24">
@@ -135,6 +137,7 @@ function ActivitiesList() {
                           key={`act-${act.id}`}
                           onClick={() => {
                             setSearchText(act.title);
+                            setLocationShown(false);
                             setSuggestOpen(false);
                           }}
                           className="px-6 py-4 hover:bg-primary/5 cursor-pointer flex items-center gap-4 border-b border-gray-50 transition-colors"
@@ -162,7 +165,7 @@ function ActivitiesList() {
                           key={`loc-${placeName.id}`}
                           onClick={() => {
                             setSearchText(placeName);
-                            setLocationShown(true)
+                            setLocationShown(true);
                             setSuggestOpen(false);
                           }}
                           className="px-6 py-4 hover:bg-primary/5 cursor-pointer flex items-center gap-4 border-b border-gray-50 last:border-none transition-colors"
@@ -196,7 +199,7 @@ function ActivitiesList() {
         </div>
 
         {/* Categories Horizontal Scroll */}
-        <section className="space-y-4 my-2 z-50">
+        <section className="space-y-4 my-2 z-50 -mr-6">
           <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide -mx-2 px-2">
             {categoryList.map((cat) => (
               <button
@@ -216,9 +219,23 @@ function ActivitiesList() {
         </section>
 
         {locationShown && (
-          <div className="bg-amber-200">
-            {searchText}
-          </div>
+          <NavLink to={`/location-reviews?placeid=${selectLocation[0]?.placeId}`}>
+            <div className="mt-4 mb-8.5">
+              <div className="flex items-center gap-4">
+                <div className="flex justify-center items-center bg-base-100 p-5 rounded-[8px]">
+                  <LocationIcon className="w-8.5" />
+                </div>
+                <div className="">
+                  <h3 className="font-bold text-[16px]">{selectLocation[0]?.place?.placeName}</h3>
+                  <div className="leading-4">
+                    <p className="font-light text-[12px]">{selectLocation.length} activities</p>
+                    <p className="font-light text-[12px] truncate w-62">{selectLocation[0]?.place?.address}</p>
+                  </div>
+                  <p className="text-[10px] underline mt-1 text-end">click to explore reviews</p>
+                </div>
+              </div>
+            </div>
+          </NavLink>
         )}
 
         {/* Activity Cards List */}
@@ -231,7 +248,7 @@ function ActivitiesList() {
                 key={activity.id}
                 className="block"
               >
-                <div className="h-[230px] relative bg-amber-500 rounded-[18px] overflow-hidden shadow-md group">
+                <div className="h-[230px] relative rounded-[18px] overflow-hidden shadow-md group">
 
                   <img
                     src={activity?.coverPhoto}
@@ -243,19 +260,28 @@ function ActivitiesList() {
                       <span>{activity.isPublic ? "🌎" : "🔒"}</span>
                       {activity.isPublic ? "Public" : "Private"}
                     </div>
-                    <div className="flex items-center gap-1 px-3 py-1 rounded-full backdrop-blur-md text-[11px] font-bold text-white">
+                    <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-black/12 backdrop-blur-md text-[11px] font-bold text-white">
                       <span>
                         {categoryList.find((cat) => cat.id === activity.category.toLowerCase(),)?.icon || "✨"}
                       </span>
                       {activity.category}
                     </div>
                   </div>
+                  <div className="flex items-center gap-1 px-3 py-1 rounded-full backdrop-blur-md text-[11px] font-bold text-white">
+                    <span>
+                      {categoryList.find((cat) => cat.id === activity.category.toLowerCase(),)?.icon || "✨"}
+                    </span>
+                    {activity.category}
+                  </div>
+                </div>
 
-                  <Wishlist activityId={activity.id} />
+                <Wishlist activityId={activity.id} />
 
 
-                  {/* ContentAct */}
-                  <div className="backdrop-blur-md px-4 py-3 absolute bottom-2 left-3 right-3 rounded-[18px] text-white">
+                {/* ContentAct */}
+                <div className="backdrop-blur-md px-4 py-3 absolute bottom-2 left-3 right-3 rounded-[18px] text-white">
+
+                  <div className="bg-black/12 backdrop-blur-md px-4 py-3 absolute bottom-2 left-3 right-3 rounded-[18px] text-white">
 
                     <h3 className="font-headline font-bold text-[18px] truncate">
                       {activity.title}
