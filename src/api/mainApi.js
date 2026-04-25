@@ -74,6 +74,7 @@ export const leaveActivityApi = (activityId) => mainApi.delete(`/join/leave/${ac
 
 ////////INTEREST
 export const getUserInterestApi = () => mainApi.get("/interest")
+export const getUserSuggestedActivitiesByInterestApi = () => mainApi.get("/interest/suggested")
 
 
 

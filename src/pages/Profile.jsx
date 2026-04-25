@@ -20,6 +20,9 @@ const Profile = () => {
   const updateProfile = useUserStore((state) => state.updateProfile);
   const deleteProfile = useUserStore((state) => state.deleteProfile);
 
+  const theme = useUserStore(st=>st.theme)
+  const toggleTheme = useUserStore(st=>st.toggleTheme)
+
   const [profileData, setProfileData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [settingForm, setSettingForm] = useState(false);
@@ -314,6 +317,13 @@ const Profile = () => {
                 </button>
               </div>
               <div className="flex flex-col gap-3">
+                <button
+                  onClick={toggleTheme}
+                  className="btn btn-ghost justify-start text-lg font-bold rounded-2xl h-14
+      hover:bg-primary/5 hover:text-primary transition-all"
+                >
+                  Theme: {theme}
+                </button>
                 <button
                   onClick={hdlLogout}
                   className="btn btn-ghost justify-start text-lg font-bold rounded-2xl h-14
