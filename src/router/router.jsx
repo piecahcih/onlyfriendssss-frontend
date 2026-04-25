@@ -25,6 +25,9 @@ import RatingReview from "../pages/reviews/RatingReview";
 import HomePage from "../pages/HomePage";
 import ActivitiesList from "../pages/ActivitiesList";
 import FriendProfile from "../pages/Friends/FriendProfile";
+import FriendReviews from "../pages/Friends/FriendReviews";
+import FriendJoinedActivities from "../pages/Friends/FriendJoinedActivities";
+import FriendCreatedActivities from "../pages/Friends/FriendCreatedActivities";
 
 const guestRouter = createBrowserRouter([
   {
@@ -106,6 +109,18 @@ const userRouter = createBrowserRouter([
       {
         path: "friend-profile",
         element: <FriendProfile />,
+      },
+      {
+        path: "friend-reviews",
+        element: <FriendReviews />,
+      },
+      {
+        path: "friend-joined-activities",
+        element: <FriendJoinedActivities />,
+      },
+      {
+        path: "friend-created-activities",
+        element: <FriendCreatedActivities />,
       },
       {
         path: "create",
