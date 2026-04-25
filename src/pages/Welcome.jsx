@@ -1,85 +1,98 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import useUserStore from '../stores/userStore'
-import { Link, useNavigate } from 'react-router'
-import { AnimatePresence, motion } from 'framer-motion'
-import Premium from '../components/ads/Premium'
-import { CloseIcon, WelcomeIcon } from '../icons'
+import { Link } from 'react-router'
+import { motion } from 'framer-motion'
+import { CloseIcon } from '../icons'
 import { toast } from 'react-toastify'
+import defaultProfile from '../assets/default-profilepic.jpg'
 
 function Welcome() {
   const user = useUserStore(state => state.user)
-  const [settingForm, setSettingForm] = useState(false)
-  const navigate = useNavigate()
 
   const handleContinue = () => {
     sessionStorage.setItem("hasSeenWelcome", "true")
   }
 
-  useEffect(() => {
-    if (user) {
-      toast.success('Login Success')
-    }
-  }, [])
+
 
   return (
-    <div className='bg-base-200 min-h-screen relative'>
-      <Link to='/' onClick={handleContinue}>
-        <div className='w-8 h-8 absolute right-4 top-3'>
-          <CloseIcon />
-        </div>
+    <div className='bg-[#FAFAFA] min-h-screen relative flex flex-col font-sans overflow-hidden'>
+
+      <Link to='/' onClick={handleContinue} className="absolute right-6 top-6 z-50">
+        <motion.div
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          className='text-on-surface/20 hover:text-on-surface/50 transition-colors'
+        >
+          <CloseIcon className="w-6" />
+        </motion.div>
       </Link>
-      <div className="flex flex-col items-center justify-between min-h-screen p-6 font-sans">
 
-        <div className="flex-1 flex flex-col items-center text-center mt-5">
-          <div className="mb-6">
-            <WelcomeIcon />
-          </div>
+      <main className="flex-1 flex flex-col items-center justify-center px-10">
 
-          <h1 className="text-3xl font-black leading-tight mb-2 tracking-tight">
-            welcome to <br /> onlyfriendssss
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="text-center mb-16"
+        >
+          <h1 className="text-[32px] font-medium text-on-surface tracking-tight leading-tight">
+            Hello, <span className="font-bold text-primary">{user?.username || 'Friend'}</span>
           </h1>
-          <p className="text-gray-600 text-sm font-medium mb-12">
-            find friends, travel & see the world
+          <p className="text-on-surface/40 text-[15px] mt-3 font-medium">
+            Everything is ready for you.
           </p>
+        </motion.div>
 
-          <Link to='/' onClick={handleContinue}>
-            <div className="w-full max-w-xs border border-orange-200 rounded-3xl p-4 flex items-center gap-4 bg-white shadow-sm 
-                  transition-all duration-300 ease-in-out 
-                  hover:shadow-md hover:scale-[1.02] hover:bg-orange-50/30 active:scale-95">
-              <div className="w-16 h-16 rounded-full bg-orange-100 overflow-hidden border border-orange-100 shrink-0">
-                <img
-                  src={user?.profileImg}
-                  alt="Profile"
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.3, duration: 0.8 }}
+          className="relative"
+        >
+          <Link to='/' onClick={handleContinue} className="block group">
+            <div className="flex flex-col items-center">
+              <div className="relative p-1 bg-white rounded-full ">
+                <div className="w-32 h-32 rounded-full overflow-hidden border-[6px] border-[#F0F0F0]">
+                  <img
+                    src={user?.profileImg || defaultProfile}
+                    alt="Profile"
+                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                  />
+                </div>
+                <div className="absolute bottom-1 right-3 w-6 h-6 bg-green-400 border-4 border-white rounded-full"></div>
               </div>
-              <div className="text-left">
-                <h2 className="text-lg font-bold text-gray-800 transition-colors group-hover:text-orange-600">
-                  {user?.username}
+
+              <div className="mt-8 text-center">
+                <h2 className="text-[18px] font-bold text-on-surface opacity-60">
+                  {user?.firstName} {user?.lastName}
                 </h2>
-                <p className="text-xs text-gray-400">
-                  {user.firstName} , {user.lastName}
-                </p>
+                <div className="flex items-center justify-center gap-2 mt-1.5">
+                  <div className="w-1 h-1 rounded-full bg-primary/30"></div>
+                  <span className="text-[11px] font-bold text-primary/40 uppercase tracking-[0.2em]">Active Account</span>
+                  <div className="w-1 h-1 rounded-full bg-primary/30"></div>
+                </div>
               </div>
             </div>
           </Link>
-          <p className="text-gray-600 text-md font-medium m-4">
-            Click on the account to continue
-          </p>
+        </motion.div>
 
-        </div>
+      </main>
 
-        <div className="w-full max-w-sm mt-auto mb-4">
+      <footer className="px-10 pb-16">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8 }}
+          className="max-w-xs mx-auto text-center"
+        >
           <Link to='/' onClick={handleContinue}>
-            <button className="w-full bg-[#FF7B4C] hover:bg-[#ff6a33] text-white py-4 rounded-full font-bold text-lg transition-colors shadow-lg">
-              Continue
+            <button className="w-full bg-primary text-white py-4.5 rounded-[22px] font-bold text-[16px] ">
+              Get Started
             </button>
-            <div className="w-32 h-1 bg-black rounded-full mx-auto mt-6 opacity-20"></div>
           </Link>
-        </div>
-
-      </div>
+        </motion.div>
+      </footer>
     </div>
   )
 }

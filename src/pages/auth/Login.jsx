@@ -62,7 +62,7 @@ function Login() {
 
       console.log(userData);
       await loginWithGoogle(idToken, userData)
-      toast.success("Login Success")
+      // toast.success("Login Success")
       setTimeout(() => {
         navigate('/welcome')
       }, 1500)
