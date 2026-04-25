@@ -1,19 +1,24 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { changeActivityStatusApi, createActivityApi, deleteActivityByIdApi, editActivityByIdApi, getActivityByCategoryApi, getActivityByIdApi, getAllActivitiesApi, getAllActivitiesCreatedByThisAccountApi, getAllActivitiesJoinedByThisAccountApi, getAllCurrentActivitiesApi, getAllFinishedActivitiesOnThisAccountApi, joinActivityApi, manageJoinRequestApi, leaveActivityApi, cancelActivityStatusApi } from "../api/mainApi";
+import { changeActivityStatusApi, createActivityApi, deleteActivityByIdApi, editActivityByIdApi, getActivityByCategoryApi, getActivityByIdApi, getAllActivitiesApi, getAllActivitiesCreatedByThisAccountApi, getAllActivitiesJoinedByThisAccountApi, getAllCurrentActivitiesApi, getAllFinishedActivitiesOnThisAccountApi, joinActivityApi, manageJoinRequestApi, leaveActivityApi, cancelActivityStatusApi, getUpcomingActivitiesApi } from "../api/mainApi";
 
 const useActivityStore = create(persist((set, get) => ({
   activities: [],
+  upcomingActivities: [],
   currentActivity: null,
   creatingActivity: {},
   setCreatingActivity: (data) => {
     console.log('data:', data)
     set({ creatingActivity: data })
-
   },
   getAllCurrentActivities: async () => {
     const res = await getAllCurrentActivitiesApi()
     set({ activities: res.data.activities })
+  },
+  getUpcomingActivities: async () => {
+    const res = await getUpcomingActivitiesApi()
+    // console.log('res', res)
+    set({ upcomingActivities: res.data.activities })
   },
   getAllActivities: async () => {
     const res = await getAllActivitiesApi()
@@ -51,6 +56,7 @@ const useActivityStore = create(persist((set, get) => ({
     await createActivityApi(body)
     console.log('body:', body)
     await get().getAllCurrentActivities()
+    await get().getUpcomingActivities()
 
     // set({ creatingActivity: {} })
   },
