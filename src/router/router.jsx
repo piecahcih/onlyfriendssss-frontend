@@ -24,6 +24,7 @@ import MemoryActivityDetails from "../pages/reviews/MemoryActivityDetails";
 import RatingReview from "../pages/reviews/RatingReview";
 import HomePage from "../pages/HomePage";
 import ActivitiesList from "../pages/ActivitiesList";
+import ProfileFriend from '../pages/profileFriend'
 
 
 const guestRouter = createBrowserRouter([
@@ -104,6 +105,10 @@ const userRouter = createBrowserRouter([
         element: <Friendlist />,
       },
       {
+        path: "profilefriend",
+        element: <ProfileFriend />,
+      },
+      {
         path: "create",
         element: <CreateActivity />,
       },
@@ -130,13 +135,13 @@ const userRouter = createBrowserRouter([
       {
         path: "reviews-rating",
         element: <RatingReview />,
-        
+
       },
 
-        {
+      {
         path: "reviews-activities",
         element: <ActivitiesReview />,
-        },
+      },
 
       {
         path: "location-reviews",

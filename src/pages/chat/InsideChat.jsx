@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import ProfilePic from "../../components/profile/ProfilePic";
 import { LeftIcon } from "../../icons";
 import useChatStore from "../../stores/chatStore";
@@ -9,14 +9,19 @@ import defaultProfile from "../../assets/default-profilepic.jpg";
 
 function InsideChat() {
   const { state } = useLocation();
+  const { roomId: paramRoomId } = useParams();
   const navigate = useNavigate();
 
-  const token = useUserStore((state) => state.token);
   const user = useUserStore((state) => state.user);
-  const { socket, connectSocket, isConnected } = useSocketStore();
-  const { messages, setActiveRoom, getChatHistory } = useChatStore();
 
-  const roomId = state?.roomId;
+  // ✅ FIX 1: ดึง socket โดยไม่เอา connectSocket (App.jsx จัดการแล้ว)
+  const { socket, isConnected } = useSocketStore();
+
+  // ✅ FIX 2: ดึง messages แบบ selector เพื่อให้ reactive เมื่อ store อัปเดต
+  const messages = useChatStore((state) => state.messages);
+  const { setActiveRoom, getChatHistory } = useChatStore();
+
+  const roomId = paramRoomId || state?.roomId;
   const chatTitle = state?.title || state?.name || "Chat Room";
   const chatIcon = state?.icon || state?.image;
   const friendId = state?.friendId || state?.id;
@@ -24,46 +29,35 @@ function InsideChat() {
   const [inputText, setInputText] = useState("");
   const messagesEndRef = useRef(null);
 
-  const scrollToBottom = () => {
+  // ✅ FIX 3: โหลด history + cleanup แยก effect ออกจาก join room
+  useEffect(() => {
+    if (!roomId) return;
+    setActiveRoom(roomId);
+    getChatHistory(roomId);
+
+    return () => {
+      setActiveRoom(null);
+      useChatStore.setState({ messages: [] });
+    };
+  }, [roomId]); // ไม่ใส่ setActiveRoom/getChatHistory เพราะ function reference stable อยู่แล้ว
+
+  // ✅ FIX 4: Join/Leave room แยก effect ออกมา ไม่ปนกับ connectSocket
+  useEffect(() => {
+    if (!roomId || !socket || !isConnected) return;
+
+    socket.emit("join_room", { roomId });
+    console.log(`✅ Joined room: ${roomId}`);
+
+    return () => {
+      socket.emit("leave_room", { roomId });
+      console.log(`❌ Left room: ${roomId}`);
+    };
+  }, [roomId, socket, isConnected]);
+
+  // Scroll to bottom เมื่อมีข้อความใหม่
+  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
   }, [messages]);
-
-  useEffect(() => {
-    // 1. ตรวจสอบการเชื่อมต่อ Socket
-    if (token && !isConnected) {
-      connectSocket(token);
-    }
-
-    // 2. เมื่อ Socket พร้อมและมี roomId
-    if (roomId && socket && isConnected) {
-      setActiveRoom(roomId);
-      getChatHistory(roomId);
-
-      socket.emit("join_room", { roomId });
-      console.log(`✅ Joined room: ${roomId}`);
-
-      // --- ส่วนสำคัญ: ดักฟังข้อความใหม่ ---
-      // socket.on("new_message", (newMessage) => {
-      //   console.log("📩 New message received:", newMessage);
-      //   // ตรวจสอบว่าข้อความเป็นของห้องปัจจุบันหรือไม่
-      //   if (String(newMessage.roomId) === String(roomId)) {
-      //     // ใช้ getState เพื่ออัปเดต Array messages ใน store ทันที
-      //     useChatStore.setState((state) => ({
-      //       messages: [...state.messages, newMessage]
-      //     }));
-      //   }
-      // });
-
-      return () => {
-        socket.off("new_message"); // สำคัญ: ต้องปิด listener เมื่อออกจากหน้า
-        socket.emit("leave_room", { roomId });
-      };
-    }
-  }, [roomId, socket, isConnected, token]);
 
   const handleSendMessage = (e) => {
     e.preventDefault();
@@ -71,12 +65,7 @@ function InsideChat() {
 
     if (!trimmedText || !socket || !roomId || !isConnected) return;
 
-    const messageData = {
-      roomId,
-      content: trimmedText,
-    };
-
-    socket.emit("send_message", messageData, (res) => {
+    socket.emit("send_message", { roomId, content: trimmedText }, (res) => {
       if (res?.success) {
         setInputText("");
       } else {

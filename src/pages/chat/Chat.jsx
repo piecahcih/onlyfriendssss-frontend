@@ -6,15 +6,17 @@ import useChatStore from "../../stores/chatStore";
 
 function Chat() {
   const navigate = useNavigate();
-  const { rooms, unreadCounts, setActiveRoom, getChatRooms } = useChatStore();
-  // const getChatRooms = useChatStore(state => state.getChatRooms)
+  const rooms = useChatStore((state) => state.rooms);
+  const unreadCounts = useChatStore((state) => state.unreadCounts);
+  const setActiveRoom = useChatStore((state) => state.setActiveRoom);
+  const getChatRooms = useChatStore((state) => state.getChatRooms);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("all");
 
 
   useEffect(() => {
     getChatRooms()
-  }, [getChatRooms]);
+  }, []); // รันครั้งเดียวตอน mount
 
   const hdlGoBack = () => {
     navigate(-1);
@@ -34,13 +36,14 @@ function Chat() {
     });
 
   const handleRoomClick = (room) => {
+    console.log("📂 Room Object Clicked:", room);
     const title = room.name || "Chat";
     setActiveRoom(room.id);
-    
+
     // หา friendId สำหรับแชทส่วนตัว
     const friendId = room.type === "PRIVATE" ? (room.targetUserId || room.friendId || room.friend?.id) : null;
 
-    navigate(`/chat/${encodeURIComponent(title)}`, {
+    navigate(`/chat/${room.id}`, {
       state: {
         roomId: room.id,
         title: title,
@@ -136,7 +139,7 @@ function Chat() {
                     </div>
                   </div>
                   {unreadCounts[item.id] > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold min-w-[20px] h-5 px-1 flex items-center justify-center rounded-full border-2 border-white shadow-sm">
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold min-w-[20px] h-5 px-1.5 flex items-center justify-center rounded-full border-2 border-white shadow-md animate-pulse">
                       {unreadCounts[item.id]}
                     </span>
                   )}

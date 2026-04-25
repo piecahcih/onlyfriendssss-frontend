@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router'
 import { LeftIcon, Notification } from '../icons'
 import { formatDistanceToNow } from 'date-fns'
-import { th } from 'date-fns/locale'
+import { enUS } from 'date-fns/locale'
 import useNotificationStore from '../stores/notificationStore'
 import useUserStore from '../stores/userStore'
 import { markAsReadApi, markAllAsReadApi } from '../api/mainApi'
@@ -36,23 +36,45 @@ function NotificationModal({ isOpen, onClose }) {
     }
 
 
-    const handleNotiClick = async (noti) => {
-        const notiId = noti.id || noti._id; // ใช้ตัวไหนก็ได้ที่มีค่า
-        try {
-            if (!noti.isRead) {
-                await markAsReadApi(notiId)
-                markAsRead(notiId)
-            }
-
-            const config = TYPE_CONFIG[noti.type]
-            if (config?.path) {
-                navigate(config.path)
-                onClose() // ปิด modal หลังจากคลิกไปที่หน้าใหม่
-            }
-        } catch (error) {
-            console.error('Error marking as read:', error)
+    const handleNotiClick = (noti) => {
+        const notiId = noti.id || noti._id;
+        
+        // 1. Update UI immediately
+        if (!noti.isRead) {
+            markAsRead(notiId);
+            // Sync with backend in background (no await)
+            markAsReadApi(notiId).catch(err => console.error("Backend sync failed:", err));
         }
-    }
+
+        onClose(); // Close modal immediately
+
+        // Dynamic ID resolution
+        const targetId = noti.roomId || noti.refId || noti.activityId;
+
+        // 3. Navigate immediately
+        switch (noti.type) {
+            case "NEW_MESSAGE":
+            case "GROUP_MESSAGE":
+                navigate(targetId ? `/chat/${targetId}` : "/chat");
+                break;
+
+            case "NEW_REVIEW":
+                navigate("/reviews-rating");
+                break;
+
+            case "FRIEND_REQUEST":
+            case "FRIEND_ACCEPTED":
+                navigate("/friendlist");
+                break;
+
+            default:
+                const config = TYPE_CONFIG[noti.type];
+                if (config?.path) {
+                    navigate(config.path);
+                }
+                break;
+        }
+    };
 
 
     return (
@@ -108,7 +130,7 @@ function NotificationModal({ isOpen, onClose }) {
                                             </p>
                                             <p className="text-sm text-gray-700 font-medium">{noti.message}</p>
                                             <p className="text-[10px] text-gray-400 mt-1">
-                                                {formatDistanceToNow(new Date(noti.createdAt), { addSuffix: true, locale: th })}
+                                                {formatDistanceToNow(new Date(noti.createdAt), { addSuffix: true, locale: enUS })}
                                             </p>
                                         </div>
                                         {!noti.isRead && (

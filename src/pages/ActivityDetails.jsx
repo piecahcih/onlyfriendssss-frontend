@@ -49,6 +49,7 @@ function ActivityDetails() {
     // navigate(-1);
   };
 
+
   if (loading) {
     return (
       <div className="min-h-screen bg-base-200 flex items-center justify-center">
@@ -118,14 +119,17 @@ function ActivityDetails() {
   };
 
   const hdlGotoChat = () => {
-    navigate(`/chat/${encodeURIComponent(currentActivity.title)}`, {
+    const actualChatRoomId = currentActivity.chatRoomId || currentActivity.chatRoom?.id || currentActivity.id;
+    console.log('🚀 Navigating to Chat with Room ID:', actualChatRoomId);
+    navigate(`/chat/${actualChatRoomId}`, {
       state: {
-        roomId: currentActivity.id,
+        roomId: actualChatRoomId,
         title: currentActivity.title,
         icon: currentActivity.coverPhoto
       }
-    })
-  }
+    });
+  };
+
 
   // ฟังก์ชันสำหรับ Host จัดการคำขอ
   const hdlHostAction = async (requestId, status) => {
