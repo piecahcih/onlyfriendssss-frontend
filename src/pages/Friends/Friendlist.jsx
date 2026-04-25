@@ -97,21 +97,19 @@ function Friendlist() {
         <div className="flex mt-6 bg-base-200 p-1 rounded-xl">
           <button
             onClick={() => setActiveTab("friends")}
-            className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${
-              activeTab === "friends"
+            className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${activeTab === "friends"
                 ? "bg-white shadow-sm text-primary"
                 : "text-base-content/50"
-            }`}
+              }`}
           >
             Friends ({friends.length})
           </button>
           <button
             onClick={() => setActiveTab("requests")}
-            className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${
-              activeTab === "requests"
+            className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${activeTab === "requests"
                 ? "bg-white shadow-sm text-primary"
                 : "text-base-content/50"
-            }`}
+              }`}
           >
             Requests ({requests.length})
           </button>
@@ -128,7 +126,10 @@ function Friendlist() {
                   key={item.friendshipId}
                   className="bg-white p-4 rounded-2xl shadow-sm flex items-center justify-between border border-transparent hover:border-primary/10 transition-all"
                 >
-                  <div className="flex items-center space-x-3">
+                  <div
+                    className="flex items-center space-x-3"
+                    onClick={() => navigate(`/friend-profile?userId=${item.id}`)}
+                  >
                     <div className="avatar online">
                       <div className="w-12 rounded-full border border-primary/10">
                         <img
@@ -168,8 +169,8 @@ function Friendlist() {
                       className="dropdown-content z-[20] menu p-2 shadow bg-base-100 rounded-box w-40 border border-base-200"
                     >
                       <li>
-                        <a 
-                          className="text-sm cursor-pointer" 
+                        <a
+                          className="text-sm cursor-pointer"
                           onClick={() => navigate(`/friend-profile?userId=${item.id}`)}
                         >
                           View Profile

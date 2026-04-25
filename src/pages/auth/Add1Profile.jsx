@@ -34,6 +34,9 @@ function Add1Profile() {
   const hdlFileChange = (e) => {
     const selectFile = e.target.files[0]
     if (selectFile) {
+      if (!selectFile.type.startsWith('image/')) {
+        return toast.error("Please select an image file only.");
+      }
       if (preview) URL.revokeObjectURL(preview)
       const newPreviewUrl = URL.createObjectURL(selectFile)
       setFile(selectFile)
@@ -45,6 +48,10 @@ function Add1Profile() {
     try {
       if (!registeringUser?.id) {
         return toast.error("Account not found. Please register");
+      }
+
+      if (!file && !registeringUser?.profileImg) {
+        return toast.warning("Please upload a profile picture before completing.");
       }
 
       const formData = new FormData()
