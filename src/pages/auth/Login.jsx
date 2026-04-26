@@ -36,7 +36,6 @@ function Login() {
       } else {
         localStorage.removeItem("rememberedEmail")
       }
-      await new Promise(resolve => setTimeout(resolve, 2000))
       const res = await login(data)
       // console.log(res.data.message)
       toast.success(res.data.message)
@@ -62,7 +61,7 @@ function Login() {
 
       console.log(userData);
       await loginWithGoogle(idToken, userData)
-      toast.success("Login Success")
+      // toast.success("Login Success")
       setTimeout(() => {
         navigate('/welcome')
       }, 1500)

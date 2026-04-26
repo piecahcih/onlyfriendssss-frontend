@@ -13,13 +13,12 @@ function App() {
   const token = useUserStore(st => st.token);
   const finalRouter = !user ? guestRouter : userRouter;
 
-  const { connectSocket } = useSocketStore();
+  const theme = useUserStore(st => st.theme)
   useEffect(() => {
-    if (token) {
-      connectSocket(token);
-    }
-  }, [token]);
+    document.documentElement.setAttribute('data-theme', theme)
+  }, [theme])
 
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   useChatEvents();
   useNotification();
@@ -33,6 +32,25 @@ function App() {
     }
     sessionStorage.setItem("session_active", "true");
   }, []);
+
+  const { connectSocket } = useSocketStore();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      connectSocket(token);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    const hasSeenWelcome = sessionStorage.getItem("hasSeenWelcome");
+    if (user && window.location.pathname === "/" && !hasSeenWelcome) {
+      setIsRedirecting(true);
+      window.location.replace("/welcome");
+    }
+  }, [user]);
+
+  if (isRedirecting) return null;
 
   return (
     <>

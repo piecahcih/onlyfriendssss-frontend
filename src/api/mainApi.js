@@ -52,6 +52,9 @@ export const UnfriendApi = async (friendshipId) =>
 // ดึงข้อมูลตัวเอง
 export const getProfileApi = () => mainApi.get("/account/profile");
 
+// ดึงข้อมูลเพื่อน (public profile)
+export const getFriendProfileApi = (userId) => mainApi.get(`/account/profile/${userId}`);
+
 // แก้ไขข้อมูลตัวเอง (username, bio, gender, etc.)
 export const editProfileApi = (formData) => mainApi.patch("/account/profile", formData,);
 
@@ -69,6 +72,8 @@ export const leaveActivityApi = (activityId) => mainApi.delete(`/join/leave/${ac
 
 ////////INTEREST
 export const getUserInterestApi = () => mainApi.get("/interest")
+export const getUserSuggestedActivitiesByInterestApi = () => mainApi.get("/interest/suggested")
+export const exploreActivitiesApi = () => mainApi.get("/interest/suggested-all")
 
 
 

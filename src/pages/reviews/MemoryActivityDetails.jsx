@@ -32,7 +32,7 @@ function MemoryActivityDetails() {
     { id: "TRAVEL", title: "Travel", icon: "✈️" },
   ];
 
-  const matchedCategory = categoryList.find((cat) => cat.id === currentActivity.category)
+  // const matchedCategory = categoryList.find((cat) => cat.id === currentActivity.category)
 
   useEffect(() => {
     if (actid) {
@@ -71,7 +71,7 @@ function MemoryActivityDetails() {
     );
   }
 
-  // const matchedCategory = categoryList.find((cat) => cat.id === currentActivity.category);
+  const matchedCategory = categoryList.find((cat) => cat.id === currentActivity.category);
   // --- LOGIC การคำนวณสถานะ  ---
   const isHost = storeUser?.id === currentActivity.hostId;
 
