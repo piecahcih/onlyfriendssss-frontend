@@ -32,7 +32,7 @@ const Profile = () => {
   const [step, setStep] = useState("half");
   const y = useMotionValue(0);
 
-  const yPosition = step === "half" ? "55vh" : "10vh";
+  const yPosition = step === "half" ? "50vh" : "8vh";
   const fileInputRef = useRef(null);
 
   // แก้ไข: รวม useEffect เป็นอันเดียว
@@ -156,26 +156,26 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">
       {/* --- BACKGROUND IMAGE --- */}
-      <div className="fixed inset-0 -z-10">
+      <div className="fixed inset-0 -z-10 h-[90vh]">
         <img
           src={getFullImgPath(profileData?.profileImg)}
-          className="w-full h-full object-cover  scale-110 "
+          className="w-full h-full object-cover object-top scale-110"
           alt="background"
         />
         <div className="absolute inset-0 bg-linear-to-b from-black/20 via-transparent to-black/60" />
       </div>
 
       {/* --- TOP ACTIONS --- */}
-      <div className="fixed top-6 right-6 flex z-50">
+      <div className="fixed gap-2 top-6 right-6 flex z-50">
         <button
           onClick={handleEditOpen}
-          className="p-2 bg-white/20 backdrop-blur-md  text-black  active:scale-90 transition-all"
+          className="p-2 bg-white backdrop-blur-md text-black rounded-full border border-white/20 active:scale-90 transition-all shadow-lg"
         >
           <EditIcon className="w-5 h-5" />
         </button>
         <button
           onClick={handleSettingOpen}
-          className="p-2 bg-white/20 backdrop-blur-md  text-black active:scale-90 transition-all"
+          className="p-2 bg-white backdrop-blur-md text-black rounded-full border border-white/20 active:scale-90 transition-all shadow-lg"
         >
           <SettingIcon className="w-5 h-5" />
         </button>
@@ -319,14 +319,14 @@ const Profile = () => {
                   className="btn btn-ghost justify-start text-lg font-bold rounded-2xl h-14
       hover:bg-primary/5 hover:text-primary transition-all"
                 >
-                  🚪 Log out
+                   Log out
                 </button>
                 <button
                   onClick={hdlDeleteAccount}
                   className="btn btn-ghost justify-start text-lg font-bold
       rounded-2xl h-14 text-error hover:bg-error/5 transition-all"
                 >
-                  🗑️ Delete Account
+                   Delete Account
                 </button>
               </div>
             </motion.div>
@@ -344,34 +344,44 @@ const Profile = () => {
      <motion.div
   initial={{ y: "100vh" }}
   animate={{ y: yPosition }}
-  // ยุบ style มารวมกันที่เดียว
-  style={{ 
-    y, 
-    height: "90vh",
-    
-  }} 
-  transition={{ type: "spring", damping: 25, stiffness: 200 }}
+  style={{ y, height: "92vh" }} 
+  transition={{ type: "spring", damping: 30, stiffness: 150 }}
   drag="y"
-  dragConstraints={{ top: 0, bottom: 0 }}
-  dragElastic={0.05}
+  dragConstraints={{ top: 0, bottom: 500 }}
+  dragElastic={0.2}
   onDragEnd={(_, info) => {
-    if (info.offset.y < -100 || info.velocity.y < -500) setStep("high");
-    else if (info.offset.y > 100 || info.velocity.y > 500) setStep("half");
+    if (info.offset.y < -50 || info.velocity.y < -300) setStep("high");
+    else if (info.offset.y > 50 || info.velocity.y > 300) setStep("half");
   }}
-        className="fixed inset-x-0 bottom-0 w-full max-w-lg h-[95vh] bg-black/40 backdrop-blur-md rounded-3xl    
-         shadow-[0_-20px_50px_rgba(0,0,0,0.3)] border-t border-white/20 z-40 flex flex-col overflow-hidden"
+        className=" fixed inset-x-0 bottom-0 mx-10 bg-black/40 backdrop-blur-md rounded-3xl
+       shadow-[0_-20px_60px_rgba(0,0,0,0.4)] border-t border-white/10 z-40 flex flex-col overflow-hidden"
       >
-  <div className="w-16 h-1.5 bg-white/30 rounded-full mx-auto flex-shrink-0" />
+  <div className="w-16 h-1.5 bg-white/30 rounded-full flex-shrink-0" />
 
-        <div className="overflow-y-auto px-8 pb-32 scrollbar-hide">
+        <div className="overflow-y-auto px-8  scrollbar-hide">
           {/* Profile Content */}
-          <div className="text-center mb-10">
-            <h2 className="text-3xl font-black text-white tracking-tight mb-1">
+          <div className="text-start ">
+            <h2 className="text-4xl font-black text-white tracking-tight mb-1">
               {profileData?.username}
             </h2>
-            <p className="text-sm font-bold text-white uppercase tracking-[0.2em]">
+            <p className="text-[19px] font-light text-white uppercase tracking-[0.2em]">
               {profileData?.firstName} {profileData?.lastName}
             </p>
+
+            {/* About Section */}
+          <div className="bg-amber-50 relative overflow-hidden">
+            {/* <div className="absolute top-0 right-0 w-20 h-20 bg-primary/10 blur-2xl -z-10" /> */}
+            <div className="flex justify-end items-center mb-2">
+              <span
+                className="  text-[10px] px-4 py-1.5 bg-white text-black  rounded-full font-black uppercase shadow-lg shadow-primary/20"
+              >
+                {profileData?.gender || "Secret"}
+              </span>
+            </div>
+            <p className="text-white font-light leading-normal text-lg">
+              "{profileData?.bio || "Tell Me About Yourself..."}"
+            </p>
+          </div>
 
             {/* Premium Stats Bar */}
             <div className="flex items-center justify-around  p-2 " >
@@ -382,7 +392,7 @@ const Profile = () => {
                 <span className="text-2xl font-black text-primary group-active:scale-90 transition-transform">
                   {averageScore}
                 </span>
-                <span className="text-[10px] font-black text-white uppercase tracking-wider mt-1">
+                <span className="text-[10px] font-light text-white uppercase tracking-wider mt-1">
                   Rating
                 </span>
               </NavLink>
@@ -392,7 +402,7 @@ const Profile = () => {
                 <span className="text-2xl font-black text-white">
                   {profileData?._count?.createdActivities || 0}
                 </span>
-                <span className="text-[10px] font-black text-white uppercase tracking-wider mt-1">
+                <span className="text-[10px] font-light text-white uppercase tracking-wider mt-1">
                   Events
                 </span>
               </div>
@@ -406,31 +416,14 @@ const Profile = () => {
                 >
                   {profileData?._count?.receivedFriendRequests || 0}
                 </span>
-                <span className="text-[10px] font-black text-white uppercase tracking-wider mt-1">
+                <span className="text-[10px] font-light text-white uppercase tracking-wider mt-1">
                   Friends
                 </span>
               </NavLink>
             </div>
           </div>
 
-          {/* About Section */}
-          <div className="bg-amber-50 p-8  relative overflow-hidden">
-            {/* <div className="absolute top-0 right-0 w-20 h-20 bg-primary/10 blur-2xl -z-10" /> */}
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="text-xs font-black text-white uppercase tracking-[0.3em]">
-                Identity
-              </h3>
-              <span
-                className="text-[10px] px-4 py-1.5 bg-primary text-white rounded-full font-black uppercase
-      shadow-lg shadow-primary/20"
-              >
-                {profileData?.gender || "Secret"}
-              </span>
-            </div>
-            <p className="text-white font-medium leading-relaxed italic text-lg">
-              "{profileData?.bio || "Tell Me About Yourself..."}"
-            </p>
-          </div>
+          
 
           {/* Activity Section */}
           <div className="mt-1">
@@ -439,13 +432,13 @@ const Profile = () => {
           </div>
 
           {/* Location Button */}
-          <NavLink
+          {/* <NavLink
             to="/location-reviews?placeid=8"
             className="btn btn-ghost w-full rounded-2xl h-16 font-black
       text-primary bg-primary/10 border-none mt-6 hover:bg-primary/20"
           >
             📍 Explore Places
-          </NavLink>
+          </NavLink> */}
         </div>
       </motion.div>
     </div>

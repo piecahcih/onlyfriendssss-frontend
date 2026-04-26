@@ -5,12 +5,12 @@ import { NavLink, useNavigate } from "react-router";
 import { format } from "date-fns";
 import defaultProfile from "../../assets/default-profilepic.jpg";
 import { CalendarIcon, LocationIcon } from "../../icons";
-import Wishlist from "./Wishlist";
-import WishlistAll from "./WishlistAll";
+// import Wishlist from "./Wishlist";
+// import WishlistAll from "./WishlistAll";
 
 function MyActivityTab() {
   const navigate = useNavigate();
-  const tabs = ["Joined", "Created", "Memory", "❤︎"];
+  const tabs = ["Joined", "Created", "Memory"];
   const [activeTab, setActiveTab] = useState("Joined");
 
   const activities = useActivityStore((st) => st.activities);
@@ -83,7 +83,7 @@ function MyActivityTab() {
                     <NavLink
                       to={`/activity-details?actid=${activity.id}`}
                       key={activity.id}
-                      className="block flex-none w-[300px] snap-start"
+                      className="block flex-none w-[200px] snap-start"
                     >
                       <div className="bg-white rounded-[35px] overflow-hidden shadow-[0_12px_32px_rgba(78,33,32,0.04)] hover:shadow-[0_12px_48px_rgba(78,33,32,0.08)] transition-all duration-300">
                         <div className="relative h-30 w-full overflow-hidden">
@@ -92,21 +92,21 @@ function MyActivityTab() {
                             alt={activity.title}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           />
-                          <div className="absolute top-4 left-4 flex gap-2">
-                            <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-[12px] font-bold text-on-surface">
+                          <div className="absolute top-4 left-1 flex gap-1">
+                            <div className="flex items-center gap-1 px-2 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-[12px] font-bold text-on-surface">
                               <span>{activity.isPublic ? "🌎" : "🔒"}</span>
                               {activity.isPublic ? "Public" : "Private"}
                             </div>
-                            <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-primary/90 backdrop-blur-sm text-[12px] font-bold text-white">
+                            <div className="flex items-center gap-1 px-2 py-1.5 rounded-full bg-primary/90 backdrop-blur-sm text-[12px] font-bold text-white">
                               <span>{activity.categoryIcon}</span>
                               {activity.category}
                             </div>
                           </div>
 
-                          <Wishlist activityId={activity.id} />
+                          {/* <Wishlist activityId={activity.id} /> */}
                         </div>
 
-                        <div className="p-2 space-y-4">
+                        {/* <div className="p-2 space-y-4">
                           <div>
                             <h3 className="font-headline font-bold text-2xl text-on-surface group-hover:text-primary transition-colors">
                               {activity.title}
@@ -194,7 +194,7 @@ function MyActivityTab() {
                               </span>
                             </div>
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                     </NavLink>
                   ))}
@@ -212,7 +212,7 @@ function MyActivityTab() {
                     <NavLink
                       to={`/activity-details?actid=${activity.id}`}
                       key={activity.id}
-                      className="block flex-none w-[300px] snap-start"
+                      className="block flex-none w-[200px] snap-start"
                     >
                       <div className="bg-white rounded-[35px] overflow-hidden shadow-[0_12px_32px_rgba(78,33,32,0.04)] hover:shadow-[0_12px_48px_rgba(78,33,32,0.08)] transition-all duration-300">
                         <div className="relative h-30 w-full overflow-hidden">
@@ -221,21 +221,29 @@ function MyActivityTab() {
                             alt={activity.title}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           />
-                          <div className="absolute top-4 left-4 flex gap-2">
-                            <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-[12px] font-bold text-on-surface">
+                          <div className="absolute top-2 ml-1 gap-1 flex">
+                            <div className="flex items-center gap-1 px-2 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-[12px] font-bold text-on-surface">
                               <span>{activity.isPublic ? "🌎" : "🔒"}</span>
                               {activity.isPublic ? "Public" : "Private"}
                             </div>
-                            <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-primary/90 backdrop-blur-sm text-[12px] font-bold text-white">
+                            <div className="flex items-center gap-1 px-2 py-1.5 rounded-full bg-primary/90 backdrop-blur-sm text-[12px] font-bold text-white">
                               <span>{activity.categoryIcon}</span>
                               {activity.category}
                             </div>
+                            <div className="flex items-center gap-1 px-2 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-[12px] font-bold text-on-surface">
+                              <button
+                                type="button"
+                                onClick={(e) => hdlEdit(e, activity.id)}
+                              >
+                                Edit
+                              </button>
+                            </div>
                           </div>
 
-                          <Wishlist activityId={activity.id} />
+                          {/* <Wishlist activityId={activity.id} /> */}
                         </div>
 
-                        <div className="p-2 space-y-4">
+                        {/* <div className="p-2 space-y-4">
                           <div>
                             <h3 className="font-headline font-bold text-2xl text-on-surface group-hover:text-primary transition-colors">
                               {activity.title}
@@ -260,8 +268,8 @@ function MyActivityTab() {
                             </div>
                           </div>
 
-                          <div className="pt-4 flex items-center justify-between border-t border-surface-container-low">
-                            <div className="flex items-center gap-3">
+                          <div className="pt-4 flex items-center justify-between border-t border-surface-container-low"> */}
+                            {/* <div className="flex items-center gap-3">
                               <div className="flex -space-x-3.5 items-center">
                                 {(
                                   activity.joinRequests?.filter(
@@ -312,18 +320,11 @@ function MyActivityTab() {
                                   }
                                 })()}
                               </div>
-                            </div>
+                            </div> */}
 
-                            <div className="flex flex-col items-end">
-                              <button
-                                type="button"
-                                onClick={(e) => hdlEdit(e, activity.id)}
-                              >
-                                Edit
-                              </button>
-                            </div>
-                          </div>
-                        </div>
+                            
+                          {/* </div>
+                        </div> */}
                       </div>
                     </NavLink>
                   ))}
@@ -341,7 +342,7 @@ function MyActivityTab() {
                     <NavLink
                       to={`/memory-activity-details?actid=${activity.id}`}
                       key={activity.id}
-                      className="block flex-none w-[300px] snap-start"
+                      className="block flex-none w-[200px] snap-start"
                     >
                       <div className="bg-white rounded-[35px] overflow-hidden shadow-[0_12px_32px_rgba(78,33,32,0.04)] hover:shadow-[0_12px_48px_rgba(78,33,32,0.08)] transition-all duration-300">
                         <div className="relative h-30 w-full overflow-hidden">
@@ -351,20 +352,20 @@ function MyActivityTab() {
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           />
                           <div className="absolute top-4 left-4 flex gap-2">
-                            <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-[12px] font-bold text-on-surface">
+                            <div className="flex items-center gap-1 px-2 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-[12px] font-bold text-on-surface">
                               <span>{activity.isPublic ? "🌎" : "🔒"}</span>
                               {activity.isPublic ? "Public" : "Private"}
                             </div>
-                            <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-primary/90 backdrop-blur-sm text-[12px] font-bold text-white">
+                            <div className="flex items-center gap-1 px-2 py-1.5 rounded-full bg-primary/90 backdrop-blur-sm text-[12px] font-bold text-white">
                               <span>{activity.categoryIcon}</span>
                               {activity.category}
                             </div>
                           </div>
 
-                          <Wishlist activityId={activity.id} />
+                          {/* <Wishlist activityId={activity.id} /> */}
                         </div>
 
-                        <div className="p-2 space-y-4">
+                        {/* <div className="p-2 space-y-4">
                           <div>
                             <h3 className="font-headline font-bold text-2xl text-on-surface group-hover:text-primary transition-colors">
                               {activity.title}
@@ -452,7 +453,7 @@ function MyActivityTab() {
                               </span>
                             </div>
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                     </NavLink>
                   ))}
@@ -462,16 +463,6 @@ function MyActivityTab() {
                   No events created yet.
                 </div>
               ))}
-
-            {activeTab === "❤︎" ? (
-              <div className="space-y-8">
-                <WishlistAll />
-              </div>
-            ) : (
-              <div className="p-10 text-center text-neutral opacity-40 bai-jamjuree-medium">
-                No events created yet.
-              </div>
-            )}
           </motion.div>
         </AnimatePresence>
       </div>
