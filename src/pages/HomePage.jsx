@@ -37,7 +37,7 @@ function HomePage() {
   
   useEffect(()=>{
     getUserInterest()
-  },[interests])
+  },[])
   // console.log('interests', interests)
 
   useEffect(()=>{
