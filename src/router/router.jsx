@@ -28,6 +28,9 @@ import FriendProfile from "../pages/Friends/FriendProfile";
 import FriendReviews from "../pages/Friends/FriendReviews";
 import FriendJoinedActivities from "../pages/Friends/FriendJoinedActivities";
 import FriendCreatedActivities from "../pages/Friends/FriendCreatedActivities";
+import UserJoinedActivities from "../pages/reviews/UserJoinedActivities";
+import UserCreatedActivities from "../pages/UserCreatedActivities";
+import UserMemoryActivities from "../pages/UserMemoryActivities";
 
 const guestRouter = createBrowserRouter([
   {
@@ -122,6 +125,18 @@ const userRouter = createBrowserRouter([
         path: "friend-created-activities",
         element: <FriendCreatedActivities />,
       },
+      {
+        path: "joined-activities",
+        element: <UserJoinedActivities />,
+      },
+      {
+       path: "created-activities", 
+       element: <UserCreatedActivities />,
+     },
+     {
+        path: "memory-activities",
+        element: <UserMemoryActivities />,
+     },
       {
         path: "create",
         element: <CreateActivity />,

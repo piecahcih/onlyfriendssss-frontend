@@ -81,7 +81,7 @@ const Profile = () => {
   const [step, setStep] = useState("half");
   const y = useMotionValue(0);
 
-  const yPosition = step === "half" ? "50vh" : "8vh";
+  const yPosition = step === "half" ? "50vh" : "5vh";
   const fileInputRef = useRef(null);
 
   // แก้ไข: รวม useEffect เป็นอันเดียว
@@ -204,12 +204,12 @@ const Profile = () => {
   const averageScore = currentRatingInfo?.averageRating || "0.0";
 
   return (
-    <div className="min-h-screen bg-black relative overflow-hidden">
+    <div className="min-h-screen  bg-black text-black font-sans relative overflow-hidden">
       {/* --- BACKGROUND IMAGE --- */}
-      <div className="fixed inset-0 -z-10 h-[90vh]">
+      <div className="relative w-full h-[65vh]">
         <img
           src={getFullImgPath(profileData?.profileImg)}
-          className="w-full h-full object-cover object-top scale-110"
+          className="w-full h-full pb-90 object-cover scale-110"
           alt="background"
         />
         <div className="absolute inset-0 bg-linear-to-b from-black/20 via-transparent to-black/60" />
@@ -394,21 +394,24 @@ const Profile = () => {
       <motion.div
         initial={{ y: "100vh" }}
         animate={{ y: yPosition }}
-        style={{ y, height: "92vh" }}
+        style={{ 
+         y, 
+         height: "95vh",
+        }}
         transition={{ type: "spring", damping: 30, stiffness: 150 }}
         drag="y"
-        dragConstraints={{ top: 0, bottom: 500 }}
-        dragElastic={0.2}
+        dragConstraints={{ top: 0, bottom: 600 }}
+        dragElastic={0.15}
         onDragEnd={(_, info) => {
-          if (info.offset.y < -100 || info.velocity.y < -300) setStep("high");
+          if (info.offset.y < -50 || info.velocity.y < -300) setStep("high");
           else if (info.offset.y > 50 || info.velocity.y > 300) setStep("half");
         }}
-        className=" fixed inset-x-0 bottom-0 mx-10 bg-black/40 backdrop-blur-md rounded-3xl
+        className=" fixed inset-x-0 bottom-0  bg-black/40 backdrop-blur-md rounded-3xl
        shadow-[0_-20px_60px_rgba(0,0,0,0.4)] border-t border-white/10 z-40 flex flex-col overflow-hidden"
       >
-        <div className="w-16 h-1.5 bg-white/30 rounded-full flex-shrink-0" />
+        <div className="w-12 h-1.5 bg-gray-300 rounded-full mx-auto my-2 flex-shrink-0" />
 
-        <div className="overflow-y-auto px-8  scrollbar-hide">
+        <div className="overflow-y-auto px-8 pb-48   scrollbar-hide">
           {/* Profile Content */}
           <div className="text-start ">
             <h2 className="text-4xl font-black text-white tracking-tight mb-1">
@@ -419,7 +422,7 @@ const Profile = () => {
             </p>
 
             {/* About Section */}
-            <div className="bg-amber-50 relative overflow-hidden">
+            <div className=" relative overflow-hidden">
               {/* <div className="absolute top-0 right-0 w-20 h-20 bg-primary/10 blur-2xl -z-10" /> */}
               <div className="flex justify-end items-center mb-2">
                 <span className="  text-[10px] px-4 py-1.5 bg-white text-black  rounded-full font-black uppercase shadow-lg shadow-primary/20">
@@ -490,7 +493,7 @@ const Profile = () => {
           </div>
 
           {/* Activity Section */}
-          <div className="mt-1">
+          <div className="mt-2 min-h-[400px] ">
             <MyActivityTab />
           </div>
 
