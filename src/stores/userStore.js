@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { googleLoginApi, loginApi, getProfileApi, editProfileApi, deleteProfileApi, getUserInterestApi, getUserSuggestedActivitiesByInterestApi } from "../api/mainApi";
+import { googleLoginApi, loginApi, getProfileApi, editProfileApi, deleteProfileApi, getUserInterestApi, getUserSuggestedActivitiesByInterestApi, exploreActivitiesApi } from "../api/mainApi";
 
 const useUserStore = create(persist((set, get) => ({
   user: null,
@@ -79,6 +79,12 @@ const useUserStore = create(persist((set, get) => ({
   getUserSuggestedActivitiesByInterest: async () => {
     const res = await getUserSuggestedActivitiesByInterestApi()
     console.log('suggestactstore', res)
+
+    set({ suggests: res.data.suggests })
+  },
+  exploreActivities: async () => {
+    const res = await exploreActivitiesApi()
+    console.log('exploreactstore', res)
 
     set({ suggests: res.data.suggests })
   },

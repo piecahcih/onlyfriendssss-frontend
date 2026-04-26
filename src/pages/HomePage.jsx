@@ -22,10 +22,12 @@ function HomePage() {
   const [likeOpen, setLikeOpen] = useState(false);
 
   const friends = useFriendStore(st=>st.friends)
+  const getFriends = useFriendStore(st=>st.getFriends)
 
   const user = useUserStore(st=>st.user)
   const suggests = useUserStore(st=>st.suggests)
   const getUserSuggestedActivitiesByInterest = useUserStore(st=>st.getUserSuggestedActivitiesByInterest)
+  const exploreActivities = useUserStore(st=>st.exploreActivities)
   
   const activities = useActivityStore((state) => state.activities) || [];
   const upcomingActivities = useActivityStore((state) => state.upcomingActivities) || [];
@@ -34,6 +36,8 @@ function HomePage() {
   const addWishlist = useWishlistStore(st => st.addWishlist);
 
   const [localSuggests, setLocalSuggests] = useState([]);
+  console.log('localSuggests', localSuggests)
+  // const totalVisible = Math.min(localSuggests.length, 3);
 
   useEffect(() => {
     const hasSeenInSession = sessionStorage.getItem("hasSeenPremium");
@@ -46,9 +50,19 @@ function HomePage() {
     }
   }, [])
 
+  useEffect(() => {
+    getUserSuggestedActivitiesByInterest();
+  }, [getUserSuggestedActivitiesByInterest]);
+
+  // useEffect(() => {
+  //   if (suggests && suggests.length === 0) {
+  //     exploreActivities();
+  //   }
+  // }, [suggests, exploreActivities]);
+
   useEffect(()=>{
-    getUserSuggestedActivitiesByInterest()
-  },[getUserSuggestedActivitiesByInterest])
+    getFriends()
+  },[getFriends])
 
   useEffect(() => {
     if (suggests.length > 0) {
@@ -73,11 +87,11 @@ function HomePage() {
 
   return (
     <div className="min-h-screen bg-base-200 pb-24 overflow-x-hidden">
-      <div className="pt-8 px-6">
+      <div className="pt-7 px-6">
 
         <div className="flex items-center justify-between gap-2">
           <div className="flex flex-col">
-            <h1 className='font-bold text-[20px]'>Hello, {user.username}</h1>
+            <h1 className='font-bold text-[22px]'>Hello, {user.username}</h1>
             <p className='font-light text-[12px]'>Welcome to onlyfriendssss</p>
           </div>
 
@@ -105,22 +119,34 @@ function HomePage() {
 
         {/* Upcoming Section */}
         <div className="mt-5">
+          {/* <h3 className='font-bold text-[18px] mb-2'>Upcoming events</h3> */}
           <div className="flex overflow-x-auto gap-4 scrollbar-hide -mr-6 pb-2">
             {upcomingActivities?.length > 0 ? (
               upcomingActivities.map((act) => (
-                <NavLink to={`/activity-details?actid=${act.id}`} key={act.id} className="relative w-[285px] shrink-0 snap-start">
-                  <div className="h-35 rounded-[14px] overflow-hidden shadow-lg">
-                    <img src={act.coverPhoto} alt="Activity" className='w-full h-full object-cover' />
-                  </div>
-                  <div className="absolute top-1 left-1 right-4 text-white">
-                    <p className='text-[10px] font-black bg-primary px-2 py-0.5 rounded inline-block mb-1 tracking-widest' >UPCOMING</p> 
-                    <p className='font-bold text-lg' >{act.title}</p> 
-                    <p className='text-[11px] font-medium opacity-80' >{act?.place?.placeName}</p> 
-                  </div>
-                    <p className="absolute bottom-4 left-1 text-[14px] text-white font-medium capitalize">
-                      {formatRelative(new Date(act.eventStartTime), new Date())}
-                    </p>
-                </NavLink>
+                <NavLink to={`/activity-details?actid=${act.id}`} key={act.id} 
+                  className="relative w-[285px] shrink-0 snap-start group">
+                    <div className="h-35 rounded-[14px] overflow-hidden relative shadow-sm">
+                      <img src={act.coverPhoto} alt="Activity" 
+                        className='w-full h-full object-cover group-hover:scale-105 transition-transform duration-300' />
+                      
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/60 pointer-events-none" />
+                      
+                      <div className="absolute top-3 left-3 right-3 text-white">
+                        <h4 className='font-bold text-[16px] leading-tight drop-shadow-md truncate' >
+                          {act.title}
+                        </h4> 
+                        <p className='text-[11px] font-medium opacity-90' >
+                          {act?.place?.placeName}
+                        </p> 
+                      </div>
+
+                      <div className="absolute bottom-3 left-3 text-white">
+                        <p className="text-[12px] font-semibold bg-white/20 backdrop-blur-md px-2 py-1 rounded-md inline-block">
+                          {formatRelative(new Date(act.eventStartTime), new Date())}
+                        </p>
+                      </div>
+                    </div>
+                  </NavLink>
               ))
             ) : (
               <div className="h-35 w-full rounded-[14px] bg-white flex items-center justify-center border-2 border-dashed border-gray-200 mr-6">
@@ -136,70 +162,72 @@ function HomePage() {
         {/* Suggested Section - Tinder Stack */}
         <div className="mt-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className='font-bold text-lg'>Suggested For You</h3>
-            <span className="text-[10px] font-black text-primary/50 uppercase tracking-widest bg-primary/5 px-3 py-1 rounded-full">
+            <h3 className='font-bold text-[18px]'>Suggested For You</h3>
+            {/* <span className="text-[10px] font-black text-primary/50 uppercase tracking-widest bg-primary/5 px-3 py-1 rounded-full">
               {localSuggests.length} Picks
-            </span>
+            </span> */}
           </div>
           
-          <div className="relative h-75 w-54 mx-auto">
+          <div className="relative h-75 w-57 mx-auto">
             <AnimatePresence>
               {localSuggests.length > 0 ? (
-                localSuggests.slice(0, 3).reverse().map((act, index) => (
-                  <SuggestCard 
-                    key={act.id} 
-                    act={act} 
-                    onSwipe={handleSwipe} 
-                    index={2 - index} // Fixed index mapping for reversed slice
-                    total={localSuggests.length}
-                  />
-                ))
+                localSuggests.reverse().map((act, index, simplifiedArray) => (
+                  <div key={act.id}>
+                    <SuggestCard 
+                      act={act} 
+                      onSwipe={handleSwipe} 
+                      index={(simplifiedArray.length - 1) - index}
+                      total={localSuggests.length}
+                    />
+                    <div className="z-[199] text-red-500 text-[50px] absolute top-1">{simplifiedArray.length}</div>
+                  </div>
+                  ))
               ) : (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="absolute inset-0 flex flex-col items-center justify-center text-center p-8 bg-white/50 backdrop-blur-sm rounded-[30px] border border-dashed border-gray-300"
-                >
-                  <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                    <SearchIcon className="w-8 h-8 text-gray-400" />
-                  </div>
-                  <h4 className="font-bold text-gray-800">No more suggestions</h4>
-                  <p className="text-sm text-gray-500 mt-1">Check back later or change your interests!</p>
-                  <button 
-                    onClick={() => setLocalSuggests(suggests)}
-                    className="mt-6 text-sm font-bold text-primary px-6 py-2 rounded-full border border-primary/20 hover:bg-primary/5 transition-colors"
-                  >
-                    Refresh List
-                  </button>
+                  exit={{ opacity: 0 }}
+                  onClick={() => exploreActivities()}
+                  className="w-full h-[310px] bg-white rounded-[14px] shadow-xl border-2 border-dashed border-primary/30 flex flex-col items-center justify-center p-6 text-center cursor-pointer hover:bg-primary/5 transition-colors">
+                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                      <SearchIcon className="w-8 h-8 text-primary" />
+                    </div>
+                    <h4 className="font-bold text-lg mb-2">Want to explore more?</h4>
+                    <p className="text-sm text-gray-500 mb-6">
+                      We've run out of suggestions based on your interests.
+                    </p>
+                    <button className="btn btn-primary btn-sm rounded-full px-6">
+                      Explore All
+                    </button>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
         </div>
 
-        <div className="mt-14 mb-4">
-          <h3 className='font-bold mb-4'>Friends Activity</h3>
+        <div className="mt-12 mb-4">
+          <h3 className='font-bold mb-4'>What's your friends doing?</h3>
           <div className="flex flex-col gap-3 w-full">
-            {/* <div className="bg-white p-4 rounded-[20px] flex items-center gap-4 shadow-sm border border-gray-100">
-               <div className="w-12 h-12 bg-gray-200 rounded-full" />
-               <div className="flex-1">
-                 <div className="h-4 w-24 bg-gray-100 rounded mb-2" />
-                 <div className="h-3 w-32 bg-gray-50 rounded" />
-               </div>
-            </div> */}
             {friends?.length > 0 ? (
               friends.map((friend) => (
-                <NavLink to={`/activity-details?actid=${friend.id}`} key={friend.id}>
+                <div key={friend.id}>
                   <div className="bg-white p-4 rounded-[20px] flex items-center gap-4 shadow-sm border border-gray-100">
                     <div className="w-12 h-12 bg-gray-200 rounded-full overflow-hidden">
                       <img src={friend.profileImg} className="w-full h-full object-cover" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-bold mb-2">{friend.username}</h3>
-                      <div className="h-3 w-32 bg-gray-50 rounded" />
+                      <p className="text-[14px] font-medium mb-2">
+                        <span className="font-bold mb-2">{friend.username} </span>
+                        <span>is hosting</span>
+                        <span className='text-[#6e2f12]'> activity name</span>
+                      </p>
+                      <p className='text-[10px]'>created at</p>
+                    </div>
+                    <div className="bg-secondary rounded-2xl px-3 py-1 text-[12px] font-bold text-[#6e2f12]">
+                      Join
                     </div>
                   </div>
-                </NavLink>
+                </div>
               ))
             ) : (
               <div className="bg-white p-4 rounded-[20px] flex items-center gap-4 shadow-sm border border-gray-100">
