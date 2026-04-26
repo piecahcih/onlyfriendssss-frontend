@@ -11,6 +11,52 @@ import { editProfileApi } from "../api/mainApi";
 
 const BACKEND_URL = "http://localhost:3999";
 
+const interests = [
+  // Food & Drink
+  { label: "foodie 🍳", value: "foodie" },
+  { label: "cafe hopping ☕", value: "cafe_hopping" },
+  { label: "street food 🍢", value: "street_food" },
+  { label: "fine dining 🍷", value: "fine_dining" },
+  { label: "cooking & baking 👩‍🍳", value: "cooking_baking" },
+  { label: "drinks & nightout 🍻", value: "drinks_nightout" },
+
+  // Health & Active
+  { label: "slowlife 🌿", value: "slowlife" },
+  { label: "health 🥗", value: "health" },
+  { label: "sport 🏀", value: "sport" },
+  { label: "camping 🏕️", value: "camping" },
+  { label: "gym & workout 💪", value: "gym_workout" },
+  { label: "yoga & pilates 🧘‍♀️", value: "yoga_pilates" },
+  { label: "running 🏃", value: "running" }, // Updated to match enum
+  { label: "mental wellness 😌", value: "mental_wellness" },
+  { label: "team sports ⚽", value: "team_sports" },
+
+  // Art & Culture
+  { label: "art 🎨", value: "art" },
+  { label: "museum & gallery 🏛️", value: "museum_gallery" },
+  { label: "photography 📸", value: "photography" },
+  { label: "crafting & DIY ✂️", value: "crafting_diy" },
+  { label: "live music 🎸", value: "live_music" },
+  { label: "book club 📚", value: "book_club" },
+
+  // Entertainment & Fun
+  { label: "gaming 🎮", value: "gaming" },
+  { label: "movies & cinema 🍿", value: "movies_cinema" },
+  { label: "board games 🎲", value: "board_games" },
+  { label: "video games 🕹️", value: "video_games" },
+  { label: "karaoke 🎤", value: "karaoke" },
+  { label: "concerts & festivals 🎪", value: "concerts_festivals" },
+
+  // Travel & Adventure
+  { label: "travel ✈️", value: "travel" },
+  { label: "volunteer 🤝", value: "volunteer" },
+  { label: "backpacking 🎒", value: "backpacking" },
+  { label: "road trip 🚗", value: "road_trip" },
+  { label: "beach vibes 🏖️", value: "beach_vibes" },
+  { label: "hiking & trekking 🥾", value: "hiking_trekking" },
+  { label: "sightseeing 🗺️", value: "sightseeing" },
+];
+
 const Profile = () => {
   const navigate = useNavigate(); // แก้ไข: ประกาศ navigate
   const user = useUserStore((state) => state.user);
@@ -19,6 +65,9 @@ const Profile = () => {
   const getProfile = useUserStore((state) => state.getProfile);
   const updateProfile = useUserStore((state) => state.updateProfile);
   const deleteProfile = useUserStore((state) => state.deleteProfile);
+
+  const getUserInterest = useUserStore((state) => state.getUserInterest);
+  const interestsFromStore = useUserStore((state) => state.interests);
 
   const [profileData, setProfileData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -39,6 +88,7 @@ const Profile = () => {
   useEffect(() => {
     fetchUserProfile();
     getUserRatings();
+    getUserInterest();
   }, []);
 
   const fetchUserProfile = async () => {
@@ -319,14 +369,14 @@ const Profile = () => {
                   className="btn btn-ghost justify-start text-lg font-bold rounded-2xl h-14
       hover:bg-primary/5 hover:text-primary transition-all"
                 >
-                   Log out
+                  Log out
                 </button>
                 <button
                   onClick={hdlDeleteAccount}
                   className="btn btn-ghost justify-start text-lg font-bold
       rounded-2xl h-14 text-error hover:bg-error/5 transition-all"
                 >
-                   Delete Account
+                  Delete Account
                 </button>
               </div>
             </motion.div>
@@ -340,23 +390,23 @@ const Profile = () => {
         animate={{ opacity: step === "high" ? 1 : 0 }}
         className="fixed inset-0 bg-black/20 backdrop-blur-sm z-30 pointer-events-none"
         /> */}
-      
-     <motion.div
-  initial={{ y: "100vh" }}
-  animate={{ y: yPosition }}
-  style={{ y, height: "92vh" }} 
-  transition={{ type: "spring", damping: 30, stiffness: 150 }}
-  drag="y"
-  dragConstraints={{ top: 0, bottom: 500 }}
-  dragElastic={0.2}
-  onDragEnd={(_, info) => {
-    if (info.offset.y < -50 || info.velocity.y < -300) setStep("high");
-    else if (info.offset.y > 50 || info.velocity.y > 300) setStep("half");
-  }}
+
+      <motion.div
+        initial={{ y: "100vh" }}
+        animate={{ y: yPosition }}
+        style={{ y, height: "92vh" }}
+        transition={{ type: "spring", damping: 30, stiffness: 150 }}
+        drag="y"
+        dragConstraints={{ top: 0, bottom: 500 }}
+        dragElastic={0.2}
+        onDragEnd={(_, info) => {
+          if (info.offset.y < -100 || info.velocity.y < -300) setStep("high");
+          else if (info.offset.y > 50 || info.velocity.y > 300) setStep("half");
+        }}
         className=" fixed inset-x-0 bottom-0 mx-10 bg-black/40 backdrop-blur-md rounded-3xl
        shadow-[0_-20px_60px_rgba(0,0,0,0.4)] border-t border-white/10 z-40 flex flex-col overflow-hidden"
       >
-  <div className="w-16 h-1.5 bg-white/30 rounded-full flex-shrink-0" />
+        <div className="w-16 h-1.5 bg-white/30 rounded-full flex-shrink-0" />
 
         <div className="overflow-y-auto px-8  scrollbar-hide">
           {/* Profile Content */}
@@ -364,27 +414,25 @@ const Profile = () => {
             <h2 className="text-4xl font-black text-white tracking-tight mb-1">
               {profileData?.username}
             </h2>
-            <p className="text-[19px] font-light text-white uppercase tracking-[0.2em]">
+            <p className="text-[12px] font-light text-white uppercase tracking-[0.2em]">
               {profileData?.firstName} {profileData?.lastName}
             </p>
 
             {/* About Section */}
-          <div className="bg-amber-50 relative overflow-hidden">
-            {/* <div className="absolute top-0 right-0 w-20 h-20 bg-primary/10 blur-2xl -z-10" /> */}
-            <div className="flex justify-end items-center mb-2">
-              <span
-                className="  text-[10px] px-4 py-1.5 bg-white text-black  rounded-full font-black uppercase shadow-lg shadow-primary/20"
-              >
-                {profileData?.gender || "Secret"}
-              </span>
+            <div className="bg-amber-50 relative overflow-hidden">
+              {/* <div className="absolute top-0 right-0 w-20 h-20 bg-primary/10 blur-2xl -z-10" /> */}
+              <div className="flex justify-end items-center mb-2">
+                <span className="  text-[10px] px-4 py-1.5 bg-white text-black  rounded-full font-black uppercase shadow-lg shadow-primary/20">
+                  {profileData?.gender || "Secret"}
+                </span>
+              </div>
+              <p className="text-white font-light leading-normal text-lg">
+                "{profileData?.bio || "Tell Me About Yourself..."}"
+              </p>
             </div>
-            <p className="text-white font-light leading-normal text-lg">
-              "{profileData?.bio || "Tell Me About Yourself..."}"
-            </p>
-          </div>
 
             {/* Premium Stats Bar */}
-            <div className="flex items-center justify-around  p-2 " >
+            <div className="flex items-center justify-around  p-2 ">
               <NavLink
                 to="/reviews-rating"
                 className="flex flex-col items-center flex-1 group"
@@ -411,9 +459,7 @@ const Profile = () => {
                 to="/friendlist"
                 className="flex flex-col items-center flex-1 group"
               >
-                <span
-                  className="text-2xl font-black text-white group-active:scale-90 transition-transform"
-                >
+                <span className="text-2xl font-black text-white group-active:scale-90 transition-transform">
                   {profileData?._count?.receivedFriendRequests || 0}
                 </span>
                 <span className="text-[10px] font-light text-white uppercase tracking-wider mt-1">
@@ -421,14 +467,31 @@ const Profile = () => {
                 </span>
               </NavLink>
             </div>
-          </div>
 
-          
+            <div className="flex flex-wrap gap-2 mt-2">
+              {interestsFromStore && interestsFromStore.length > 0 ? (
+                interestsFromStore.map((catValue, index) => {
+                  const match = interests.find((i) => i.value === catValue);
+                  return match ? (
+                    <div
+                      key={index}
+                      className="px-3 py-1.5 bg-black/20 backdrop-blur-md border border-white/10 rounded-full text-xs text-white  font-medium"
+                    >
+                      {match.label}
+                    </div>
+                  ) : null;
+                })
+              ) : (
+                <p className="text-[10px] text-white/20 italic">
+                  No interests added yet
+                </p>
+              )}
+            </div>
+          </div>
 
           {/* Activity Section */}
           <div className="mt-1">
             <MyActivityTab />
-
           </div>
 
           {/* Location Button */}
