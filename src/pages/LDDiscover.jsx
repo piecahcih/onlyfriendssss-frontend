@@ -10,7 +10,6 @@ import useUserStore from "../stores/userStore";
 import NotificationModal from "../components/NotificationModal";
 import { SearchIcon, Notification, CalendarIcon, YourLocationIcon, MicIcon, LocationIcon, RighttIcon, } from "../icons";
 import PremiumModal from "../components/ads/PremiumModal"
-// import { io, Socket } from 'socket.io-client'
 import useNotificationStore from '../stores/notificationStore'
 import { io, Socket } from 'socket.io-client'
 import Wishlist from "../components/profile/Wishlist";
