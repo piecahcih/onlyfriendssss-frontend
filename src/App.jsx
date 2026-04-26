@@ -39,7 +39,8 @@ function App() {
   }, [user]);
 
   useEffect(() => {
-    if (user && window.location.pathname === "/") {
+    const hasSeenWelcome = sessionStorage.getItem("hasSeenWelcome");
+    if (user && window.location.pathname === "/" && !hasSeenWelcome) {
       setIsRedirecting(true);
       window.location.replace("/welcome");
     }

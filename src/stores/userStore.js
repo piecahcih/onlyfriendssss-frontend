@@ -28,6 +28,7 @@ const useUserStore = create(persist((set, get) => ({
   logout: () => {
     set({ token: "", user: null });
     localStorage.removeItem("OFsssUserState");
+    sessionStorage.removeItem("hasSeenWelcome");
   },
   
   setUser: (userData) => set({ user: userData }),

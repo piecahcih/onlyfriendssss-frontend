@@ -136,6 +136,16 @@ function ActivityDetails() {
       alert("Action failed");
     }
   };
+
+  const hdlToProfile = (targetUserId) => {
+    if (!targetUserId) return;
+    if (targetUserId === storeUser?.id) {
+      navigate("/profile");
+    } else {
+      navigate(`/friend-profile?userId=${targetUserId}`);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-base-200 text-neutral pb-28">
       {/* TopAppBar */}
@@ -186,17 +196,20 @@ function ActivityDetails() {
           </h1>
 
           <div>
-            <div className="flex items-center gap-3">
+            <div 
+              className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => hdlToProfile(currentActivity.hostId)}
+            >
               <div className="relative">
                 <img
                   src={currentActivity.host?.profileImg || defaultProfile}
                   alt="host"
-                  className="w-10 h-10 rounded-full object-cover border-2 border-primary/20"
+                  className="w-12 h-12 rounded-full object-cover border-2 border-primary/20"
                 />
               </div>
               <div>
                 <p className="text-[10px] text-on-surface/40 font-medium">HOSTED BY</p>
-                <h4 className="font-bold text-[14px]">{currentActivity.host?.username}</h4>
+                <h4 className="font-bold text-sm">{currentActivity.host?.username}</h4>
               </div>
             </div>
 
@@ -289,7 +302,11 @@ function ActivityDetails() {
               +
             </button>
             {approvedRequests.map((item, idx) => (
-              <div key={idx} className="shrink-0 text-center space-y-1">
+              <div 
+                key={idx} 
+                className="shrink-0 text-center space-y-1 cursor-pointer hover:scale-105 transition-transform"
+                onClick={() => hdlToProfile(item.userId || item.user?.id)}
+              >
                 <div className="relative">
                   <img
                     src={getFullImgPath(item.user?.profileImg)}
