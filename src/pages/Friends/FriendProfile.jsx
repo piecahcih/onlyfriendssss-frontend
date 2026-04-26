@@ -5,7 +5,6 @@ import { AnimatePresence, motion, useMotionValue } from "framer-motion";
 
 import useUserStore from "../../stores/userStore";
 import useFriendStore from "../../stores/friendStore";
-import useReviewStore from "../../stores/reviewStore";
 import { getFriendProfileApi, SendFriendRequestApi, UnfriendApi } from "../../api/mainApi";
 import { LeftIcon, ChatIcon } from "../../icons";
 
@@ -20,22 +19,21 @@ const FriendProfile = () => {
   const [activeTab, setActiveTab] = useState("Joined");
   const tabs = ["Joined", "Created", "Reviews"];
   const y = useMotionValue(0);
-  const yPosition = step === "half" ? "50vh" : "15vh";
+  const yPosition = step === "half" ? "55vh" : "10vh";
 
   const currentUser = useUserStore((state) => state.user);
-  const { friends, getFriends } = useFriendStore();
-  const { userRatings, getUserRatings } = useReviewStore();
+  const friends = useFriendStore((state) => state.friends)
+  const getFriends = useFriendStore((state) => state.getFriends)
 
   useEffect(() => {
     if (!userId) return navigate("/friendlist");
     fetchFriendProfile();
-    getUserRatings();
     if (friends.length === 0) getFriends();
   }, [userId]);
 
   const fetchFriendProfile = async () => {
     const res = await getFriendProfileApi(userId);
-    setProfileData(res.data.user || res.data);
+    setProfileData(res.data.user);
   };
 
   const handleAddFriend = async () => {
@@ -65,70 +63,57 @@ const FriendProfile = () => {
 
   const isSelf = String(currentUser?.id) === String(userId);
   const isFriend = !!currentFriend;
-  const averageScore = userRatings.find((u) => String(u.id) === String(profileData.id))?.averageRating || "0.0";
-
-  // Calculate age if birthDate exists
-  const calculateAge = (dob) => {
-    if (!dob) return "";
-    const diff = Date.now() - new Date(dob).getTime();
-    return `, ${Math.abs(new Date(diff).getUTCFullYear() - 1970)}`;
-  };
-
-  console.log("profileData", profileData);
 
   return (
     <div className="min-h-screen bg-black text-black font-sans relative overflow-hidden">
-      {/* Background Image Area (Top Half) */}
-      <div className="relative w-full h-[65vh]">
+      {/* Background Image Area (Top Half) - Fixed to make it smooth */}
+      <div className="fixed inset-0 w-full h-[70vh]">
         <img
           src={profileData.profileImg}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover scale-105"
           alt="bg"
         />
-        {/* Gradient Overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/40" />
+      </div>
 
-        {/* Top Nav */}
-        <div className="absolute top-0 inset-x-0 p-5 flex justify-between items-center z-10">
-          <button onClick={() => navigate(-1)} className="p-2.5 bg-black/30 backdrop-blur-md rounded-full text-white">
-            <LeftIcon className="w-5 h-5" />
-          </button>
-          <button className="p-2.5 bg-black/30 backdrop-blur-md rounded-full text-white">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
-            </svg>
-          </button>
-        </div>
+      {/* Top Nav - Fixed */}
+      <div className="fixed top-0 inset-x-0 p-5 flex justify-between items-center z-30">
+        <button onClick={() => navigate(-1)} className="p-2.5 bg-white/20 backdrop-blur-md rounded-full text-white active:scale-90 transition-all">
+          <LeftIcon className="w-5 h-5" />
+        </button>
+      </div>
 
-        {/* Name & Info over image */}
-        <div className="absolute bottom-16 inset-x-0 flex flex-col items-center text-white z-10 px-4">
-          <h1 className="text-3xl font-bold tracking-tight shadow-sm">
-            {profileData.username}
-          </h1>
-          <p>{profileData.firstName} {profileData.lastName}</p>
-        </div>
+      {/* Name Info - Fixed */}
+      <div
+        className="fixed inset-x-0 flex flex-col items-center text-white z-10 px-4 transition-all duration-500"
+        style={{ top: step === "half" ? "35vh" : "5vh", opacity: step === "half" ? 1 : 0 }}
+      >
+        <h1 className="text-3xl font-black tracking-tight drop-shadow-lg">
+          {profileData.username}
+        </h1>
+        <p className="text-sm font-bold uppercase tracking-widest opacity-80">{profileData.firstName} {profileData.lastName}</p>
       </div>
 
       {/* Bottom Sheet */}
       <motion.div
         initial={{ y: "100vh" }}
         animate={{ y: yPosition }}
-        style={{ y, height: "85vh" }}
-        transition={{ type: "spring", damping: 25, stiffness: 200 }}
+        style={{ y, height: "95vh" }}
+        transition={{ type: "spring", damping: 30, stiffness: 180 }}
         drag="y"
         dragConstraints={{ top: 0, bottom: 0 }}
-        dragElastic={0.05}
+        dragElastic={0.04}
         onDragEnd={(_, info) => {
-          if (info.offset.y < -50 || info.velocity.y < -300) setStep("high");
-          else if (info.offset.y > 50 || info.velocity.y > 300) setStep("half");
+          if (info.offset.y < -100 || info.velocity.y < -500) setStep("high");
+          else if (info.offset.y > 100 || info.velocity.y > 500) setStep("half");
         }}
-        className="fixed inset-x-0 bottom-0 bg-white w-full max-w-lg mx-auto rounded-t-[35px] z-20 shadow-[0_-20px_50px_rgba(0,0,0,0.2)] flex flex-col"
+        className="fixed inset-x-0 bottom-0 bg-white/85 backdrop-blur-2xl w-full max-w-lg mx-auto rounded-t-[40px] z-20 shadow-[0_-20px_60px_rgba(0,0,0,0.3)] border-t border-white/30 flex flex-col overflow-hidden"
       >
         {/* Drag Handle */}
-        <div className="w-12 h-1.5 bg-gray-300 rounded-full mx-auto my-4 flex-shrink-0" />
+        <div className="w-16 h-1.5 bg-gray-300/50 rounded-full mx-auto my-5 flex-shrink-0" />
 
         {/* Scrollable Content */}
-        <div className="overflow-y-auto px-6 pb-32 scrollbar-hide flex-1">
+        <div className="overflow-y-auto px-8 pb-32 scrollbar-hide flex-1">
 
           {/* Action Buttons */}
           {!isSelf && (
