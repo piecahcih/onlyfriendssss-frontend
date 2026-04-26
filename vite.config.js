@@ -8,7 +8,7 @@ export default defineConfig({
     host: true,
     port: 5173,
     allowedHosts: [
-      'organize-riders-describe-marker.trycloudflare.com'
+      'post-chain-beast-buildings.trycloudflare.com'
     ]
   }
 })

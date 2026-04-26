@@ -10,6 +10,11 @@ function App() {
   const user = useUserStore(st => st.user);
   const finalRouter = !user ? guestRouter : userRouter;
 
+  const theme = useUserStore(st => st.theme)
+  useEffect(()=>{
+    document.documentElement.setAttribute('data-theme',theme)
+  },[theme])
+
   const [isRedirecting, setIsRedirecting] = useState(false);
 
   useChatEvents();
