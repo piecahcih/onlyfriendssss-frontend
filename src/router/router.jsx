@@ -24,15 +24,10 @@ import MemoryActivityDetails from "../pages/reviews/MemoryActivityDetails";
 import RatingReview from "../pages/reviews/RatingReview";
 import HomePage from "../pages/HomePage";
 import ActivitiesList from "../pages/ActivitiesList";
-<<<<<<< HEAD
-import ProfileFriend from '../pages/profileFriend'
-
-=======
 import FriendProfile from "../pages/Friends/FriendProfile";
 import FriendReviews from "../pages/Friends/FriendReviews";
 import FriendJoinedActivities from "../pages/Friends/FriendJoinedActivities";
 import FriendCreatedActivities from "../pages/Friends/FriendCreatedActivities";
->>>>>>> dev
 
 const guestRouter = createBrowserRouter([
   {
@@ -112,10 +107,6 @@ const userRouter = createBrowserRouter([
         element: <Friendlist />,
       },
       {
-<<<<<<< HEAD
-        path: "profilefriend",
-        element: <ProfileFriend />,
-=======
         path: "friend-profile",
         element: <FriendProfile />,
       },
@@ -130,7 +121,6 @@ const userRouter = createBrowserRouter([
       {
         path: "friend-created-activities",
         element: <FriendCreatedActivities />,
->>>>>>> dev
       },
       {
         path: "create",

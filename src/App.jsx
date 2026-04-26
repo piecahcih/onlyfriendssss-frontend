@@ -1,7 +1,7 @@
 import { RouterProvider } from "react-router";
 import { guestRouter, userRouter } from "./router/router";
 import useUserStore from "./stores/userStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import useSocketStore from "./stores/socketStore";
 import { useChatEvents } from "./hooks/useChatEvents";
@@ -36,11 +36,13 @@ function App() {
   const { connectSocket } = useSocketStore();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
     if (token) {
+      console.log('App.jsx: Calling connectSocket with token:', token);
       connectSocket(token);
+    } else {
+      console.log('App.jsx: Token is not available, not calling connectSocket.');
     }
-  }, [user]);
+  }, [token]);
 
   useEffect(() => {
     const hasSeenWelcome = sessionStorage.getItem("hasSeenWelcome");

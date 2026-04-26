@@ -6,6 +6,7 @@ import useUserStore from "../stores/userStore";
 import mainApi from "../api/mainApi";
 import { format } from "date-fns";
 import defaultProfile from "../assets/default-profilepic.jpg";
+import Swal from "sweetalert2";
 
 function ActivityDetails() {
   const navigate = useNavigate();
@@ -99,7 +100,14 @@ function ActivityDetails() {
 
   const hdlJoin = async () => {
     if (!storeUser) {
-      alert("Please Log in first");
+      Swal.fire({
+        title: '<h2 class="text-[20px] font-bold text-neutral leading-tight">Login Required</h2>',
+        html: '<p class="text-neutral/70">Please log in first to join this activity.</p>',
+        icon: 'warning',
+        confirmButtonColor: "#FC5100",
+        width: '300px',
+        padding: '1em',
+      });
       return;
     }
     try {
@@ -107,12 +115,32 @@ function ActivityDetails() {
       const res = await joinActivity(actid); // ใช้ฟังก์ชันจาก Store
 
       if (res.data.data.status === "APPROVED") {
-        alert("Joined successfully! 🎉");
+        Swal.fire({
+          title: '<h2 class="text-[20px] font-bold text-neutral leading-tight">Joined successfully!</h2>',
+          icon: 'success',
+          confirmButtonColor: "#FC5100",
+          width: '300px',
+          padding: '1em',
+        });
       } else {
-        alert("Request sent, waiting for host approval.");
+        Swal.fire({
+          title: '<h2 class="text-[20px] font-bold text-neutral leading-tight">Request sent!</h2>',
+          html: '<p class="text-neutral/70">Waiting for host approval.</p>',
+          icon: 'info',
+          confirmButtonColor: "#FC5100",
+          width: '300px',
+          padding: '1em',
+        });
       }
     } catch (error) {
-      alert(error.response?.data?.message || "Cannot join this activity");
+      Swal.fire({
+        title: '<h2 class="text-[20px] font-bold text-neutral leading-tight">Error!</h2>',
+        html: `<p class="text-neutral/70">${error.response?.data?.message || "Cannot join this activity"}</p>`,
+        icon: 'error',
+        confirmButtonColor: "#FC5100",
+        width: '300px',
+        padding: '1em',
+      });
     } finally {
       setLoadingJoin(false);
     }
@@ -120,7 +148,6 @@ function ActivityDetails() {
 
   const hdlGotoChat = () => {
     const actualChatRoomId = currentActivity.chatRoomId || currentActivity.chatRoom?.id || currentActivity.id;
-    console.log('🚀 Navigating to Chat with Room ID:', actualChatRoomId);
     navigate(`/chat/${actualChatRoomId}`, {
       state: {
         roomId: actualChatRoomId,
@@ -135,9 +162,22 @@ function ActivityDetails() {
   const hdlHostAction = async (requestId, status) => {
     try {
       await manageJoinRequest(actid, requestId, status);
-      alert(`User ${status === 'APPROVED' ? 'Approved' : 'Rejected'}`);
+      Swal.fire({
+        title: `<h2 class="text-[20px] font-bold text-neutral leading-tight">User ${status === 'APPROVED' ? 'Approved' : 'Rejected'}</h2>`,
+        icon: status === 'APPROVED' ? 'success' : 'info',
+        confirmButtonColor: "#FC5100",
+        width: '300px',
+        padding: '1em',
+      });
     } catch (error) {
-      alert("Action failed");
+      Swal.fire({
+        title: '<h2 class="text-[20px] font-bold text-neutral leading-tight">Action Failed!</h2>',
+        html: '<p class="text-neutral/70">Failed to process the request.</p>',
+        icon: 'error',
+        confirmButtonColor: "#FC5100",
+        width: '300px',
+        padding: '1em',
+      });
     }
   };
 

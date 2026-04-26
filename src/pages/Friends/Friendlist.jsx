@@ -5,6 +5,8 @@ import defaultProfile from "../../assets/default-profilepic.jpg";
 import useFriendStore from "../../stores/friendStore";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import { getOrCreatePrivateRoomApi } from "../../api/mainApi";
+import useChatStore from '../../stores/chatStore'
 
 function Friendlist() {
   const navigate = useNavigate();
@@ -37,11 +39,24 @@ function Friendlist() {
     if (result.isConfirmed) {
       try {
         await acceptFriend(id);
-        await getFriends(); 
-        toast.success("Accepted friend request!");
+        await getFriends();
+        Swal.fire({
+          title: '<h2 class="text-[20px] font-bold text-neutral leading-tight">Friend Request Accepted!</h2>',
+          icon: 'success',
+          confirmButtonColor: "#e09c99",
+          width: '300px',
+          padding: '1em',
+        });
       } catch (error) {
         console.error(error);
-        toast.error("Failed to accept");
+        Swal.fire({
+          title: '<h2 class="text-[20px] font-bold text-neutral leading-tight">Failed to Accept!</h2>',
+          html: '<p class="text-neutral/70">There was an error accepting the friend request.</p>',
+          icon: 'error',
+          confirmButtonColor: "#ef4444",
+          width: '300px',
+          padding: '1em',
+        });
       }
     }
   };
@@ -62,18 +77,57 @@ function Friendlist() {
       try {
         await unFriendship(id);
         await getFriends();
-        toast.success(isRequest ? "Request declined" : `Unfriended ${name}`);
+        Swal.fire({
+          title: '<h2 class="text-[20px] font-bold text-neutral leading-tight">' + (isRequest ? "Request Declined" : `Unfriended ${name}`) + '</h2>',
+          icon: 'success',
+          confirmButtonColor: "#e09c99",
+          width: '300px',
+          padding: '1em',
+        });
       } catch (error) {
         console.error(error);
-        toast.error("Failed to process");
+        Swal.fire({
+          title: '<h2 class="text-[20px] font-bold text-neutral leading-tight">Action Failed!</h2>',
+          html: '<p class="text-neutral/70">Failed to process the request.</p>',
+          icon: 'error',
+          confirmButtonColor: "#ef4444",
+          width: '300px',
+          padding: '1em',
+        });
       }
     }
   };
 
   // กรองตามแท็บที่เลือกและคำค้นหา
-  const filteredData = activeTab === "friends" 
+  const filteredData = activeTab === "friends"
     ? friends.filter((item) => item.username?.toLowerCase().includes(searchTerm.toLowerCase()))
     : requests.filter((item) => item.sender?.username?.toLowerCase().includes(searchTerm.toLowerCase()));
+
+  const handleStartChat = async (friendId, username, profileImg) => {
+    try {
+      const res = await getOrCreatePrivateRoomApi(friendId);
+      console.log('res', res.data)
+
+      // ดูจากโครงสร้าง Controller ที่ผมแนะนำไป roomId จะอยู่ใน res.data.roomId
+      const roomId = res.data?.roomId;
+
+      if (roomId) {
+        // อัปเดต Active Room ใน Store ทันที
+        useChatStore.getState().setActiveRoom(roomId);
+
+        navigate(`/chat/${roomId}`, {
+          state: {
+            title: username,
+            image: profileImg
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Chat navigation failed", error);
+      // แจ้งเตือนสั้นๆ ถ้าเกิดข้อผิดพลาด
+      toast.error("Cannot open chat right now");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-base-200 pb-24 font-sans">
@@ -120,39 +174,19 @@ function Friendlist() {
         {/* Tabs Control */}
         <div className="flex mt-6 bg-base-200 p-1.5 rounded-2xl">
           <button
-<<<<<<< HEAD
-            onClick={() => {
-                setActiveTab("friends");
-                setSearchTerm("");
-            }}
-            className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all ${activeTab === "friends"
-                ? "bg-white shadow-md text-primary"
-                : "text-base-content/40 hover:text-base-content/60"
-=======
             onClick={() => setActiveTab("friends")}
             className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${activeTab === "friends"
-                ? "bg-white shadow-sm text-primary"
-                : "text-base-content/50"
->>>>>>> dev
+              ? "bg-white shadow-sm text-primary"
+              : "text-base-content/50"
               }`}
           >
             Friends ({friends.length})
           </button>
           <button
-<<<<<<< HEAD
-            onClick={() => {
-                setActiveTab("requests");
-                setSearchTerm("");
-            }}
-            className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all ${activeTab === "requests"
-                ? "bg-white shadow-md text-primary"
-                : "text-base-content/40 hover:text-base-content/60"
-=======
             onClick={() => setActiveTab("requests")}
             className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${activeTab === "requests"
-                ? "bg-white shadow-sm text-primary"
-                : "text-base-content/50"
->>>>>>> dev
+              ? "bg-white shadow-sm text-primary"
+              : "text-base-content/50"
               }`}
           >
             Requests ({requests.length})
@@ -170,14 +204,10 @@ function Friendlist() {
                   key={item.friendshipId}
                   className="bg-white p-4 rounded-[25px] shadow-sm flex items-center justify-between border border-transparent hover:border-primary/10 transition-all group"
                 >
-<<<<<<< HEAD
-                  <div className="flex items-center space-x-4">
-=======
                   <div
                     className="flex items-center space-x-3"
                     onClick={() => navigate(`/friend-profile?userId=${item.id}`)}
                   >
->>>>>>> dev
                     <div className="avatar online">
                       <div className="w-14 rounded-full border-2 border-primary/5 group-hover:border-primary/20 transition-colors">
                         <img
@@ -217,19 +247,20 @@ function Friendlist() {
                       className="dropdown-content z-[20] menu p-2 shadow-2xl bg-white rounded-2xl w-44 border border-primary/5"
                     >
                       <li>
-<<<<<<< HEAD
-                        <a className="text-sm font-bold" onClick={() => navigate(`/user/${item.id}`)}>View Profile</a>
-=======
                         <a
                           className="text-sm cursor-pointer"
                           onClick={() => navigate(`/friend-profile?userId=${item.id}`)}
                         >
                           View Profile
                         </a>
->>>>>>> dev
                       </li>
                       <li>
-                        <a className="text-sm font-bold" onClick={() => navigate('/chat')}>Start Chat</a>
+                        <a
+                          className="text-sm font-bold text-primary"
+                          onClick={() => handleStartChat(item.id, item.username, item.profileImg)}
+                        >
+                          Start Chat
+                        </a>
                       </li>
                       <div className="divider my-0 opacity-50"></div>
                       <li>

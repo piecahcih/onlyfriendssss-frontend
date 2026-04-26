@@ -6,7 +6,7 @@ import { AnimatePresence, motion, useMotionValue } from "framer-motion";
 import useUserStore from "../../stores/userStore";
 import useFriendStore from "../../stores/friendStore";
 import useReviewStore from "../../stores/reviewStore";
-import { getFriendProfileApi, SendFriendRequestApi, UnfriendApi } from "../../api/mainApi";
+import { getFriendProfileApi, SendFriendRequestApi, UnfriendApi, getOrCreatePrivateRoomApi } from "../../api/mainApi";
 import { LeftIcon, ChatIcon } from "../../icons";
 
 const FriendProfile = () => {
@@ -16,7 +16,8 @@ const FriendProfile = () => {
 
   const [profileData, setProfileData] = useState(null);
   const [step, setStep] = useState("half");
-  const [isRequested, setIsRequested] = useState(false);
+  // Initialize isRequested based on profileData from backend (assuming backend provides 'hasSentRequest')
+  const [isRequested, setIsRequested] = useState(profileData?.hasSentRequest || false);
   const [activeTab, setActiveTab] = useState("Joined");
   const tabs = ["Joined", "Created", "Reviews"];
   const y = useMotionValue(0);
@@ -33,9 +34,17 @@ const FriendProfile = () => {
     if (friends.length === 0) getFriends();
   }, [userId]);
 
+  useEffect(() => {
+    if (profileData) {
+      // Assuming profileData will have a 'hasSentRequest' field
+      setIsRequested(profileData.hasSentRequest || false);
+    }
+  }, [profileData]);
+
   const fetchFriendProfile = async () => {
     const res = await getFriendProfileApi(userId);
     setProfileData(res.data.user || res.data);
+    console.log('Fetched Friend Profile Data:', res.data.user || res.data);
   };
 
   const handleAddFriend = async () => {
@@ -75,6 +84,26 @@ const FriendProfile = () => {
   };
 
   console.log("profileData", profileData);
+
+  const handleStartChat = async () => {
+    try {
+      const res = await getOrCreatePrivateRoomApi(userId);
+      const roomId = res.data?.roomId;
+      if (roomId) {
+        navigate(`/chat/${roomId}`, {
+          state: {
+            roomId,
+            title: profileData.username,
+            image: profileData.profileImg,
+            friendId: userId
+          }
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Cannot open chat right now");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-black text-black font-sans relative overflow-hidden">
@@ -148,7 +177,7 @@ const FriendProfile = () => {
                 {isFriend ? "Unfriend" : (isRequested ? "Requested" : "Add Friend")}
               </button>
               <button
-                onClick={() => toast.info("Message feature coming soon!")}
+                onClick={handleStartChat}
                 className="flex-1 py-3.5 border border-gray-300 rounded-full font-bold text-sm flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors"
               >
                 <ChatIcon className="w-5 h-5" />

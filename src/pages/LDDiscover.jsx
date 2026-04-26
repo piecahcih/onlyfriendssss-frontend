@@ -15,6 +15,7 @@ import { io, Socket } from 'socket.io-client'
 import Wishlist from "../components/profile/Wishlist";
 import { useSpeechToText } from "../hooks/useSpeechToText";
 
+
 const BACKEND_URL = "http://localhost:3999";
 
 const LDDiscover = () => {

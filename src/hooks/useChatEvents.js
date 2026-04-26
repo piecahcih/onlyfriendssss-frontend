@@ -2,10 +2,11 @@ import { useEffect } from 'react';
 import useSocketStore from '../stores/socketStore';
 import useChatStore from '../stores/chatStore';
 import useNotificationStore from '../stores/notificationStore';
+import useUserStore from '../stores/userStore'
 
 export const useChatEvents = () => {
-    const socket = useSocketStore((state) => state.socket);           // ✅ selector
-    const isConnected = useSocketStore((state) => state.isConnected); // ✅ selector
+    const socket = useSocketStore((state) => state.socket);
+    const isConnected = useSocketStore((state) => state.isConnected);
 
     const { addMessage } = useChatStore();
     const { addNotification } = useNotificationStore();
@@ -17,22 +18,22 @@ export const useChatEvents = () => {
         console.log("🎧 Registering socket listeners...");
 
         const handleNewMessage = (message) => {
-            console.log("📩 New message received:", message);
+            console.log("📩 New message received in useChatEvents:", message);
 
             // ✅ อ่านจาก getState() เพื่อให้ได้ค่าปัจจุบันเสมอ ไม่ใช่ stale closure
             const currentActiveRoomId = useChatStore.getState().activeRoomId;
 
             addMessage(message);
-
-            if (String(message.roomId) !== String(currentActiveRoomId)) {
+            const currentUserId = useUserStore.getState().user?.id
+            if (message.roomId !== currentActiveRoomId && message.sender.id !== currentUserId) {
                 addNotification({
-                    id: `msg-${Date.now()}`,
-                    type: 'NEW_MESSAGE',
-                    message: `${message.sender?.username || 'Friend'}: ${message.content}`,
+                    id: message.id,
+                    type: 'NEW_MESSAGE',  // เปลี่ยนจาก 'new_message' เป็น 'NEW_MESSAGE'
+                    message: `${message.sender.username}: ${message.content}`,
                     roomId: message.roomId,
-                    createdAt: new Date().toISOString(),
-                    isRead: false,
-                });
+                    isRead: false,         // เพิ่มบรรทัดนี้
+                    createdAt: message.createdAt
+                })
             }
         };
 

@@ -7,6 +7,7 @@ import NotificationModal from '../components/NotificationModal';
 import LikeModal from '../components/LikeModal';
 import useUserStore from '../stores/userStore';
 import useWishlistStore from '../stores/wishlistStore';
+import useNotificationStore from '../stores/notificationStore'
 import { format, formatRelative } from 'date-fns';
 import { NavLink } from 'react-router';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
@@ -17,7 +18,6 @@ import useFriendStore from '../stores/friendStore';
 
 function HomePage() {
   const [settingForm, setSettingForm] = useState(false)
-  const [searchText, setSearchText] = useState("");
   const [notiOpen, setNotiOpen] = useState(false);
   const [likeOpen, setLikeOpen] = useState(false);
 
@@ -34,6 +34,8 @@ function HomePage() {
   const getUpcomingActivities = useActivityStore((state) => state.getUpcomingActivities);
 
   const addWishlist = useWishlistStore(st => st.addWishlist);
+  const { unreadCount } = useNotificationStore()
+
 
   const [localSuggests, setLocalSuggests] = useState([]);
   console.log('localSuggests', localSuggests)
@@ -107,12 +109,13 @@ function HomePage() {
             <button
               type="button"
               onClick={() => setNotiOpen(true)}
-              className="relative p-3 rounded-full bg-white/95 backdrop-blur-md shadow-md active:scale-95 transition-all"
+              className="relative p-3 rounded-full bg-white/95 backdrop-blur-md shadow-xl active:scale-95 transition-all"
             >
               <Notification className="w-5 h-5" />
-              <span className="absolute top-1 right-1 w-5 h-5 bg-primary flex items-center justify-center text-[10px] font-bold text-white border-2 border-white rounded-full">
-                1
-              </span>
+              {unreadCount > 0 && (
+                <span className="absolute top-2 right-2 w-5 h-5 bg-primary flex items-center justify-center text-[10px] font-bold text-white border-2 border-white rounded-full">
+                </span>
+              )}
             </button>
           </div>
         </div>

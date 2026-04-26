@@ -24,6 +24,7 @@ function InsideChat() {
   const roomId = paramRoomId || state?.roomId;
   const chatTitle = state?.title || state?.name || "Chat Room";
   const chatIcon = state?.icon || state?.image;
+
   const friendId = state?.friendId || state?.id;
 
   const [inputText, setInputText] = useState("");
@@ -34,6 +35,7 @@ function InsideChat() {
     if (!roomId) return;
     setActiveRoom(roomId);
     getChatHistory(roomId);
+    useChatStore.getState().markAsRead(roomId);
 
     return () => {
       setActiveRoom(null);
@@ -114,12 +116,6 @@ function InsideChat() {
               <div key={msg.id || idx} className={`flex items-end gap-2.5 ${isMe ? "justify-end" : "justify-start"}`}>
                 {!isMe && (
                   <div
-<<<<<<< HEAD
-                    className="w-9 h-9 shrink-0 rounded-full overflow-hidden border-2 border-white shadow-sm bg-white mb-5 cursor-pointer hover:opacity-80 transition-opacity"
-                    onClick={() => navigate(`/user/${senderId}`)}
-                  >
-                    <ProfilePic className="w-full h-full object-cover" imgSrc={msg.sender?.profileImg || defaultProfile} />
-=======
                     className="w-9 h-9 shrink-0 rounded-full overflow-hidden border-2 border-white shadow-sm bg-white mb-5"
                     onClick={() => navigate(`/friend-profile?userId=${senderId}`)}
                   >
@@ -127,7 +123,6 @@ function InsideChat() {
                       className="w-full h-full object-cover pointer-events-none"
                       imgSrc={msg.sender?.profileImg || defaultProfile}
                     />
->>>>>>> dev
                   </div>
                 )}
 
@@ -151,10 +146,6 @@ function InsideChat() {
                 </div>
 
                 {isMe && (
-<<<<<<< HEAD
-                  <div className="w-9 h-9 shrink-0 rounded-full overflow-hidden border-2 border-white shadow-sm bg-white mb-5">
-                    <ProfilePic className="w-full h-full object-cover" imgSrc={user?.profileImg || defaultProfile} />
-=======
                   <div
                     className="w-9 h-9 shrink-0 rounded-full overflow-hidden border-2 border-white shadow-sm bg-white mb-5"
                   >
@@ -162,7 +153,6 @@ function InsideChat() {
                       className="w-full h-full object-cover"
                       imgSrc={user?.profileImg || defaultProfile}
                     />
->>>>>>> dev
                   </div>
                 )}
               </div>

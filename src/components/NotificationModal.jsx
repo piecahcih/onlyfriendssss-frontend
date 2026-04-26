@@ -5,6 +5,7 @@ import { formatDistanceToNow } from 'date-fns'
 import { enUS } from 'date-fns/locale'
 import useNotificationStore from '../stores/notificationStore'
 import useUserStore from '../stores/userStore'
+import useChatStore from '../stores/chatStore'
 import { markAsReadApi, markAllAsReadApi } from '../api/mainApi'
 
 
@@ -25,6 +26,7 @@ function NotificationModal({ isOpen, onClose }) {
     const navigate = useNavigate()
     const token = useUserStore((state) => state.token)
     const { notifications, markAsRead, markAllAsRead } = useNotificationStore()
+    const rooms = useChatStore((state) => state.rooms);
 
     const handleMarkAllRead = async () => {
         try {
@@ -38,7 +40,7 @@ function NotificationModal({ isOpen, onClose }) {
 
     const handleNotiClick = (noti) => {
         const notiId = noti.id || noti._id;
-        
+
         // 1. Update UI immediately
         if (!noti.isRead) {
             markAsRead(notiId);
@@ -48,23 +50,36 @@ function NotificationModal({ isOpen, onClose }) {
 
         onClose(); // Close modal immediately
 
-        // Dynamic ID resolution
         const targetId = noti.roomId || noti.refId || noti.activityId;
 
         // 3. Navigate immediately
         switch (noti.type) {
             case "NEW_MESSAGE":
             case "GROUP_MESSAGE":
-                navigate(targetId ? `/chat/${targetId}` : "/chat");
+                const chatRoom = rooms.find(room => String(room.id) === String(targetId));
+                navigate(targetId ? `/chat/${targetId}` : "/chat", {
+                  state: {
+                    roomId: targetId,
+                    title: chatRoom?.name || 'Unknown Chat', // Use chat room name
+                    icon: chatRoom?.image || '' // Use chat room image
+                  }
+                });
                 break;
 
             case "NEW_REVIEW":
-                navigate("/reviews-rating");
+                navigate("/reviews-rating"); // Assuming reviews-rating lists user's reviews
                 break;
 
             case "FRIEND_REQUEST":
             case "FRIEND_ACCEPTED":
                 navigate("/friendlist");
+                break;
+
+            case "ACTIVITY_APPROVED":
+            case "JOIN_REQUEST":
+            case "REQUEST_TO_JOIN":
+                // For activity-related notifications, navigate to activity details
+                navigate(targetId ? `/activity-details?actid=${targetId}` : "/activities");
                 break;
 
             default:
