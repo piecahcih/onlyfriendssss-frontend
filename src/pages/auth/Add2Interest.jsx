@@ -26,7 +26,7 @@ const interests = [
   { label: "camping 🏕️", value: "camping" },
   { label: "gym & workout 💪", value: "gym_workout" },
   { label: "yoga & pilates 🧘‍♀️", value: "yoga_pilates" },
-  { label: "running 🏃", value: "running" }, // Updated to match enum
+  { label: "running 🏃", value: "running" },
   { label: "mental wellness 😌", value: "mental_wellness" },
   { label: "team sports ⚽", value: "team_sports" },
 

@@ -1,10 +1,11 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { googleLoginApi, loginApi, getProfileApi, editProfileApi, deleteProfileApi, getUserInterestApi } from "../api/mainApi";
+import { googleLoginApi, loginApi, getProfileApi, editProfileApi, deleteProfileApi, getUserInterestApi, getUserSuggestedActivitiesByInterestApi, exploreActivitiesApi } from "../api/mainApi";
 
 const useUserStore = create(persist((set, get) => ({
   user: null,
   interests: [],
+  suggests: [],
   token: "",
   rememberMe: false,
   registeringUser: null, //ไว้ใช้สมัครสมาชิก 3 หน้า
@@ -77,6 +78,18 @@ const useUserStore = create(persist((set, get) => ({
 
     // set({ interests: res.data.interests })
     set({ interests: categories })
+  },
+  getUserSuggestedActivitiesByInterest: async () => {
+    const res = await getUserSuggestedActivitiesByInterestApi()
+    console.log('suggestactstore', res)
+
+    set({ suggests: res.data.suggests })
+  },
+  exploreActivities: async () => {
+    const res = await exploreActivitiesApi()
+    console.log('exploreactstore', res)
+
+    set({ suggests: res.data.suggests })
   },
   
 
