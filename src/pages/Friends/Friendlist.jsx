@@ -106,7 +106,6 @@ function Friendlist() {
   const handleStartChat = async (friendId, username, profileImg) => {
     try {
       const res = await getOrCreatePrivateRoomApi(friendId);
-      console.log('res', res.data)
 
       // ดูจากโครงสร้าง Controller ที่ผมแนะนำไป roomId จะอยู่ใน res.data.roomId
       const roomId = res.data?.roomId;

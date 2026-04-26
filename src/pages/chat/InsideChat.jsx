@@ -14,10 +14,9 @@ function InsideChat() {
 
   const user = useUserStore((state) => state.user);
 
-  // ✅ FIX 1: ดึง socket โดยไม่เอา connectSocket (App.jsx จัดการแล้ว)
+
   const { socket, isConnected } = useSocketStore();
 
-  // ✅ FIX 2: ดึง messages แบบ selector เพื่อให้ reactive เมื่อ store อัปเดต
   const messages = useChatStore((state) => state.messages);
   const { setActiveRoom, getChatHistory } = useChatStore();
 
@@ -30,7 +29,7 @@ function InsideChat() {
   const [inputText, setInputText] = useState("");
   const messagesEndRef = useRef(null);
 
-  // ✅ FIX 3: โหลด history + cleanup แยก effect ออกจาก join room
+
   useEffect(() => {
     if (!roomId) return;
     setActiveRoom(roomId);
@@ -41,9 +40,9 @@ function InsideChat() {
       setActiveRoom(null);
       useChatStore.setState({ messages: [] });
     };
-  }, [roomId]); // ไม่ใส่ setActiveRoom/getChatHistory เพราะ function reference stable อยู่แล้ว
+  }, [roomId]);
 
-  // ✅ FIX 4: Join/Leave room แยก effect ออกมา ไม่ปนกับ connectSocket
+
   useEffect(() => {
     if (!roomId || !socket || !isConnected) return;
 
