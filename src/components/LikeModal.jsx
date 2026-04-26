@@ -103,10 +103,10 @@ function LikeModal({ isOpen, onClose }) {
                           </div>
 
                           <div
-                            className="absolute top-9 right-2 bg-gray-50/50 p-1 rounded-full backdrop-blur-sm"
+                            className="absolute top-7 right-2 bg-gray-50/50 p-1 rounded-full backdrop-blur-sm"
                             onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
                           >
-                            <div className="scale-75 origin-center">
+                            <div className="scale-95 origin-center">
                               <Wishlist activityId={activity.id} />
                             </div>
                           </div>
