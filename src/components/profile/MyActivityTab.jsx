@@ -214,8 +214,8 @@ function MyActivityTab() {
             {activeTab === "Memory" && (
               <div className="space-y-4">
                 {" "}
-              {activities.length > 0 ? (
-                 <div className="mb-4">
+                {activities.length > 0 ? (
+                  <div className="mb-4">
                     {/* --- Header: อยู่บรรทัดเดียวกันและคงที่ ไม่เลื่อนตามการ์ด --- */}
                     <div className="flex justify-between items-center px-2 mb-1">
                       <h3 className="font-bold text-lg text-white">
@@ -225,7 +225,7 @@ function MyActivityTab() {
                         onClick={() =>
                           navigate(`/memory-activities`, {
                             state: {
-                               joinedActivities: activities,
+                              joinedActivities: activities,
                               title: `My Memory Activities`,
                             },
                           })
@@ -236,24 +236,24 @@ function MyActivityTab() {
                       </button>
                     </div>
 
-                <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide scroll-smooth">
-                  {activities.slice(0, 5).map((activity) => {
-                    return (
-                    <div
-                    key={activity.id}
-                      onClick={() =>
+                    <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide scroll-smooth">
+                      {activities.slice(0, 5).map((activity) => {
+                        return (
+                          <div
+                            key={activity.id}
+                            onClick={() =>
                               navigate(`/memory-activity-details?actid=${activity.id}`)}
-                       className="min-w-[200px] border border-gray-200 rounded-2xl overflow-hidden shadow-sm cursor-pointer hover:shadow-md transition-shadow"
-                    >
-                      {/* <div className="bg-white rounded-[35px] overflow-hidden shadow-[0_12px_32px_rgba(78,33,32,0.04)] hover:shadow-[0_12px_48px_rgba(78,33,32,0.08)] transition-all duration-300"> */}
-                        <div className="h-32 bg-gray-200">
-                          <img
-                            src={activity.coverPhoto}
-                            alt={activity.title}
-                            className="w-full h-full object-cover "
-                          />
-                          </div>
-                           <div className="p-3 bg-white backdrop-blur-md">
+                            className="min-w-[200px] border border-gray-200 rounded-2xl overflow-hidden shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+                          >
+                            {/* <div className="bg-white rounded-[35px] overflow-hidden shadow-[0_12px_32px_rgba(78,33,32,0.04)] hover:shadow-[0_12px_48px_rgba(78,33,32,0.08)] transition-all duration-300"> */}
+                            <div className="h-32 bg-gray-200">
+                              <img
+                                src={activity.coverPhoto}
+                                alt={activity.title}
+                                className="w-full h-full object-cover "
+                              />
+                            </div>
+                            <div className="p-3 bg-white backdrop-blur-md">
                               <p className="font-light text-sm  text-black truncate">
                                 {activity?.title || "Untitled"}
                               </p>
@@ -261,7 +261,7 @@ function MyActivityTab() {
                                 {activity?.category || "General"}
                               </p>
                             </div>
-                           </div>
+                          </div>
                         );
                       })}
                     </div>

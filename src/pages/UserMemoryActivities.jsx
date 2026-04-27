@@ -1,15 +1,21 @@
-import { useLocation, useNavigate } from "react-router";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 import { motion } from "framer-motion";
 import { LeftIcon } from "../icons";
-import mockActImg from '../assets/mockActImg.jpg';
+import mockActImg from "../assets/mockActImg.jpg";
+import useActivityStore from "../stores/activitiesStore";
 
 function UserMemoryActivities() {
   const navigate = useNavigate();
-  const { state } = useLocation();
 
-  // รับข้อมูลจาก state ที่ส่งมาจาก MyActivityTab (ใช้คีย์ joinedActivities ตามที่ระบุใน onClick)
-  const activities = state?.joinedActivities || [];
-  const title = state?.title || "My Memory Activities";
+  const activities = useActivityStore((state) => state.activities);
+  const getAllFinishedActivitiesOnThisAccount = useActivityStore((state) => state.getAllFinishedActivitiesOnThisAccount);
+
+  useEffect(() => {
+    getAllFinishedActivitiesOnThisAccount();
+  }, []);
+
+  const title = "My Memory Activities";
 
   const BACKEND_URL = "http://localhost:3999";
 
@@ -68,7 +74,7 @@ function UserMemoryActivities() {
                   <div className="p-3">
                     <p className="font-bold text-sm line-clamp-2 text-neutral">{activity?.title || "Untitled"}</p>
                     <p className="text-[10px] text-primary mt-1 font-bold uppercase">{activity?.category ||
-      "General"}</p>
+                      "General"}</p>
                   </div>
                 </div>
               ))}

@@ -15,6 +15,7 @@ import MyActivityTab from "../components/profile/MyActivityTab";
 import useReviewStore from "../stores/reviewStore";
 import { editProfileApi } from "../api/mainApi";
 import "../../MyCalendar.css";
+import useActivityStore from "../stores/activitiesStore";
 
 const BACKEND_URL = "http://localhost:3999";
 
@@ -84,6 +85,8 @@ const Profile = () => {
 
   const userRatings = useReviewStore((state) => state.userRatings);
   const getUserRatings = useReviewStore((state) => state.getUserRatings);
+
+  const activities = useActivityStore((state) => state.activities);
 
   const [step, setStep] = useState("half");
   const y = useMotionValue(0);
@@ -427,7 +430,7 @@ const Profile = () => {
                   to="/calendar"
                   className=" flex  items-center justify-center tracking-[4px] active:scale-95   relative"
                 >
-                  <div className="calendar-neon-btn -z-10"/>
+                  <div className="calendar-neon-btn -z-10" />
                   <span className="calendar text-[18px]  absolute top-0 ">🗓️</span>
                 </NavLink>
 
@@ -458,18 +461,17 @@ const Profile = () => {
                 </span>
               </NavLink>
 
-              <NavLink
-              to="/created-activities"
-               className="flex flex-col items-center flex-1">
+              <button
+                onClick={() => navigate("/created-activities", { state: { createdActivities: activities, title: "My Created Activities" } })}
+                className="flex flex-col items-center flex-1"
+              >
                 <span className="text-2xl font-black text-white">
                   {profileData?._count?.createdActivities || 0}
                 </span>
-                <div
-                 
-                className="text-[10px] font-light text-white uppercase tracking-wider mt-1">
-                <span>Events</span>
+                <div className="text-[10px] font-light text-white uppercase tracking-wider mt-1">
+                  <span>Events</span>
                 </div>
-              </NavLink>
+              </button>
 
               <NavLink
                 to="/friendlist"
