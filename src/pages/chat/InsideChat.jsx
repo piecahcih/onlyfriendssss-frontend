@@ -6,6 +6,7 @@ import useChatStore from "../../stores/chatStore";
 import useSocketStore from "../../stores/socketStore";
 import useUserStore from "../../stores/userStore";
 import defaultProfile from "../../assets/default-profilepic.jpg";
+import EmojiPicker from 'emoji-picker-react'
 
 function InsideChat() {
   const { state } = useLocation();
@@ -28,6 +29,12 @@ function InsideChat() {
 
   const [inputText, setInputText] = useState("");
   const messagesEndRef = useRef(null);
+
+  const [showPicker, setShowPicker] = useState(false)
+
+  const handleEmojiClick = (emojiObject) => {
+    setInputText((prev) => prev + emojiObject.emoji)
+  }
 
 
   useEffect(() => {
@@ -69,6 +76,7 @@ function InsideChat() {
     socket.emit("send_message", { roomId, content: trimmedText }, (res) => {
       if (res?.success) {
         setInputText("");
+        setShowpicker(false)
       } else {
         console.error("❌ Send failed:", res?.message);
       }
@@ -165,7 +173,21 @@ function InsideChat() {
 
       {/* INPUT AREA */}
       <div className="fixed bottom-0 inset-x-0 bg-white/80 backdrop-blur-md p-4 border-t border-primary/5 z-20">
+        {showPicker && (
+          <div className="absolute bottom-[80px] left-4 z-50 shadow-2xl rounded-xl">
+            <EmojiPicker onEmojiClick={handleEmojiClick} searchDisabled={true} />
+          </div>
+        )}
         <form onSubmit={handleSendMessage} className="flex gap-3 items-center max-w-2xl mx-auto">
+          {/* --- เพิ่มปุ่มเปิด/ปิด Emoji --- */}
+          <button
+            type="button"
+            onClick={() => setShowPicker((val) => !val)}
+            className="w-12 h-12 flex items-center justify-center rounded-2xl bg-[#f1f1f1] hover:bg-gray-200 transition-colors text-xl shrink-0"
+          >
+            😀
+          </button>
+          {/* --------------------------- */}
           <input
             type="text"
             value={inputText}
@@ -185,5 +207,6 @@ function InsideChat() {
     </div>
   );
 }
+
 
 export default InsideChat;

@@ -125,7 +125,7 @@ function HomePage() {
             >
               <Notification className="w-5 h-5" />
               {unreadCount > 0 && (
-                <span className="absolute top-2 right-2 w-5 h-5 bg-primary flex items-center justify-center text-[10px] font-bold text-white border-2 border-white rounded-full">
+                <span className="absolute top-2 right-2 w-4 h-4 bg-primary flex items-center justify-center text-[10px] font-bold text-white border-2 border-white rounded-full">
                 </span>
               )}
             </button>
