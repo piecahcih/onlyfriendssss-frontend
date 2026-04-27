@@ -73,9 +73,11 @@ const useUserStore = create(persist((set, get) => ({
 
   getUserInterest: async () => {
     const res = await getUserInterestApi()
-    console.log('intereststore', res)
+    const categories = res.data.interests.map(item => item.category)
+    // console.log('intereststore', res)
 
-    set({ interests: res.data.interests })
+    // set({ interests: res.data.interests })
+    set({ interests: categories })
   },
   getUserSuggestedActivitiesByInterest: async () => {
     const res = await getUserSuggestedActivitiesByInterestApi()
