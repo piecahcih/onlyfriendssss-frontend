@@ -250,43 +250,34 @@ function ActivitiesList() {
               >
                 <div className="h-[230px] relative rounded-[18px] overflow-hidden shadow-md group">
 
-                  <img
-                    src={activity?.coverPhoto}
-                    alt={activity.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute top-4 left-4 flex gap-2">
-                    <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-white/80 backdrop-blur-sm text-[11px] font-bold text-on-surface">
-                      <span>{activity.isPublic ? "🌎" : "🔒"}</span>
-                      {activity.isPublic ? "Public" : "Private"}
+                    <img
+                      src={activity?.coverPhoto}
+                      alt={activity.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute top-4 left-4 flex gap-2">
+                      <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-white/80 backdrop-blur-sm text-[11px] font-bold text-on-surface">
+                        <span>{activity.isPublic ? "🌎" : "🔒"}</span>
+                        {activity.isPublic ? "Public" : "Private"}
+                      </div>
+                      <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-black/12 backdrop-blur-md text-[11px] font-bold text-white">
+                        <span>
+                            {categoryList.find((cat) =>cat.id ===activity.category.toLowerCase(),)?.icon || "✨"}
+                        </span>
+                        {activity.category}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-black/12 backdrop-blur-md text-[11px] font-bold text-white">
-                      <span>
-                        {categoryList.find((cat) => cat.id === activity.category.toLowerCase(),)?.icon || "✨"}
-                      </span>
-                      {activity.category}
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1 px-3 py-1 rounded-full backdrop-blur-md text-[11px] font-bold text-white">
-                    <span>
-                      {categoryList.find((cat) => cat.id === activity.category.toLowerCase(),)?.icon || "✨"}
-                    </span>
-                    {activity.category}
-                  </div>
-                </div>
 
-                <Wishlist activityId={activity.id} />
+                    <Wishlist activityId={activity.id} />
 
 
-                {/* ContentAct */}
-                <div className="backdrop-blur-md px-4 py-3 absolute bottom-2 left-3 right-3 rounded-[18px] text-white">
-
+                  {/* ContentAct */}
                   <div className="bg-black/12 backdrop-blur-md px-4 py-3 absolute bottom-2 left-3 right-3 rounded-[18px] text-white">
-
+                    
                     <h3 className="font-headline font-bold text-[18px] truncate">
-                      {activity.title}
+                        {activity.title}
                     </h3>
-
+                    
 
                     <div className="flex flex-col mt-1">
                       <div className="flex items-center gap-3 text-on-surface/60">
