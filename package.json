@@ -19,6 +19,7 @@
     "mapbox-gl": "^3.22.0",
     "motion": "^12.38.0",
     "react": "^19.2.0",
+    "react-calendar": "^6.0.1",
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.72.1",
     "react-map-gl": "^8.1.1",

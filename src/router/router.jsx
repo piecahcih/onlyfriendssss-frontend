@@ -31,6 +31,7 @@ import FriendCreatedActivities from "../pages/Friends/FriendCreatedActivities";
 import UserJoinedActivities from "../pages/reviews/UserJoinedActivities";
 import UserCreatedActivities from "../pages/UserCreatedActivities";
 import UserMemoryActivities from "../pages/UserMemoryActivities";
+import MyCalendar from "../pages/MyCalendar";
 
 const guestRouter = createBrowserRouter([
   {
@@ -160,6 +161,10 @@ const userRouter = createBrowserRouter([
       {
         path: "reviews-peer",
         element: <PeerReview />,
+      },
+      {
+        path: "calendar",
+        element: <MyCalendar />,
       },
       {
         path: "reviews-rating",
