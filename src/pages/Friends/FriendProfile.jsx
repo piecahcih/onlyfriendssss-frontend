@@ -6,7 +6,8 @@ import { AnimatePresence, motion, useMotionValue } from "framer-motion";
 import useUserStore from "../../stores/userStore";
 import useFriendStore from "../../stores/friendStore";
 import { getFriendProfileApi, SendFriendRequestApi, UnfriendApi } from "../../api/mainApi";
-import { LeftIcon, ChatIcon } from "../../icons";
+import { LeftIcon } from "../../icons";
+import Swal from "../../components/swal/FriendAlert";
 
 const FriendProfile = () => {
   const [searchParams] = useSearchParams();
@@ -22,13 +23,16 @@ const FriendProfile = () => {
   const yPosition = step === "half" ? "55vh" : "10vh";
 
   const currentUser = useUserStore((state) => state.user);
-  const friends = useFriendStore((state) => state.friends)
-  const getFriends = useFriendStore((state) => state.getFriends)
+  const friends = useFriendStore((state) => state.friends);
+  const requests = useFriendStore((state) => state.requests);
+  const sentRequests = useFriendStore((state) => state.sentRequests);
+  const getFriends = useFriendStore((state) => state.getFriends);
+  const acceptFriend = useFriendStore((state) => state.acceptFriend);
 
   useEffect(() => {
     if (!userId) return navigate("/friendlist");
     fetchFriendProfile();
-    if (friends.length === 0) getFriends();
+    getFriends();
   }, [userId]);
 
   const fetchFriendProfile = async () => {
@@ -37,19 +41,46 @@ const FriendProfile = () => {
   };
 
   const handleAddFriend = async () => {
-    await SendFriendRequestApi(userId);
-    toast.success("Friend request sent!");
-    setIsRequested(true);
+    try {
+      await SendFriendRequestApi(userId);
+      toast.success("Friend request sent!");
+      setIsRequested(true);
+      if (getFriends) getFriends();
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to send request");
+    }
   };
 
   const currentFriend = friends.find((f) => String(f.id) === String(userId));
+  const isFriend = !!currentFriend;
+
+  const hasSentRequest = sentRequests?.some((r) => String(r.receiverId) === String(userId));
+
+  const incomingRequest = requests?.find((r) => String(r.senderId) === String(userId));
+  const hasIncomingRequest = !!incomingRequest;
 
   const handleUnfriend = async () => {
-    if (!window.confirm(`Unfriend ${profileData?.username}?`)) return;
-    if (currentFriend?.friendshipId) {
-      await UnfriendApi(currentFriend.friendshipId);
-      await getFriends();
-      toast.success("Unfriended successfully");
+    const result = await Swal.fire({
+      title: `<div class="font-black text-2xl tracking-tight text-neutral">Unfriend</div>`,
+      html: `<div class="text-sm font-medium text-gray-500 mt-2">Remove <b>${profileData?.username}</b> from your friends?</div>`,
+      icon: "question",
+      iconColor: "#000",
+      showCancelButton: true,
+      confirmButtonText: "Yes, unfriend",
+      cancelButtonText: "Cancel",
+      reverseButtons: true,
+    });
+
+    if (result.isConfirmed && currentFriend?.friendshipId) {
+      try {
+        await UnfriendApi(currentFriend.friendshipId);
+        if (getFriends) await getFriends();
+        toast.success("Unfriended successfully");
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to unfriend");
+      }
     }
   };
 
@@ -62,7 +93,6 @@ const FriendProfile = () => {
   }
 
   const isSelf = String(currentUser?.id) === String(userId);
-  const isFriend = !!currentFriend;
 
   return (
     <div className="min-h-screen bg-black text-black font-sans relative overflow-hidden">
@@ -119,25 +149,28 @@ const FriendProfile = () => {
           {!isSelf && (
             <div className="flex gap-3 mb-8">
               <button
-                onClick={isFriend ? handleUnfriend : (isRequested ? undefined : handleAddFriend)}
-                className={`flex-1 py-3.5 border rounded-full font-bold text-sm flex items-center justify-center gap-2 transition-colors ${isRequested && !isFriend
+                onClick={
+                  isFriend
+                    ? handleUnfriend
+                    : hasIncomingRequest
+                      ? () => acceptFriend(incomingRequest.id)
+                      : (hasSentRequest || isRequested ? undefined : handleAddFriend)
+                }
+                className={`flex-1 py-3.5 border rounded-full font-bold text-sm flex items-center justify-center gap-2 transition-all ${(hasSentRequest || isRequested) && !isFriend
                   ? 'border-gray-200 bg-gray-100 text-gray-500 cursor-not-allowed'
-                  : 'border-gray-300 hover:bg-gray-50'
+                  : 'border-gray-300 hover:bg-gray-50 active:scale-95'
                   }`}
               >
-                {!isFriend && !isRequested && (
+                {!isFriend && !hasSentRequest && !isRequested && !hasIncomingRequest && (
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.66-1.546" />
                   </svg>
                 )}
-                {isFriend ? "Unfriend" : (isRequested ? "Requested" : "Add Friend")}
-              </button>
-              <button
-                onClick={() => toast.info("Message feature coming soon!")}
-                className="flex-1 py-3.5 border border-gray-300 rounded-full font-bold text-sm flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors"
-              >
-                <ChatIcon className="w-5 h-5" />
-                Message
+                {isFriend
+                  ? "Unfriend"
+                  : hasIncomingRequest
+                    ? "Accept Friend"
+                    : (hasSentRequest || isRequested ? "Requested" : "Add Friend")}
               </button>
             </div>
           )}
