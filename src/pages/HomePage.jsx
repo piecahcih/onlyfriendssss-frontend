@@ -9,7 +9,7 @@ import useUserStore from '../stores/userStore';
 import useWishlistStore from '../stores/wishlistStore';
 import useNotificationStore from '../stores/notificationStore'
 import { format, formatRelative } from 'date-fns';
-import { NavLink } from 'react-router';
+import { NavLink, useNavigate } from 'react-router';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import SuggestCard from '../components/SuggestCard';
 import useFriendStore from '../stores/friendStore';
@@ -17,12 +17,15 @@ import useFriendStore from '../stores/friendStore';
 
 
 function HomePage() {
+  const navigate = useNavigate();
   const [settingForm, setSettingForm] = useState(false)
   const [notiOpen, setNotiOpen] = useState(false);
   const [likeOpen, setLikeOpen] = useState(false);
 
   const friends = useFriendStore(st => st.friends)
   const getFriends = useFriendStore(st => st.getFriends)
+  const friendActivities = useFriendStore(st => st.friendActivities)
+  const getFriendActivities = useFriendStore(st => st.getFriendActivities)
 
   const user = useUserStore(st => st.user)
   const suggests = useUserStore(st => st.suggests)
@@ -38,8 +41,6 @@ function HomePage() {
 
 
   const [localSuggests, setLocalSuggests] = useState([]);
-  console.log('localSuggests', localSuggests)
-  // const totalVisible = Math.min(localSuggests.length, 3);
 
   useEffect(() => {
     const hasSeenInSession = sessionStorage.getItem("hasSeenPremium");
@@ -56,15 +57,10 @@ function HomePage() {
     getUserSuggestedActivitiesByInterest();
   }, [getUserSuggestedActivitiesByInterest]);
 
-  // useEffect(() => {
-  //   if (suggests && suggests.length === 0) {
-  //     exploreActivities();
-  //   }
-  // }, [suggests, exploreActivities]);
-
   useEffect(() => {
     getFriends()
-  }, [getFriends])
+    getFriendActivities()
+  }, [getFriends, getFriendActivities])
 
   useEffect(() => {
     if (suggests.length > 0) {
@@ -86,6 +82,22 @@ function HomePage() {
   const { isListening, toggleListening, isSupported } = useSpeechToText((transcript) => {
     setSearchText(transcript);
   });
+
+  // Filter: 1 user per 1 latest activity, limit to 5 for Home Page
+  const processedFriendActivities = useMemo(() => {
+    if (!friendActivities) return [];
+    
+    const userMap = new Map();
+    // Latest activity per friend
+    friendActivities.forEach(item => {
+      const userId = item?.user?.id;
+      if (userId && !userMap.has(userId)) {
+        userMap.set(userId, item);
+      }
+    });
+
+    return Array.from(userMap.values()).slice(0, 5);
+  }, [friendActivities]);
 
   return (
     <div className="min-h-screen bg-base-200 pb-24 overflow-x-hidden">
@@ -122,7 +134,6 @@ function HomePage() {
 
         {/* Upcoming Section */}
         <div className="mt-5">
-          {/* <h3 className='font-bold text-[18px] mb-2'>Upcoming events</h3> */}
           <div className="flex overflow-x-auto gap-4 scrollbar-hide -mr-6 pb-2">
             {upcomingActivities?.length > 0 ? (
               upcomingActivities.map((act) => (
@@ -166,9 +177,6 @@ function HomePage() {
         <div className="mt-6">
           <div className="flex items-center justify-between mb-6">
             <h3 className='font-bold text-[18px]'>Suggested For You</h3>
-            {/* <span className="text-[10px] font-black text-primary/50 uppercase tracking-widest bg-primary/5 px-3 py-1 rounded-full">
-              {localSuggests.length} Picks
-            </span> */}
           </div>
 
           <div className="relative h-75 w-57 mx-auto">
@@ -182,7 +190,6 @@ function HomePage() {
                       index={(simplifiedArray.length - 1) - index}
                       total={localSuggests.length}
                     />
-                    <div className="z-[199] text-red-500 text-[50px] absolute top-1">{simplifiedArray.length}</div>
                   </div>
                 ))
               ) : (
@@ -209,33 +216,49 @@ function HomePage() {
         </div>
 
         <div className="mt-12 mb-4">
-          <h3 className='font-bold mb-4'>What's your friends doing?</h3>
+          <div className="flex justify-between items-center mb-4">
+            <h3 className='font-bold'>What's your friends doing?</h3>
+            {friendActivities?.length > 5 && (
+              <button 
+                onClick={() => navigate('/all-friend-activities', { state: { friendActivities } })}
+                className="text-xs font-bold text-primary hover:underline"
+              >
+                See More &gt;
+              </button>
+            )}
+          </div>
           <div className="flex flex-col gap-3 w-full">
-            {friends?.length > 0 ? (
-              friends.map((friend) => (
-                <div key={friend.id}>
-                  <div className="bg-white p-4 rounded-[20px] flex items-center gap-4 shadow-sm border border-gray-100">
-                    <div className="w-12 h-12 bg-gray-200 rounded-full overflow-hidden">
-                      <img src={friend.profileImg} className="w-full h-full object-cover" />
+            {processedFriendActivities?.length > 0 ? (
+              processedFriendActivities.map((item) => (
+                <NavLink to={`/activity-details?actid=${item?.activityId}`} key={item?.id}>
+                  <div className="bg-white p-4 rounded-[20px] flex items-center gap-4 shadow-sm border border-gray-100 active:scale-95 transition-transform">
+                    <div className="w-12 h-12 bg-gray-200 rounded-full overflow-hidden shrink-0">
+                      <img 
+                        src={item?.user?.profileImg || '/assets/default-profilepic.jpg'} 
+                        className="w-full h-full object-cover" 
+                        onError={(e) => e.target.src = '/assets/default-profilepic.jpg'}
+                      />
                     </div>
-                    <div className="flex-1">
-                      <p className="text-[14px] font-medium mb-2">
-                        <span className="font-bold mb-2">{friend.username} </span>
-                        <span>is hosting</span>
-                        <span className='text-[#6e2f12]'> activity name</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[14px] font-medium mb-1 truncate">
+                        <span className="font-bold">{item?.user?.username || 'Someone'} </span>
+                        <span>is {item?.action || 'doing something'}</span>
+                        <span className='text-[#6e2f12] font-semibold'> {item?.activityTitle || 'an activity'}</span>
                       </p>
-                      <p className='text-[10px]'>created at</p>
+                      <p className='text-[10px] text-gray-400'>
+                        {item?.createdAt ? formatRelative(new Date(item.createdAt), new Date()) : 'recently'}
+                      </p>
                     </div>
-                    <div className="bg-secondary rounded-2xl px-3 py-1 text-[12px] font-bold text-[#6e2f12]">
-                      Join
+                    <div className="bg-secondary rounded-2xl px-3 py-1 text-[12px] font-bold text-[#6e2f12] shrink-0">
+                      View
                     </div>
                   </div>
-                </div>
+                </NavLink>
               ))
             ) : (
               <div className="bg-white p-4 rounded-[20px] flex items-center gap-4 shadow-sm border border-gray-100">
                 <p className="text-gray-400 font-medium text-sm">
-                  Your have no friends..
+                  No recent activities from your friends.
                 </p>
               </div>
             )}

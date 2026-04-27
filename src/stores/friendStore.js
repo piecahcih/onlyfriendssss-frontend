@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import {
   AcceptFriendApi,
+  GetFriendActivitiesApi,
   GetFriendListApi,
   SendFriendRequestApi,
   UnfriendApi,
@@ -11,6 +12,7 @@ const useFriendStore = create(persist((set, get) => ({
       friends: [],
       requests: [],
       sentRequests: [],
+      friendActivities: [],
 
       //ดึงข้อมูลเพื่อน
       getFriends: async () => {
@@ -23,6 +25,15 @@ const useFriendStore = create(persist((set, get) => ({
           });
         } catch (error) {
           console.error("Fetch friends error:", error);
+        }
+      },
+
+      getFriendActivities: async () => {
+        try {
+          const res = await GetFriendActivitiesApi();
+          set({ friendActivities: res.data || [] });
+        } catch (error) {
+          console.error("Fetch friend activities error:", error);
         }
       },
 

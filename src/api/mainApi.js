@@ -34,6 +34,9 @@ export const addInterests = (id, formData) => mainApi.post(`/auth/register/inter
 // friendRoute.get("/list", ...)
 export const GetFriendListApi = async () => await mainApi.get("/friend/list");
 
+// friendRoute.get("/activities", ...)
+export const GetFriendActivitiesApi = async () => await mainApi.get("/friend/activities");
+
 // friendRoute.post("/request/:id", ...)
 export const SendFriendRequestApi = async (targetId) =>
   await mainApi.post(`/friend/request/${targetId}`);

@@ -31,6 +31,7 @@ import FriendCreatedActivities from "../pages/Friends/FriendCreatedActivities";
 import UserJoinedActivities from "../pages/reviews/UserJoinedActivities";
 import UserCreatedActivities from "../pages/UserCreatedActivities";
 import UserMemoryActivities from "../pages/UserMemoryActivities";
+import AllFriendActivities from "../pages/AllFriendActivities";
 
 const guestRouter = createBrowserRouter([
   {
@@ -100,6 +101,10 @@ const userRouter = createBrowserRouter([
       {
         path: "welcome",
         element: <Welcome />,
+      },
+      {
+        path: "all-friend-activities",
+        element: <AllFriendActivities />,
       },
       {
         path: "chat/:roomId",

@@ -79,6 +79,22 @@ function EditActivityDetails() {
   const saveEdit = async (e) => {
     e.preventDefault();
     setIsUpdating(true);
+    
+    // Calculate current approved participants
+    const joinedCount = currentActivity?.joinRequests?.filter(req => req.status === 'APPROVED').length || 0;
+    const newMaxParticipants = parseInt(editForm.maxParticipants || currentActivity.maxParticipants);
+
+    if (newMaxParticipants < joinedCount) {
+      setIsUpdating(false);
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid Participants Count',
+        text: `Cannot set max participants to ${newMaxParticipants} because there are already ${joinedCount} people joined.`,
+        confirmButtonColor: "#FC5100",
+      });
+      return;
+    }
+
     console.log('start')
     try {
       const formData = new FormData();
