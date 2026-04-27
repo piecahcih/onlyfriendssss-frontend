@@ -10,18 +10,19 @@ import { createJSONStorage, persist } from "zustand/middleware";
 const useFriendStore = create(persist((set, get) => ({
       friends: [],
       requests: [],
+      sentRequests: [],
 
       //ดึงข้อมูลเพื่อน
       getFriends: async () => {
         try {
           const res = await GetFriendListApi();
-          console.log("backend res", res.data);
           set({
             friends: res.data.friends || [],
             requests: res.data.requests || [],
+            sentRequests: res.data.sentRequests || [],
           });
         } catch (error) {
-          console.error("Fetch friends error:", err);
+          console.error("Fetch friends error:", error);
         }
       },
 
@@ -29,9 +30,10 @@ const useFriendStore = create(persist((set, get) => ({
       requestFriend: async (targetId) => {
         try {
           const res = await SendFriendRequestApi(targetId);
+          await get().getFriends();
           return res;
         } catch (error) {
-          console.error("Send request error:", err);
+          console.error("Send request error:", error);
         }
       },
 
@@ -42,7 +44,7 @@ const useFriendStore = create(persist((set, get) => ({
           await get().getFriends();
           return res;
         } catch (error) {
-          console.error("Accept error:", err);
+          console.error("Accept error:", error);
         }
       },
 
@@ -56,13 +58,13 @@ const useFriendStore = create(persist((set, get) => ({
           console.error("Unfriend error:", error);
         }
       },
-      clearFriendStore: () => set({ friends: [], requests: [] }),
+      clearFriendStore: () => set({ friends: [], requests: [], sentRequests: [] }),
     }),
-    {
-      name: "olfssssFriendState",
-      storage: createJSONStorage(() => localStorage),
-    },
-  ),
+  {
+    name: "olfssssFriendState",
+    storage: createJSONStorage(() => localStorage),
+  },
+),
 );
 
 export default useFriendStore;
