@@ -10,15 +10,18 @@ import useUserStore from "../stores/userStore";
 import NotificationModal from "../components/NotificationModal";
 import { SearchIcon, Notification, CalendarIcon, YourLocationIcon, MicIcon, LocationIcon, RighttIcon, } from "../icons";
 import PremiumModal from "../components/ads/PremiumModal"
+import useNotificationStore from '../stores/notificationStore'
 import { io, Socket } from 'socket.io-client'
 import Wishlist from "../components/profile/Wishlist";
 import { useSpeechToText } from "../hooks/useSpeechToText";
+
 
 const BACKEND_URL = "http://localhost:3999";
 
 const LDDiscover = () => {
   const navigate = useNavigate();
   const { mapContainerRef, mapRef, hdlGetCurrentLocation } = useMapHandler();
+  const { unreadCount } = useNotificationStore()
 
 
 
@@ -46,11 +49,13 @@ const LDDiscover = () => {
   const y = useMotionValue(0);
   const yPosition = step === "half" ? "0%" : "-60vh";
 
-  
+
   const buttonOpacity = useTransform(y, [-200, -300], [1, 0]);
 
   const [searchText, setSearchText] = useState("");
   const [suggestOpen, setSuggestOpen] = useState(false);
+  // const socketRef = useRef(null)
+  const [settingForm, setSettingForm] = useState(false)
   const socketRef = useRef(null)
 
   useEffect(() => {
@@ -74,22 +79,22 @@ const LDDiscover = () => {
     }
   }, [hdlGetCurrentLocation, user?.profileImg])
 
-  const connectSocket = () => {
-    console.log('tokenkub', token)
-    socketRef.current = io("http://localhost:3999", {
-      auth: { token }
-    })
-    socketRef.current.on("connect", () => {
-      console.log('Connected', socketRef.current.id)
-    })
-    return () => {
-      socketRef.current.disconnect()
-    }
-  }
+  // const connectSocket = () => {
+  //   console.log('tokenkub', token)
+  //   socketRef.current = io("http://localhost:3999", {
+  //     auth: { token }
+  //   })
+  //   socketRef.current.on("connect", () => {
+  //     console.log('Connected', socketRef.current.id)
+  //   })
+  //   return () => {
+  //     socketRef.current.disconnect()
+  //   }
+  // }
 
-  useEffect(() => {
-    connectSocket()
-  }, [])
+  // useEffect(() => {
+  //   connectSocket()
+  // }, [])
 
   const activitySuggestions = Array.isArray(activities)
     ? activities
@@ -175,16 +180,15 @@ const LDDiscover = () => {
                 onBlur={() => setTimeout(() => setSuggestOpen(false), 200)}
               />
               {isSupported && (
-                  <div 
-                    className="absolute inset-y-0 right-5 flex items-center z-10 cursor-pointer"
-                    onClick={toggleListening}
-                  >
-                    <MicIcon 
-                      className={`w-6 transition-all duration-300 ${
-                        isListening ? "text-red-500 animate-pulse scale-110" : "text-gray-400 hover:text-primary"
-                      }`} 
-                    />
-                  </div>
+                <div
+                  className="absolute inset-y-0 right-5 flex items-center z-10 cursor-pointer"
+                  onClick={toggleListening}
+                >
+                  <MicIcon
+                    className={`w-6 transition-all duration-300 ${isListening ? "text-red-500 animate-pulse scale-110" : "text-gray-400 hover:text-primary"
+                      }`}
+                  />
+                </div>
               )}
 
               {/* Suggestions Modal - แสดงเมื่อมีการพิมพ์และเจอผลลัพธ์ */}
@@ -251,11 +255,15 @@ const LDDiscover = () => {
               onClick={() => setNotiOpen(true)}
               className="relative p-3 rounded-full bg-white/95 backdrop-blur-md shadow-xl active:scale-95 transition-all"
             >
-              <Notification className="w-5 h-5 text-gray-600" />
-              <span className="absolute top-1 right-1 w-5 h-5 bg-primary flex items-center justify-center text-[10px] font-bold text-white border-2 border-white rounded-full">
-                1
-              </span>
+              <Notification className="w-6 h-6 text-gray-600" />
+              {unreadCount > 0 && (  // แก้จาก hardcode 1
+                <span className="absolute top-2 right-2 w-5 h-5 bg-primary flex items-center justify-center text-[10px] font-bold text-white border-2 border-white rounded-full">
+                  {unreadCount}
+                </span>
+              )}
             </button>
+
+
           </div>
           {/* Categories Horizontal Scroll */}
           <section className="space-y-4 my-2 z-50 -mr-6">
@@ -335,25 +343,25 @@ const LDDiscover = () => {
         className="fixed inset-x-0 bottom-0 z-[60] bg-white rounded-t-[25px] shadow-[0_-12px_40px_rgba(0,0,0,0.15)] flex flex-col pointer-events-auto"
       >
 
-            {/* Location Pin - Moved inside and positioned at top-right of sheet */}
-            <motion.div 
-              style={{ opacity: buttonOpacity }}
-              className="absolute -top-16 right-6"
-            >
-              <button
-                onClick={() => hdlGetCurrentLocation(getFullImgPath(user?.profileImg))}
-                className="p-3 bg-white rounded-full shadow-xl hover:bg-gray-50 active:scale-95 transition-all border border-gray-100 group"
-                title="Go to current location"
-              >
-                <YourLocationIcon className="w-6 h-6 text-primary group-hover:rotate-12 transition-transform" />
-              </button>
-            </motion.div>
+        {/* Location Pin - Moved inside and positioned at top-right of sheet */}
+        <motion.div
+          style={{ opacity: buttonOpacity }}
+          className="absolute -top-16 right-6"
+        >
+          <button
+            onClick={() => hdlGetCurrentLocation(getFullImgPath(user?.profileImg))}
+            className="p-3 bg-white rounded-full shadow-xl hover:bg-gray-50 active:scale-95 transition-all border border-gray-100 group"
+            title="Go to current location"
+          >
+            <YourLocationIcon className="w-6 h-6 text-primary group-hover:rotate-12 transition-transform" />
+          </button>
+        </motion.div>
 
 
-          <div className="w-full flex justify-center py-5 cursor-grab active:cursor-grabbing touch-pan-y"
+        <div className="w-full flex justify-center py-5 cursor-grab active:cursor-grabbing touch-pan-y"
           onClick={() => setStep(step === "half" ? "high" : "half")}>
-            <div className="w-12 h-1.5 bg-gray-200 rounded-full -mt-2 " />
-          </div>
+          <div className="w-12 h-1.5 bg-gray-200 rounded-full -mt-2 " />
+        </div>
 
         <div className="px-6 flex justify-between items-end border-b border-gray-50 -mt-1">
           <div>
@@ -365,8 +373,8 @@ const LDDiscover = () => {
             </p>
           </div>
         </div>
-        
-       
+
+
 
         <div className="flex-1 overflow-y-auto px-6 pt-4 pb-32 space-y-4 bg-white">
           <AnimatePresence>
@@ -405,7 +413,7 @@ const LDDiscover = () => {
                 </div>
 
                 <RighttIcon className="w-7" />
-                
+
               </motion.div>
             ))}
           </AnimatePresence>

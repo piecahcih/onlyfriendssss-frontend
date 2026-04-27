@@ -1,38 +1,52 @@
 import { useEffect } from 'react';
 import useSocketStore from '../stores/socketStore';
 import useChatStore from '../stores/chatStore';
+import useNotificationStore from '../stores/notificationStore';
+import useUserStore from '../stores/userStore'
 
 export const useChatEvents = () => {
-    const { socket } = useSocketStore();
+    const socket = useSocketStore((state) => state.socket);
+    const isConnected = useSocketStore((state) => state.isConnected);
+
     const { addMessage } = useChatStore();
+    const { addNotification } = useNotificationStore();
 
     useEffect(() => {
-        if (!socket) return;
+        // ✅ รอให้ทั้ง socket และ isConnected พร้อมก่อน
+        if (!socket || !isConnected) return;
 
-        // ดักฟังข้อความใหม่
-        socket.on("new_message", (message) => {
-            console.log("📩 New message received:", message);
-            addMessage(message); // ส่งไปเก็บใน chatStore
-        });
+        console.log("🎧 Registering socket listeners...");
 
-        // ดักฟังเมื่อมีคนกำลังพิมพ์ (Optional)
-        socket.on("user_typing", (data) => {
+        const handleNewMessage = (message) => {
+            console.log("📩 New message received in useChatEvents:", message);
 
-        });
+            // ✅ อ่านจาก getState() เพื่อให้ได้ค่าปัจจุบันเสมอ ไม่ใช่ stale closure
+            const currentActiveRoomId = useChatStore.getState().activeRoomId;
 
-        // ดักฟังการแจ้งเตือนอื่นๆ
-        socket.on("notification", (data) => {
-
-        });
-
-        // Cleanup function
-        // เลิกดักฟังทุกอย่างเ
-        return () => {
-            socket.off("new_message");
-            socket.off("user_typing");
-            socket.off("notification");
+            addMessage(message);
+            const currentUserId = useUserStore.getState().user?.id
+            if (message.roomId !== currentActiveRoomId && message.sender.id !== currentUserId) {
+                addNotification({
+                    id: message.id,
+                    type: 'NEW_MESSAGE',  // เปลี่ยนจาก 'new_message' เป็น 'NEW_MESSAGE'
+                    message: `${message.sender.username}: ${message.content}`,
+                    roomId: message.roomId,
+                    isRead: false,         // เพิ่มบรรทัดนี้
+                    createdAt: message.createdAt
+                })
+            }
         };
-    }, [socket, addMessage]);
+
+        socket.on("new_message", handleNewMessage);
+
+        return () => {
+            console.log("🔇 Removing socket listeners...");
+            socket.off("new_message", handleNewMessage); // ✅ ระบุ handler ตรงๆ
+        };
+
+        // ✅ depend ทั้ง socket และ isConnected
+        // ทำให้ register listener ใหม่ทุกครั้งที่ reconnect
+    }, [socket, isConnected]);
 };
 
-export default useChatEvents; 
+export default useChatEvents;
