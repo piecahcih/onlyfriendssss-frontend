@@ -15,6 +15,7 @@ function Add1Profile() {
   const registeringUser = useUserStore(state => state.registeringUser)
   const setRegisteringUser = useUserStore(state => state.setRegisteringUser)
   const navigate = useNavigate()
+  const [isCreating, setIsCreating] = useState(false)
 
   const { register, handleSubmit, watch, formState: { errors } } = useForm({
     resolver: zodResolver(addProfile),
@@ -172,9 +173,10 @@ function Add1Profile() {
 
         <button
           type="submit"
+          disabled={isCreating}
           className="bg-primary text-white bai-jamjuree-bold rounded-[18px] px-5 py-2 w-[315px] mt-5 hover:opacity-90"
         >
-          Complete
+          Complete {isCreating && <span className="loading loading-dots loading-md"></span>}
         </button>
       </form>
     </div>

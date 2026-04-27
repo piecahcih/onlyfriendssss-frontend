@@ -428,7 +428,7 @@ const Profile = () => {
                   className=" flex  items-center justify-center tracking-[4px] active:scale-95   relative"
                 >
                   <div className="calendar-neon-btn -z-10"/>
-                  <span className="calendar text-[20px]  absolute top-0 ">🗓️</span>
+                  <span className="calendar text-[18px]  absolute top-0 ">🗓️</span>
                 </NavLink>
 
                 <span className="p-2  backdrop-blur-xl text-white rounded-full border border-white/20 text-[10px]">
@@ -439,7 +439,7 @@ const Profile = () => {
 
             {/* About Section */}
             <div className=" relative overflow-hidden">
-              <p className="text-white font-light leading-normal text-lg">
+              <p className="text-white font-light leading-normal text-[18px]">
                 "{profileData?.bio || "Tell Me About Yourself..."}"
               </p>
             </div>
@@ -457,6 +457,7 @@ const Profile = () => {
                   Rating
                 </span>
               </NavLink>
+
               <NavLink
               to="/created-activities"
                className="flex flex-col items-center flex-1">
@@ -469,7 +470,7 @@ const Profile = () => {
                 <span>Events</span>
                 </div>
               </NavLink>
-              <div className="w-px h-10 bg-white/10" />
+
               <NavLink
                 to="/friendlist"
                 className="flex flex-col items-center flex-1 group"

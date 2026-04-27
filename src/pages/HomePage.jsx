@@ -272,7 +272,8 @@ function HomePage() {
 
       </div>
 
-      <div className="fixed bottom-22 right-3 z-150">
+      {/* Future Ai Chatbot */}
+      {/* <div className="fixed bottom-22 right-3 z-150">
         <button
           type="button"
           onClick={() => alert('paichatja')}
@@ -280,7 +281,7 @@ function HomePage() {
         >
           <ChatIcon className="w-5 h-5" />
         </button>
-      </div>
+      </div> */}
 
       <LikeModal isOpen={likeOpen} onClose={() => setLikeOpen(false)} />
       <NotificationModal isOpen={notiOpen} onClose={() => setNotiOpen(false)} />
