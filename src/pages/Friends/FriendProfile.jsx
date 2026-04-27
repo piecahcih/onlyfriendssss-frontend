@@ -16,6 +16,7 @@ const FriendProfile = () => {
   const userId = searchParams.get("userId");
 
   const [profileData, setProfileData] = useState(null);
+  const [loadingAction, setLoadingAction] = useState(false);
   const [step, setStep] = useState("half");
   // Initialize isRequested based on profileData from backend (assuming backend provides 'hasSentRequest')
   const [isRequested, setIsRequested] = useState(profileData?.hasSentRequest || false);
@@ -47,18 +48,30 @@ const FriendProfile = () => {
   const fetchFriendProfile = async () => {
     const res = await getFriendProfileApi(userId);
     setProfileData(res.data.user || res.data);
-    console.log('Fetched Friend Profile Data:', res.data.user || res.data);
+    // console.log('Fetched Friend Profile Data:', res.data.user || res.data);
   };
 
   const handleAddFriend = async () => {
+    setLoadingAction(true);
     try {
       await SendFriendRequestApi(userId);
-      toast.success("Friend request sent!");
       setIsRequested(true);
-      if (getFriends) getFriends();
+      if (getFriends) await getFriends();
+    } catch (error) {
+      // console.error(error);
+    } finally {
+      setLoadingAction(false);
+    }
+  };
+
+  const handleAcceptFriend = async (id) => {
+    setLoadingAction(true);
+    try {
+      await acceptFriend(id);
     } catch (error) {
       console.error(error);
-      toast.error("Failed to send request");
+    } finally {
+      setLoadingAction(false);
     }
   };
 
@@ -83,13 +96,14 @@ const FriendProfile = () => {
     });
 
     if (result.isConfirmed && currentFriend?.friendshipId) {
+      setLoadingAction(true);
       try {
         await UnfriendApi(currentFriend.friendshipId);
         if (getFriends) await getFriends();
-        toast.success("Unfriended successfully");
       } catch (error) {
         console.error(error);
-        toast.error("Failed to unfriend");
+      } finally {
+        setLoadingAction(false);
       }
     }
   };
@@ -179,32 +193,48 @@ const FriendProfile = () => {
           {!isSelf && (
             <div className="flex gap-3 mb-8">
               <button
+                disabled={loadingAction || ((hasSentRequest || isRequested) && !isFriend && !hasIncomingRequest)}
                 onClick={
                   isFriend
                     ? handleUnfriend
                     : hasIncomingRequest
-                      ? () => acceptFriend(incomingRequest.id)
+                      ? () => handleAcceptFriend(incomingRequest.id)
                       : (hasSentRequest || isRequested ? undefined : handleAddFriend)
                 }
-                className={`flex-1 py-3.5 border rounded-full font-bold text-sm flex items-center justify-center gap-2 transition-all ${(hasSentRequest || isRequested) && !isFriend
+                className={`flex-1 py-3.5 border rounded-full font-bold text-sm flex items-center justify-center gap-2 transition-all ${(hasSentRequest || isRequested) && !isFriend && !hasIncomingRequest
                   ? 'border-gray-200 bg-gray-100 text-gray-500 cursor-not-allowed'
                   : 'border-gray-300 hover:bg-gray-50 active:scale-95'
-                  }`}
+                  } ${loadingAction ? "opacity-70 cursor-wait" : ""}`}
               >
-                {!isFriend && !hasSentRequest && !isRequested && !hasIncomingRequest && (
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.66-1.546" />
-                  </svg>
+                {loadingAction ? (
+                  <span className="loading loading-spinner loading-xs"></span>
+                ) : (
+                  <>
+                    {!isFriend && !hasSentRequest && !isRequested && !hasIncomingRequest && (
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.66-1.546" />
+                      </svg>
+                    )}
+                    {isFriend ? "Unfriend" : hasIncomingRequest ? "Accept Friend" : (isRequested || hasSentRequest ? "Requested" : "Add Friend")}
+                  </>
                 )}
-                {isFriend ? "Unfriend" : (isRequested ? "Requested" : "Add Friend")}
               </button>
-              <button
-                onClick={handleStartChat}
-                className="flex-1 py-3.5 border border-gray-300 rounded-full font-bold text-sm flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors"
-              >
-                <ChatIcon className="w-5 h-5" />
-                Message
-              </button>
+              {isFriend && (
+                <button
+                  disabled={loadingAction}
+                  onClick={handleStartChat}
+                  className={`flex-1 py-3.5 border border-gray-300 rounded-full font-bold text-sm flex items-center justify-center gap-2 hover:bg-gray-50 active:scale-95 transition-all ${loadingAction ? "opacity-70 cursor-wait" : ""}`}
+                >
+                  {loadingAction ? (
+                    <span className="loading loading-spinner loading-xs"></span>
+                  ) : (
+                    <>
+                      <ChatIcon className="w-5 h-5" />
+                      Message
+                    </>
+                  )}
+                </button>
+              )}
             </div>
           )}
 

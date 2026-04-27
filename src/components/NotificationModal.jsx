@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useForceUpdate } from 'framer-motion'
 import { useNavigate } from 'react-router'
 import { LeftIcon, Notification } from '../icons'
 import { formatDistanceToNow } from 'date-fns'
@@ -7,6 +7,7 @@ import useNotificationStore from '../stores/notificationStore'
 import useUserStore from '../stores/userStore'
 import useChatStore from '../stores/chatStore'
 import { markAsReadApi, markAllAsReadApi } from '../api/mainApi'
+import useFriendStore from '../stores/friendStore'
 
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3999'
@@ -27,6 +28,9 @@ function NotificationModal({ isOpen, onClose }) {
     const token = useUserStore((state) => state.token)
     const { notifications, markAsRead, markAllAsRead } = useNotificationStore()
     const rooms = useChatStore((state) => state.rooms);
+    const friends = useFriendStore((state)=> state.friends)
+
+    console.log('friends', friends)
 
     const handleMarkAllRead = async () => {
         try {
@@ -72,7 +76,12 @@ function NotificationModal({ isOpen, onClose }) {
 
             case "FRIEND_REQUEST":
             case "FRIEND_ACCEPTED":
-                navigate("/friendlist");
+                const senderId = noti.senderId;
+                if (senderId) {
+                  navigate(`/friend-profile?userId=${senderId}`);
+                } else {
+                  navigate("/friendlist");
+                }
                 break;
 
             case "ACTIVITY_APPROVED":
