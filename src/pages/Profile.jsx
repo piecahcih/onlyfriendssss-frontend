@@ -246,7 +246,7 @@ const Profile = () => {
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
-              className="fixed bottom-0 left-0 right-0 bg-white z-[101] rounded-t-[40px] p-8 max-h-[90vh] overflow-y-auto"
+              className="fixed bottom-0 left-0 right-0 bg-white z-[1000] rounded-t-[40px] p-8 max-h-[90vh] overflow-y-auto"
             >
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-black text-neutral">
@@ -352,7 +352,7 @@ const Profile = () => {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               className="fixed bottom-0
-      left-0 right-0 bg-white z-[101] rounded-t-[40px] p-8 shadow-2xl"
+      left-0 right-0 bg-white z-[1000] rounded-t-[40px] p-8 shadow-2xl"
             >
               <div className="flex justify-between items-center mb-8">
                 <h2 className="text-2xl font-black text-neutral">Settings</h2>
@@ -413,7 +413,7 @@ const Profile = () => {
 
         <div className="overflow-y-auto px-8 pb-48   scrollbar-hide">
           {/* Profile Content */}
-          <div className="text-start ">
+          <div className="text-center ">
             <h2 className="text-4xl font-black text-white tracking-tight mb-1">
               {profileData?.username}
             </h2>
@@ -424,8 +424,8 @@ const Profile = () => {
             {/* About Section */}
             <div className=" relative overflow-hidden">
               {/* <div className="absolute top-0 right-0 w-20 h-20 bg-primary/10 blur-2xl -z-10" /> */}
-              <div className="flex justify-end items-center mb-2">
-                <span className="  text-[10px] px-4 py-1.5 bg-white text-black  rounded-full font-black uppercase shadow-lg shadow-primary/20">
+              <div className="flex justify-center items-center mt-2 mb-2">
+                <span className="  text-[10px] px-4 py-1.5 bg-white opacity-10 text-black  rounded-full font-black uppercase shadow-lg shadow-primary/20">
                   {profileData?.gender || "Secret"}
                 </span>
               </div>
@@ -493,7 +493,7 @@ const Profile = () => {
           </div>
 
           {/* Activity Section */}
-          <div className="mt-2 min-h-[400px] ">
+          <div className="mt-2 min-h-[400px] -mx-6">
             <MyActivityTab />
           </div>
 
