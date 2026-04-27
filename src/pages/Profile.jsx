@@ -486,14 +486,14 @@ const Profile = () => {
                 })
               ) : (
                 <p className="text-[10px] text-white/20 italic">
-                  No interests added yet
+                  No interests added yet 
                 </p>
               )}
             </div>
           </div>
 
           {/* Activity Section */}
-          <div className="mt-2 min-h-[400px] -mx-6">
+          <div className="mt-2 min-h-[400px]">
             <MyActivityTab />
           </div>
 
