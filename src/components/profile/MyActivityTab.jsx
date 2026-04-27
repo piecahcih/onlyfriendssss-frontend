@@ -48,7 +48,7 @@ function MyActivityTab() {
 
   return (
     <div className="">
-      <div className="flex border-b border-gray-200 mb-2 relative px-4">
+      <div className="flex border-b border-gray-200 mb-2 relative p">
         {tabs.map((tab) => (
           <button
             key={tab}
@@ -67,7 +67,7 @@ function MyActivityTab() {
         ))}
       </div>
 
-      <div className="px-6 flex-1 mb-30 ">
+      <div className="flex-1 mb-30 ">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
@@ -83,7 +83,7 @@ function MyActivityTab() {
                 {activities.length > 0 ? (
                   <div className="mb-4">
                     {/* --- Header: อยู่บรรทัดเดียวกันและคงที่ ไม่เลื่อนตามการ์ด --- */}
-                    <div className="flex justify-between items-center px-2 mb-1">
+                    <div className="flex justify-between items-center py-2 mb-1">
                       <h3 className="font-bold text-lg text-white">
                         Joined Activities
                       </h3>
@@ -147,7 +147,7 @@ function MyActivityTab() {
                 {activities.length > 0 ? (
                   <div className="mb-4">
                     {/* --- Header: อยู่บรรทัดเดียวกันและคงที่ ไม่เลื่อนตามการ์ด --- */}
-                    <div className="flex justify-between items-center px-2 mb-1">
+                    <div className="flex justify-between items-center py-2 mb-1">
                       <h3 className="font-bold text-lg text-white">
                         Created Activities
                       </h3>
@@ -217,7 +217,7 @@ function MyActivityTab() {
                 {activities.length > 0 ? (
                   <div className="mb-4">
                     {/* --- Header: อยู่บรรทัดเดียวกันและคงที่ ไม่เลื่อนตามการ์ด --- */}
-                    <div className="flex justify-between items-center px-2 mb-1">
+                    <div className="flex justify-between items-center py-2 mb-1">
                       <h3 className="font-bold text-lg text-white">
                         Memory Activities
                       </h3>
