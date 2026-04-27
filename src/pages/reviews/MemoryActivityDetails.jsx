@@ -102,17 +102,17 @@ function MemoryActivityDetails() {
   const hdlActivityReview = () => {
     navigate(`/reviews-activities?actid=${actid}`);
   };
- const hdlPeerReview = () => {
-     console.log("Checking data before navigate:", selectedParticipant); 
-     console.log('selectedParticipant', selectedParticipant)
-     if (selectedParticipant && selectedParticipant.userId) {
-       navigate(`/reviews-peer?actid=${actid}&userId=${selectedParticipant.userId}`);
-      } else {
-        alert("Please select a participant first");
-     }
-    };
+  const hdlPeerReview = () => {
+    console.log("Checking data before navigate:", selectedParticipant);
+    console.log('selectedParticipant', selectedParticipant)
+    if (selectedParticipant && selectedParticipant.userId) {
+      navigate(`/reviews-peer?actid=${actid}&userId=${selectedParticipant.userId}`);
+    } else {
+      alert("Please select a participant first");
+    }
+  };
 
-  
+
   return (
     <div className="min-h-screen bg-base-200 text-neutral pb-28">
       {/* TopAppBar */}
@@ -258,16 +258,16 @@ function MemoryActivityDetails() {
 
           {/* List: Approved Attendees (UI วงกลมเรียงกัน) */}
           <div className="flex items-center gap-4 overflow-x-auto pb-2 scrollbar-hide">
-            
+
             {approvedRequests.map((item, idx) => (
               <div
-             key={idx}
-             className="shrink-0 text-center space-y-1 cursor-pointer active:scale-95 transition-all"
-            onClick={() => {
-      console.log("You clicked on:", item); // เช็คว่า item นี้มี id และ user หรือไม่
-      setSelectedParticipant(item);
-    }}
-           >
+                key={idx}
+                className="shrink-0 text-center space-y-1 cursor-pointer active:scale-95 transition-all"
+                onClick={() => {
+                  console.log("You clicked on:", item); // เช็คว่า item นี้มี id และ user หรือไม่
+                  setSelectedParticipant(item);
+                }}
+              >
                 <div className="relative">
                   <img
                     src={getFullImgPath(item.user?.profileImg)}
@@ -288,46 +288,46 @@ function MemoryActivityDetails() {
           </div>
 
           {/* Modal: Participant Details */}
-       {selectedParticipant && (
-        <div className="modal modal-open">
-           <div className="modal-box bg-white rounded-[35px] p-8 flex flex-col items-center gap-5 relative">
-            <button
-              onClick={() => setSelectedParticipant(null)}
-              className="btn btn-sm btn-circle btn-ghost absolute right-4 top-4">
-             ✕
-             </button>
-   
-           <div className="relative">
-               <img
-               src={getFullImgPath(selectedParticipant.user?.profileImg)}
-                className="w-28 h-28 rounded-full border-4 border-primary/10 object-cover shadow-lg"
-                alt="participant"
-               />
-             </div>
-     
-            <div className="text-center">
-               <h3 className="text-xl font-black text-on-surface">
-                {selectedParticipant.user?.username || "User"}
-              </h3>
-              <p className="text-xs font-bold text-primary uppercase tracking-widest mt-1">Participant</p>
-             </div>
-      
-            <div className="w-full space-y-3 mt-2">
-              <button className="btn btn-primary w-full rounded-2xl text-white font-bold">
-                 Add Friend
-            </button>
-              <button
-              onClick={hdlPeerReview}
-               className="btn btn-outline btn-primary w-full rounded-2xl font-bold">
-                 Review This User
-               </button>
-             </div>
-           </div>
-          <div className="modal-backdrop" onClick={() => setSelectedParticipant(null)}>
-            <button>close</button>
-           </div>
-         </div>
-       )}
+          {selectedParticipant && (
+            <div className="modal modal-open">
+              <div className="modal-box bg-white rounded-[35px] p-8 flex flex-col items-center gap-5 relative">
+                <button
+                  onClick={() => setSelectedParticipant(null)}
+                  className="btn btn-sm btn-circle btn-ghost absolute right-4 top-4">
+                  ✕
+                </button>
+
+                <div className="relative">
+                  <img
+                    src={getFullImgPath(selectedParticipant.user?.profileImg)}
+                    className="w-28 h-28 rounded-full border-4 border-primary/10 object-cover shadow-lg"
+                    alt="participant"
+                  />
+                </div>
+
+                <div className="text-center">
+                  <h3 className="text-xl font-black text-on-surface">
+                    {selectedParticipant.user?.username || "User"}
+                  </h3>
+                  <p className="text-xs font-bold text-primary uppercase tracking-widest mt-1">Participant</p>
+                </div>
+
+                <div className="w-full space-y-3 mt-2">
+                  <button className="btn btn-primary w-full rounded-2xl text-white font-bold">
+                    Go the Profile
+                  </button>
+                  <button
+                    onClick={hdlPeerReview}
+                    className="btn btn-outline btn-primary w-full rounded-2xl font-bold">
+                    Review This User
+                  </button>
+                </div>
+              </div>
+              <div className="modal-backdrop" onClick={() => setSelectedParticipant(null)}>
+                <button>close</button>
+              </div>
+            </div>
+          )}
         </div>
       </main>
 
@@ -336,8 +336,8 @@ function MemoryActivityDetails() {
         <button
           onClick={hdlActivityReview}
           className={`w-full max-w-2xl flex bg-primary items-center justify-center gap-3 px-8 py-4 rounded-[25px] font-black text-xl text-white active:scale-95 transition-all border-b-4`}>
-          
-              <span className="text-2xl">👋</span> Review This Activity
+
+          <span className="text-2xl">👋</span> Review This Activity
         </button>
       </div>
     </div>

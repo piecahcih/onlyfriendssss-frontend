@@ -2,23 +2,79 @@ import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence, useMotionValue } from "framer-motion";
 import ProfilePic from "../components/profile/ProfilePic";
 import useUserStore from "../stores/userStore";
-import { SettingIcon, CloseIcon, CameraIcon, EditIcon } from "../icons";
-import { NavLink, useNavigate } from "react-router"; // แก้ไข: เพิ่ม useNavigate
+import {
+  SettingIcon,
+  CloseIcon,
+  CameraIcon,
+  EditIcon,
+  CalendarIcon,
+} from "../icons";
+import { NavLink, useNavigate } from "react-router";
 
 import MyActivityTab from "../components/profile/MyActivityTab";
 import useReviewStore from "../stores/reviewStore";
 import { editProfileApi } from "../api/mainApi";
+import "../../MyCalendar.css";
 
 const BACKEND_URL = "http://localhost:3999";
 
+const interests = [
+  // Food & Drink
+  { label: "foodie 🍳", value: "foodie" },
+  { label: "cafe hopping ☕", value: "cafe_hopping" },
+  { label: "street food 🍢", value: "street_food" },
+  { label: "fine dining 🍷", value: "fine_dining" },
+  { label: "cooking & baking 👩‍🍳", value: "cooking_baking" },
+  { label: "drinks & nightout 🍻", value: "drinks_nightout" },
+
+  // Health & Active
+  { label: "slowlife 🌿", value: "slowlife" },
+  { label: "health 🥗", value: "health" },
+  { label: "sport 🏀", value: "sport" },
+  { label: "camping 🏕️", value: "camping" },
+  { label: "gym & workout 💪", value: "gym_workout" },
+  { label: "yoga & pilates 🧘‍♀️", value: "yoga_pilates" },
+  { label: "running 🏃", value: "running" },
+  { label: "mental wellness 😌", value: "mental_wellness" },
+  { label: "team sports ⚽", value: "team_sports" },
+
+  // Art & Culture
+  { label: "art 🎨", value: "art" },
+  { label: "museum & gallery 🏛️", value: "museum_gallery" },
+  { label: "photography 📸", value: "photography" },
+  { label: "crafting & DIY ✂️", value: "crafting_diy" },
+  { label: "live music 🎸", value: "live_music" },
+  { label: "book club 📚", value: "book_club" },
+
+  // Entertainment & Fun
+  { label: "gaming 🎮", value: "gaming" },
+  { label: "movies & cinema 🍿", value: "movies_cinema" },
+  { label: "board games 🎲", value: "board_games" },
+  { label: "video games 🕹️", value: "video_games" },
+  { label: "karaoke 🎤", value: "karaoke" },
+  { label: "concerts & festivals 🎪", value: "concerts_festivals" },
+
+  // Travel & Adventure
+  { label: "travel ✈️", value: "travel" },
+  { label: "volunteer 🤝", value: "volunteer" },
+  { label: "backpacking 🎒", value: "backpacking" },
+  { label: "road trip 🚗", value: "road_trip" },
+  { label: "beach vibes 🏖️", value: "beach_vibes" },
+  { label: "hiking & trekking 🥾", value: "hiking_trekking" },
+  { label: "sightseeing 🗺️", value: "sightseeing" },
+];
+
 const Profile = () => {
-  const navigate = useNavigate(); // แก้ไข: ประกาศ navigate
+  const navigate = useNavigate();
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
   const logout = useUserStore((state) => state.logout);
   const getProfile = useUserStore((state) => state.getProfile);
   const updateProfile = useUserStore((state) => state.updateProfile);
   const deleteProfile = useUserStore((state) => state.deleteProfile);
+
+  const getUserInterest = useUserStore((state) => state.getUserInterest);
+  const interestsFromStore = useUserStore((state) => state.interests);
 
   const [profileData, setProfileData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -32,13 +88,13 @@ const Profile = () => {
   const [step, setStep] = useState("half");
   const y = useMotionValue(0);
 
-  const yPosition = step === "half" ? "55vh" : "10vh";
+  const yPosition = step === "half" ? "50vh" : "5vh";
   const fileInputRef = useRef(null);
 
-  // แก้ไข: รวม useEffect เป็นอันเดียว
   useEffect(() => {
     fetchUserProfile();
     getUserRatings();
+    getUserInterest();
   }, []);
 
   const fetchUserProfile = async () => {
@@ -154,28 +210,28 @@ const Profile = () => {
   const averageScore = currentRatingInfo?.averageRating || "0.0";
 
   return (
-    <div className="min-h-screen bg-black relative overflow-hidden">
+    <div className="min-h-screen bg-black/80 font-sans relative overflow-hidden">
       {/* --- BACKGROUND IMAGE --- */}
-      <div className="fixed inset-0 -z-10">
+      <div className="relative w-full h-[65vh]">
         <img
           src={getFullImgPath(profileData?.profileImg)}
-          className="w-full h-full object-cover  scale-110 "
+          className="w-full h-full pb-10 object-cover scale-110"
           alt="background"
         />
-        <div className="absolute inset-0 bg-linear-to-b from-black/20 via-transparent to-black/60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
       </div>
 
       {/* --- TOP ACTIONS --- */}
-      <div className="fixed top-6 right-6 flex z-50">
+      <div className="fixed top-6 right-6 flex gap-1 z-50">
         <button
           onClick={handleEditOpen}
-          className="p-2 bg-white/20 backdrop-blur-md  text-black  active:scale-90 transition-all"
+          className="p-3 bg-black/30 backdrop-blur-xl text-white rounded-full border border-white/20 active:scale-95 transition-all"
         >
           <EditIcon className="w-5 h-5" />
         </button>
         <button
           onClick={handleSettingOpen}
-          className="p-2 bg-white/20 backdrop-blur-md  text-black active:scale-90 transition-all"
+          className="p-3 bg-black/30 backdrop-blur-xl text-white rounded-full border border-white/20 active:scale-95 transition-all"
         >
           <SettingIcon className="w-5 h-5" />
         </button>
@@ -196,7 +252,7 @@ const Profile = () => {
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
-              className="fixed bottom-0 left-0 right-0 bg-white z-[101] rounded-t-[40px] p-8 max-h-[90vh] overflow-y-auto"
+              className="fixed bottom-0 left-0 right-0 bg-white z-[1000] rounded-t-[40px] p-8 max-h-[90vh] overflow-y-auto"
             >
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-black text-neutral">
@@ -301,8 +357,7 @@ const Profile = () => {
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
-              className="fixed bottom-0
-      left-0 right-0 bg-white z-[200] rounded-t-[40px] p-8 shadow-2xl"
+              className="fixed bottom-0 left-0 right-0 bg-white z-[1000] rounded-t-[40px] p-8 shadow-2xl"
             >
               <div className="flex justify-between items-center mb-8">
                 <h2 className="text-2xl font-black text-neutral">Settings</h2>
@@ -316,17 +371,15 @@ const Profile = () => {
               <div className="flex flex-col gap-3">
                 <button
                   onClick={hdlLogout}
-                  className="btn btn-ghost justify-start text-lg font-bold rounded-2xl h-14
-      hover:bg-primary/5 hover:text-primary transition-all"
+                  className="btn btn-ghost justify-start text-lg font-bold rounded-2xl h-14 hover:bg-primary/5 hover:text-primary transition-all"
                 >
-                  🚪 Log out
+                  Log out
                 </button>
                 <button
                   onClick={hdlDeleteAccount}
-                  className="btn btn-ghost justify-start text-lg font-bold
-      rounded-2xl h-14 text-error hover:bg-error/5 transition-all"
+                  className="btn btn-ghost justify-start text-lg font-bold rounded-2xl h-14 text-error hover:bg-error/5 transition-all"
                 >
-                  🗑️ Delete Account
+                  Delete Account
                 </button>
               </div>
             </motion.div>
@@ -336,45 +389,63 @@ const Profile = () => {
 
       {/* --- BOTTOM SHEET --- */}
 
-      {/* <motion.div 
-        animate={{ opacity: step === "high" ? 1 : 0 }}
-        className="fixed inset-0 bg-black/20 backdrop-blur-sm z-30 pointer-events-none"
-        /> */}
-      
-     <motion.div
-  initial={{ y: "100vh" }}
-  animate={{ y: yPosition }}
-  // ยุบ style มารวมกันที่เดียว
-  style={{ 
-    y, 
-    height: "90vh",
-    
-  }} 
-  transition={{ type: "spring", damping: 25, stiffness: 200 }}
-  drag="y"
-  dragConstraints={{ top: 0, bottom: 0 }}
-  dragElastic={0.05}
-  onDragEnd={(_, info) => {
-    if (info.offset.y < -100 || info.velocity.y < -500) setStep("high");
-    else if (info.offset.y > 100 || info.velocity.y > 500) setStep("half");
-  }}
-        className="fixed inset-x-0 bottom-0 w-full max-w-lg h-[95vh] bg-black/40 backdrop-blur-md rounded-3xl    
-         shadow-[0_-20px_50px_rgba(0,0,0,0.3)] border-t border-white/20 z-40 flex flex-col overflow-hidden"
+      <motion.div
+        initial={{ y: "100vh" }}
+        animate={{ y: yPosition }}
+        style={{
+          y,
+          height: "95vh",
+        }}
+        transition={{ type: "spring", damping: 30, stiffness: 150 }}
+        drag="y"
+        dragConstraints={{ top: 0, bottom: 600 }}
+        dragElastic={0.15}
+        onDragEnd={(_, info) => {
+          if (info.offset.y < -50 || info.velocity.y < -300) setStep("high");
+          else if (info.offset.y > 50 || info.velocity.y > 300) setStep("half");
+        }}
+        className=" fixed inset-x-0 bottom-0  bg-black/40 backdrop-blur-md rounded-3xl
+       shadow-[0_-20px_60px_rgba(0,0,0,0.4)] border-t border-white/10 z-40 flex flex-col overflow-hidden"
       >
-  <div className="w-16 h-1.5 bg-white/30 rounded-full mx-auto flex-shrink-0" />
+        <div className="w-16 h-1.5 bg-white/70 rounded-full mx-auto my-4 flex-shrink-0" />
 
-        <div className="overflow-y-auto px-8 pb-32 scrollbar-hide">
+        <div className="overflow-y-auto px-8 pb-48   scrollbar-hide">
           {/* Profile Content */}
-          <div className="text-center mb-10">
-            <h2 className="text-3xl font-black text-white tracking-tight mb-1">
-              {profileData?.username}
-            </h2>
-            <p className="text-sm font-bold text-white uppercase tracking-[0.2em]">
-              {profileData?.firstName} {profileData?.lastName}
-            </p>
+          <div className="mb-8">
+            <div className="flex justify-between items-start ">
+              <div className="flex-">
+                <h2 className="text-4xl font-black text-white tracking-tight mb-1">
+                  {profileData?.username}
+                </h2>
+                <p className="text-[12px] font-light text-white uppercase tracking-[0.2em] mb-4">
+                  {profileData?.firstName} {profileData?.lastName}
+                </p>
+              </div>
 
-            {/* Premium Stats Bar */}
-            <div className="flex items-center justify-around  p-2 " >
+              <div className="flex justify-end gap-2 mt-8 ">
+                <NavLink
+                  to="/calendar"
+                  className=" flex  items-center justify-center tracking-[4px] active:scale-95   relative"
+                >
+                  <div className="calendar-neon-btn -z-10"/>
+                  <span className="calendar text-[20px]  absolute top-0 ">🗓️</span>
+                </NavLink>
+
+                <span className="p-2  backdrop-blur-xl text-white rounded-full border border-white/20 text-[10px]">
+                  {profileData?.gender || "Secret"}
+                </span>
+              </div>
+            </div>
+
+            {/* About Section */}
+            <div className=" relative overflow-hidden">
+              <p className="text-white font-light leading-normal text-lg">
+                "{profileData?.bio || "Tell Me About Yourself..."}"
+              </p>
+            </div>
+
+            {/* Stats Bar */}
+            <div className="flex items-center justify-around  p-2 ">
               <NavLink
                 to="/reviews-rating"
                 className="flex flex-col items-center flex-1 group"
@@ -382,70 +453,60 @@ const Profile = () => {
                 <span className="text-2xl font-black text-primary group-active:scale-90 transition-transform">
                   {averageScore}
                 </span>
-                <span className="text-[10px] font-black text-white uppercase tracking-wider mt-1">
+                <span className="text-[10px] font-light text-white uppercase tracking-wider mt-1">
                   Rating
                 </span>
               </NavLink>
-
-              {/* <div className="w-px h-10 bg-white/10" /> */}
-              <div className="flex flex-col items-center flex-1">
+              <NavLink
+              to="/created-activities"
+               className="flex flex-col items-center flex-1">
                 <span className="text-2xl font-black text-white">
                   {profileData?._count?.createdActivities || 0}
                 </span>
-                <span className="text-[10px] font-black text-white uppercase tracking-wider mt-1">
-                  Events
-                </span>
-              </div>
+                <div
+                 
+                className="text-[10px] font-light text-white uppercase tracking-wider mt-1">
+                <span>Events</span>
+                </div>
+              </NavLink>
               <div className="w-px h-10 bg-white/10" />
               <NavLink
                 to="/friendlist"
                 className="flex flex-col items-center flex-1 group"
               >
-                <span
-                  className="text-2xl font-black text-white group-active:scale-90 transition-transform"
-                >
-                  {profileData?._count?.receivedFriendRequests || 0}
+                <span className="text-2xl font-black text-white group-active:scale-90 transition-transform">
+                  {profileData?.friendsCount || 0}
                 </span>
-                <span className="text-[10px] font-black text-white uppercase tracking-wider mt-1">
+                <span className="text-[10px] font-light text-white uppercase tracking-wider mt-1">
                   Friends
                 </span>
               </NavLink>
             </div>
-          </div>
 
-          {/* About Section */}
-          <div className="bg-amber-50 p-8  relative overflow-hidden">
-            {/* <div className="absolute top-0 right-0 w-20 h-20 bg-primary/10 blur-2xl -z-10" /> */}
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="text-xs font-black text-white uppercase tracking-[0.3em]">
-                Identity
-              </h3>
-              <span
-                className="text-[10px] px-4 py-1.5 bg-primary text-white rounded-full font-black uppercase
-      shadow-lg shadow-primary/20"
-              >
-                {profileData?.gender || "Secret"}
-              </span>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {interestsFromStore && interestsFromStore.length > 0 ? (
+                interestsFromStore.map((catValue, index) => {
+                  const match = interests.find((i) => i.value === catValue);
+                  return match ? (
+                    <div
+                      key={index}
+                      className="px-3 py-1.5 bg-black/20 backdrop-blur-md border border-white/10 rounded-full text-xs text-white  font-medium"
+                    >
+                      {match.label}
+                    </div>
+                  ) : null;
+                })
+              ) : (
+                <p className="text-[10px] text-white/20 italic">
+                  No interests added yet
+                </p>
+              )}
             </div>
-            <p className="text-white font-medium leading-relaxed italic text-lg">
-              "{profileData?.bio || "Tell Me About Yourself..."}"
-            </p>
           </div>
 
-          {/* Activity Section */}
-          <div className="mt-1">
+          <div className="mt-2 min-h-[400px]">
             <MyActivityTab />
-
           </div>
-
-          {/* Location Button */}
-          <NavLink
-            to="/location-reviews?placeid=8"
-            className="btn btn-ghost w-full rounded-2xl h-16 font-black
-      text-primary bg-primary/10 border-none mt-6 hover:bg-primary/20"
-          >
-            📍 Explore Places
-          </NavLink>
         </div>
       </motion.div>
     </div>

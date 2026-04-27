@@ -1,17 +1,12 @@
 import axios from "axios"
 import useUserStore from "../stores/userStore"
 
-const BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3999"
-
 export const mainApi = axios.create({
   baseURL: "http://localhost:3999/api",
   // baseURL: `${BASE_URL}/api`,
 })
 
-// export const mainApi = axios.create({
-//   baseURL: "http://localhost:3999/api",
-//   // baseURL: `${import.meta.env.VITE_BACKEND_URL}/api`
-// })
+
 
 mainApi.interceptors.request.use((config) => {
   const token = useUserStore.getState().token
@@ -38,6 +33,9 @@ export const addInterests = (id, formData) => mainApi.post(`/auth/register/inter
 ////////FRIEND
 // friendRoute.get("/list", ...)
 export const GetFriendListApi = async () => await mainApi.get("/friend/list");
+
+// friendRoute.get("/activities", ...)
+export const GetFriendActivitiesApi = async () => await mainApi.get("/friend/activities");
 
 // friendRoute.post("/request/:id", ...)
 export const SendFriendRequestApi = async (targetId) =>
@@ -92,7 +90,7 @@ export const getAllActivitiesJoinedByThisAccountApi = () => mainApi.get("/activi
 export const getActivityByIdApi = (activityid) => mainApi.get(`/activity/${activityid}`)
 export const getActivityByCategoryApi = (category) => mainApi.get(`/activity/category/${category}`)
 export const createActivityApi = (body) => mainApi.post("/activity", body)
-export const editActivityByIdApi = (activityid,body) => mainApi.patch(`/activity/${activityid}`, body)
+export const editActivityByIdApi = (activityid, body) => mainApi.patch(`/activity/${activityid}`, body)
 export const changeActivityStatusApi = (activityid, body) => mainApi.patch(`/activity/status/${activityid}`, body)
 export const cancelActivityStatusApi = (activityid) => mainApi.patch(`/activity/cancel/${activityid}`)
 export const deleteActivityByIdApi = (activityid) => mainApi.delete(`/activity/${activityid}`)
@@ -131,9 +129,14 @@ export const getActivityReviewsApi = (actid) => mainApi.get(`/review/activity/${
 export const getActivityReviewsByLocationApi = (placeid) => mainApi.get(`/review/place/${placeid}`)
 export const getSpecificReviewApi = (reviewid) => mainApi.get(`/${reviewid}`)
 
-export const createReviewActivityApi = (actid, body) => mainApi.post(`/review/activity/${actid}`,body)
-export const createReviewUserApi = (actid, receiverid, body) => mainApi.post(`/review/user/${actid}/${receiverid}`,body)
+export const createReviewActivityApi = (actid, body) => mainApi.post(`/review/activity/${actid}`, body)
+export const createReviewUserApi = (actid, receiverid, body) => mainApi.post(`/review/user/${actid}/${receiverid}`, body)
 
+
+////////NOTIFICATIONS
+export const getNotificationsApi = () => mainApi.get('/noti')
+export const markAsReadApi = (id) => mainApi.patch(`/noti/${id}/read`)
+export const markAllAsReadApi = () => mainApi.patch('/noti/read-all')
 
 
 export default mainApi;

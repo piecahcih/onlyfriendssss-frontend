@@ -6,6 +6,7 @@ import useUserStore from "../stores/userStore";
 import mainApi from "../api/mainApi";
 import { format } from "date-fns";
 import defaultProfile from "../assets/default-profilepic.jpg";
+import Swal from "sweetalert2";
 
 function ActivityDetails() {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ function ActivityDetails() {
   const currentActivity = useActivityStore((st) => st.currentActivity);
   const getActivityById = useActivityStore((st) => st.getActivityById);
   const joinActivity = useActivityStore((st) => st.joinActivity);
+  const leaveActivity = useActivityStore((st) => st.leaveActivity);
   const manageJoinRequest = useActivityStore((st) => st.manageJoinRequest);
   const storeUser = useUserStore((state) => state.user);
 
@@ -48,6 +50,7 @@ function ActivityDetails() {
     navigate('/activities');
     // navigate(-1);
   };
+
 
   if (loading) {
     return (
@@ -98,7 +101,14 @@ function ActivityDetails() {
 
   const hdlJoin = async () => {
     if (!storeUser) {
-      alert("Please Log in first");
+      Swal.fire({
+        title: '<h2 class="text-[20px] font-bold text-neutral leading-tight">Login Required</h2>',
+        html: '<p class="text-neutral/70">Please log in first to join this activity.</p>',
+        icon: 'warning',
+        confirmButtonColor: "#FC5100",
+        width: '300px',
+        padding: '1em',
+      });
       return;
     }
     try {
@@ -106,34 +116,108 @@ function ActivityDetails() {
       const res = await joinActivity(actid); // ใช้ฟังก์ชันจาก Store
 
       if (res.data.data.status === "APPROVED") {
-        alert("Joined successfully! 🎉");
+        Swal.fire({
+          title: '<h2 class="text-[20px] font-bold text-neutral leading-tight">Joined successfully!</h2>',
+          icon: 'success',
+          confirmButtonColor: "#FC5100",
+          width: '300px',
+          padding: '1em',
+        });
       } else {
-        alert("Request sent, waiting for host approval.");
+        Swal.fire({
+          title: '<h2 class="text-[20px] font-bold text-neutral leading-tight">Request sent!</h2>',
+          html: '<p class="text-neutral/70">Waiting for host approval.</p>',
+          icon: 'info',
+          confirmButtonColor: "#FC5100",
+          width: '300px',
+          padding: '1em',
+        });
       }
     } catch (error) {
-      alert(error.response?.data?.message || "Cannot join this activity");
+      Swal.fire({
+        title: '<h2 class="text-[20px] font-bold text-neutral leading-tight">Error!</h2>',
+        html: `<p class="text-neutral/70">${error.response?.data?.message || "Cannot join this activity"}</p>`,
+        icon: 'error',
+        confirmButtonColor: "#FC5100",
+        width: '300px',
+        padding: '1em',
+      });
     } finally {
       setLoadingJoin(false);
     }
   };
 
   const hdlGotoChat = () => {
-    navigate(`/chat/${encodeURIComponent(currentActivity.title)}`, {
+    const actualChatRoomId = currentActivity.chatRoomId || currentActivity.chatRoom?.id || currentActivity.id;
+    navigate(`/chat/${actualChatRoomId}`, {
       state: {
-        roomId: currentActivity.id,
+        roomId: actualChatRoomId,
         title: currentActivity.title,
         icon: currentActivity.coverPhoto
       }
-    })
-  }
+    });
+  };
+
+  const hdlLeaveActivity = async () => {
+    try {
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "Do you really want to leave this activity?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#FC5100",
+        cancelButtonColor: "#999",
+        confirmButtonText: "Yes, I do!",
+        cancelButtonText: "No, stay",
+        borderRadius: "20px",
+      });
+
+      if (result.isConfirmed) {
+        setLoadingJoin(true);
+        await leaveActivity(currentActivity.id);
+        Swal.fire({
+          title: "Cancelled!",
+          text: "You have left the activity.",
+          icon: "success",
+          confirmButtonColor: "#FC5100",
+          borderRadius: "20px",
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      Swal.fire({
+        title: "Error",
+        text: "Something went wrong. Please try again.",
+        icon: "error",
+        confirmButtonColor: "#FC5100",
+        borderRadius: "20px",
+      });
+    } finally {
+      setLoadingJoin(false);
+    }
+  };
+
 
   // ฟังก์ชันสำหรับ Host จัดการคำขอ
   const hdlHostAction = async (requestId, status) => {
     try {
       await manageJoinRequest(actid, requestId, status);
-      alert(`User ${status === 'APPROVED' ? 'Approved' : 'Rejected'}`);
+      Swal.fire({
+        title: `<h2 class="text-[20px] font-bold text-neutral leading-tight">User ${status === 'APPROVED' ? 'Approved' : 'Rejected'}</h2>`,
+        icon: status === 'APPROVED' ? 'success' : 'info',
+        confirmButtonColor: "#FC5100",
+        width: '300px',
+        padding: '1em',
+      });
     } catch (error) {
-      alert("Action failed");
+      Swal.fire({
+        title: '<h2 class="text-[20px] font-bold text-neutral leading-tight">Action Failed!</h2>',
+        html: '<p class="text-neutral/70">Failed to process the request.</p>',
+        icon: 'error',
+        confirmButtonColor: "#FC5100",
+        width: '300px',
+        padding: '1em',
+      });
     }
   };
 
@@ -145,6 +229,8 @@ function ActivityDetails() {
       navigate(`/friend-profile?userId=${targetUserId}`);
     }
   };
+
+
 
   return (
     <div className="min-h-screen bg-base-200 text-neutral pb-28">
@@ -196,7 +282,7 @@ function ActivityDetails() {
           </h1>
 
           <div>
-            <div 
+            <div
               className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
               onClick={() => hdlToProfile(currentActivity.hostId)}
             >
@@ -302,8 +388,8 @@ function ActivityDetails() {
               +
             </button> */}
             {approvedRequests.map((item, idx) => (
-              <div 
-                key={idx} 
+              <div
+                key={idx}
                 className="shrink-0 text-center space-y-1 cursor-pointer hover:scale-105 transition-transform"
                 onClick={() => hdlToProfile(item.userId || item.user?.id)}
               >
@@ -350,10 +436,20 @@ function ActivityDetails() {
             </div>
           )}
         </div>
+        {(!isHost && (isJoined || isPending)) && (
+          <button
+            type="button"
+            onClick={hdlLeaveActivity}
+            disabled={loadingJoin}
+            className=" w-full flex items-center justify-center  text-neutral/40 hover:text-error transition-colors text-sm font-medium underline"
+          >
+            Leave this activity
+          </button>
+        )}
       </main>
 
       {/* Action Footer */}
-      <div className="fixed bottom-0 left-0 w-full p-6 z-40 bg-linear-to-t from-base-200 via-base-200 to-transparent">
+      <div className="fixed bottom-0 left-0 w-full p-6 z-10  bg-linear-to-t from-base-200 via-base-200 to-transparent flex flex-col items-center">
         <button
           // onClick={hdlJoin}
           // disabled={loadingJoin || isJoined || isFull || isPending || isHost}

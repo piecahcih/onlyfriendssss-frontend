@@ -28,6 +28,11 @@ import FriendProfile from "../pages/Friends/FriendProfile";
 import FriendReviews from "../pages/Friends/FriendReviews";
 import FriendJoinedActivities from "../pages/Friends/FriendJoinedActivities";
 import FriendCreatedActivities from "../pages/Friends/FriendCreatedActivities";
+import UserJoinedActivities from "../pages/reviews/UserJoinedActivities";
+import UserCreatedActivities from "../pages/UserCreatedActivities";
+import UserMemoryActivities from "../pages/UserMemoryActivities";
+import MyCalendar from "../pages/MyCalendar";
+import AllFriendActivities from "../pages/AllFriendActivities";
 
 const guestRouter = createBrowserRouter([
   {
@@ -99,6 +104,10 @@ const userRouter = createBrowserRouter([
         element: <Welcome />,
       },
       {
+        path: "all-friend-activities",
+        element: <AllFriendActivities />,
+      },
+      {
         path: "chat/:roomId",
         element: <InsideChat />,
       },
@@ -122,6 +131,18 @@ const userRouter = createBrowserRouter([
         path: "friend-created-activities",
         element: <FriendCreatedActivities />,
       },
+      {
+        path: "joined-activities",
+        element: <UserJoinedActivities />,
+      },
+      {
+       path: "created-activities", 
+       element: <UserCreatedActivities />,
+     },
+     {
+        path: "memory-activities",
+        element: <UserMemoryActivities />,
+     },
       {
         path: "create",
         element: <CreateActivity />,
@@ -147,15 +168,19 @@ const userRouter = createBrowserRouter([
         element: <PeerReview />,
       },
       {
+        path: "calendar",
+        element: <MyCalendar />,
+      },
+      {
         path: "reviews-rating",
         element: <RatingReview />,
-        
+
       },
 
-        {
+      {
         path: "reviews-activities",
         element: <ActivitiesReview />,
-        },
+      },
 
       {
         path: "location-reviews",
