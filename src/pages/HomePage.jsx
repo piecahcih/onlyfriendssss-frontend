@@ -57,7 +57,8 @@ function HomePage() {
     getUserSuggestedActivitiesByInterest();
   }, [getUserSuggestedActivitiesByInterest]);
 
-  useEffect(() => {
+
+  useEffect(()=>{
     getFriends()
     getFriendActivities()
   }, [getFriends, getFriendActivities])
@@ -190,6 +191,7 @@ function HomePage() {
                       index={(simplifiedArray.length - 1) - index}
                       total={localSuggests.length}
                     />
+                    {/* <div className="z-[199] text-red-500 text-[50px] absolute top-1">{simplifiedArray.length}</div> */}
                   </div>
                 ))
               ) : (

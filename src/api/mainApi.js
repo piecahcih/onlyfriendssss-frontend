@@ -1,9 +1,11 @@
 import axios from "axios"
 import useUserStore from "../stores/userStore"
 
+const BASE_URL = import.meta.env.VITE_BACKEND_URL ||'http://localhost:3999'
+
 export const mainApi = axios.create({
-  baseURL: "http://localhost:3999/api",
-  // baseURL: `${BASE_URL}/api`,
+  // baseURL: "http://localhost:3999/api",
+  baseURL: `${BASE_URL}/api`,
 })
 
 
@@ -109,7 +111,8 @@ export const markChatAsReadApi = (roomId) => mainApi.patch(`/chat/rooms/${roomId
 
 
 
-
+///Place
+export const getAllPlaceDataForQueryApi = (query) => mainApi.get(`/place?query=${query}`)
 
 
 

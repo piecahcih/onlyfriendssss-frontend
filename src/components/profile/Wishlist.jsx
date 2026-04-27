@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react'
 import { HeartIcon, HeartLineIcon } from '../../icons'
 import useWishlistStore from '../../stores/wishlistStore'
+import useUserStore from '../../stores/userStore'
 
 function Wishlist({ activityId }) {
   const wishlist = useWishlistStore(state => state.wishlist)
   const addWishlist = useWishlistStore(state => state.addWishlist)
   const deleteWishlist = useWishlistStore(state => state.deleteWishlist)
+  const getUserSuggestedActivitiesByInterest = useUserStore(st=>st.getUserSuggestedActivitiesByInterest)
 
   useEffect(() => {
     useWishlistStore.getState().getAllWishlist()
@@ -18,8 +20,10 @@ function Wishlist({ activityId }) {
 
     if (isFavorite) {
       await deleteWishlist(activityId)
+      await getUserSuggestedActivitiesByInterest()
     } else {
       await addWishlist(activityId)
+      await getUserSuggestedActivitiesByInterest()
     }
   }
 

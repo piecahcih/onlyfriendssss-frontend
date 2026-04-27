@@ -6,6 +6,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import MapContainer from './MapContainer';
 import getPlaces, { reverseGeocode } from '../../api/getPlace';
 import { useSpeechToText } from '../../hooks/useSpeechToText';
+import useActivityStore from '../../stores/activitiesStore';
 
 function MapboxViewer() {
   const mapContainerRef = useRef()
@@ -51,13 +52,17 @@ function MapModal({ isOpen, onClose, onConfirm }) {
     raw: null,
   });
 
+  const placeSuggests = useActivityStore(st=>st.placeSuggests)
+  const getAllPlaceDataForQuery = useActivityStore(st=>st.getAllPlaceDataForQuery)
+
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
   const performSearch = async (query) => {
     if (query.length > 2) {
       const results = await getPlaces(query);
-      setSearchResults(results || []);
+      const resFromBack = await getAllPlaceDataForQuery(query);
+      setSearchResults((resFromBack && results) || []);
     } else {
       setSearchResults([]);
     }
@@ -136,6 +141,19 @@ function MapModal({ isOpen, onClose, onConfirm }) {
     setSearchResults([]);
   };
 
+  const handleSelectPlaceFromBack = (feature) => {
+    console.log('feature', feature)
+    setAddress({
+      ...address,
+      latitude: feature.latitude,
+      longitude: feature.longitude,
+      placeName: feature.placeName,
+      address: feature.address,
+    });
+    setSearchQuery(feature.placeName);
+    setSearchResults([]);
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -186,8 +204,19 @@ function MapModal({ isOpen, onClose, onConfirm }) {
                 )}
               </div>
 
+
               {searchResults.length > 0 && (
                 <div className="absolute top-full left-0 w-full bg-white mt-2 rounded-2xl shadow-xl z-50 max-h-60 overflow-y-auto border border-base-300">
+                  {placeSuggests.map((result) => (
+                    <button
+                      key={result.id}
+                      onClick={() => handleSelectPlaceFromBack(result)}
+                      className="w-full text-left px-6 py-3 hover:bg-primary/5 transition-colors border-b border-base-100 last:border-none"
+                    >
+                      <p className="font-bold text-sm text-neutral">{result.placeName}</p>
+                      <p className="text-xs text-neutral/50 truncate">{result.address}</p>
+                    </button>
+                  ))}
                   {searchResults.map((result) => (
                     <button
                       key={result.id}

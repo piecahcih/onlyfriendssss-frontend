@@ -73,28 +73,24 @@ const LDDiscover = () => {
   }, [hdlGetCurrentLocation, user?.profileImg]);
 
 
+  const connectSocket = () => {
+    console.log('tokenkub', token)
+    socketRef.current = io("http://localhost:3999", {
+      auth: { token }
+    })
+    socketRef.current.on("connect", () => {
+      console.log('Connected', socketRef.current.id)
+    })
+    return () => {
+      socketRef.current.disconnect()
+    }
+  }
   useEffect(() => {
     if (hdlGetCurrentLocation) {
       hdlGetCurrentLocation(getFullImgPath(user?.profileImg))
     }
   }, [hdlGetCurrentLocation, user?.profileImg])
 
-  // const connectSocket = () => {
-  //   console.log('tokenkub', token)
-  //   socketRef.current = io("http://localhost:3999", {
-  //     auth: { token }
-  //   })
-  //   socketRef.current.on("connect", () => {
-  //     console.log('Connected', socketRef.current.id)
-  //   })
-  //   return () => {
-  //     socketRef.current.disconnect()
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   connectSocket()
-  // }, [])
 
   const activitySuggestions = Array.isArray(activities)
     ? activities
