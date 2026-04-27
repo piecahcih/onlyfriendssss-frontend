@@ -36,10 +36,9 @@ function UserCreatedActivities() {
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className="text-[#a83100] hover:opacity-80 active:scale-95 transition-transform duration-200 relative
-      z-10"
+            className="text-[#a83100] hover:opacity-80 active:scale-95 transition-transform duration-200 relative z-10"
           >
-            <marker />
+           
             <LeftIcon className="w-8" />
           </button>
           <button className="text-2xl font-bold text-neutral">•••</button>
