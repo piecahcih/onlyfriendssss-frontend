@@ -48,19 +48,17 @@ const FriendProfile = () => {
   const fetchFriendProfile = async () => {
     const res = await getFriendProfileApi(userId);
     setProfileData(res.data.user || res.data);
-    console.log('Fetched Friend Profile Data:', res.data.user || res.data);
+    // console.log('Fetched Friend Profile Data:', res.data.user || res.data);
   };
 
   const handleAddFriend = async () => {
     setLoadingAction(true);
     try {
       await SendFriendRequestApi(userId);
-      toast.success("Friend request sent!");
       setIsRequested(true);
       if (getFriends) await getFriends();
     } catch (error) {
-      console.error(error);
-      toast.error("Failed to send request");
+      // console.error(error);
     } finally {
       setLoadingAction(false);
     }
@@ -70,10 +68,8 @@ const FriendProfile = () => {
     setLoadingAction(true);
     try {
       await acceptFriend(id);
-      toast.success("You are now friends!");
     } catch (error) {
       console.error(error);
-      toast.error("Failed to accept request");
     } finally {
       setLoadingAction(false);
     }
@@ -104,10 +100,8 @@ const FriendProfile = () => {
       try {
         await UnfriendApi(currentFriend.friendshipId);
         if (getFriends) await getFriends();
-        toast.success("Unfriended successfully");
       } catch (error) {
         console.error(error);
-        toast.error("Failed to unfriend");
       } finally {
         setLoadingAction(false);
       }
