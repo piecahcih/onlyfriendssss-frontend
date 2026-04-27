@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
@@ -8,12 +8,14 @@ export function useMapHandler() {
   const mapRef = useRef(null);
   const mapContainerRef = useRef(null);
   const userMarkerRef = useRef(null);
+  const userLocationRef = useRef(null); // { latitude, longitude }
 
   const hdlGetCurrentLocation = useCallback((imgUrl, isInstant = false) => {
     if (!navigator.geolocation || !mapRef.current) return;
 
     navigator.geolocation.getCurrentPosition((pos) => {
       const { longitude, latitude } = pos.coords;
+      userLocationRef.current = { latitude, longitude };
       if (userMarkerRef.current) userMarkerRef.current.remove();
 
       const el = document.createElement("div");
@@ -23,7 +25,7 @@ export function useMapHandler() {
       userMarkerRef.current = new mapboxgl.Marker(el)
         .setLngLat([longitude, latitude])
         .addTo(mapRef.current);
-      
+
       const viewOptions = {
         center: [longitude, latitude],
         zoom: 17,
@@ -119,7 +121,7 @@ export function useMapHandler() {
         intensity: 0.2,
         position: [1, 210, 30],
       });
-      });
+    });
 
     mapRef.current = map;
 
@@ -128,5 +130,5 @@ export function useMapHandler() {
     };
   }, []);
 
-  return { mapContainerRef, mapRef, hdlGetCurrentLocation };
+  return { mapContainerRef, mapRef, hdlGetCurrentLocation, userLocationRef };
 }
