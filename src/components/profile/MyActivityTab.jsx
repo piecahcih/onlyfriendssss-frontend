@@ -5,12 +5,12 @@ import { NavLink, useNavigate } from "react-router";
 import { format } from "date-fns";
 import defaultProfile from "../../assets/default-profilepic.jpg";
 import { CalendarIcon, LocationIcon } from "../../icons";
-import Wishlist from "./Wishlist";
-import WishlistAll from "./WishlistAll";
+// import Wishlist from "./Wishlist";
+// import WishlistAll from "./WishlistAll";
 
 function MyActivityTab() {
   const navigate = useNavigate();
-  const tabs = ["Joined", "Created", "Memory", "❤︎"];
+  const tabs = ["Joined", "Created", "Memory"];
   const [activeTab, setActiveTab] = useState("Joined");
 
   const activities = useActivityStore((st) => st.activities);
@@ -48,7 +48,7 @@ function MyActivityTab() {
 
   return (
     <div className="">
-      <div className="flex border-b border-gray-200 mb-6 relative px-4">
+      <div className="flex border-b border-gray-200 mb-2 relative px-4">
         {tabs.map((tab) => (
           <button
             key={tab}
@@ -58,7 +58,7 @@ function MyActivityTab() {
             {tab}
             {activeTab === tab && (
               <motion.div
-                layoutId="activeTab"
+                layoutId="activeTabUnderline"
                 className="absolute bottom-0 left-0 right-0 h-1 bg-primary"
                 transition={{ type: "spring", stiffness: 500, damping: 30 }}
               />
@@ -67,409 +67,210 @@ function MyActivityTab() {
         ))}
       </div>
 
-      <div className="px-6 flex-1">
+      <div className="px-6 flex-1 mb-30 ">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
-            initial={{ opacity: 0, x: 20 }}
+            initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
+            exit={{ opacity: 0, x: -10 }}
             transition={{ duration: 0.2 }}
           >
-            {activeTab === "Joined" &&
-              (activities.length > 0 ? (
-                <div className="space-y-8 flex overflow-x-auto gap-5  snap-x snap-mandatory scrollbar-thin scrollbar-thumb-gray-400 scroll-smooth">
-                  {activities.map((activity) => (
-                    <NavLink
-                      to={`/activity-details?actid=${activity.id}`}
-                      key={activity.id}
-                      className="block flex-none w-[300px] snap-start"
-                    >
-                      <div className="bg-white rounded-[35px] overflow-hidden shadow-[0_12px_32px_rgba(78,33,32,0.04)] hover:shadow-[0_12px_48px_rgba(78,33,32,0.08)] transition-all duration-300">
-                        <div className="relative h-30 w-full overflow-hidden">
-                          <img
-                            src={activity.coverPhoto}
-                            alt={activity.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                          <div className="absolute top-4 left-4 flex gap-2">
-                            <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-[12px] font-bold text-on-surface">
-                              <span>{activity.isPublic ? "🌎" : "🔒"}</span>
-                              {activity.isPublic ? "Public" : "Private"}
+            {activeTab === "Joined" && (
+              <div className="space-y-4">
+                {" "}
+                {/* Container หลักของ Tab Joined */}
+                {activities.length > 0 ? (
+                  <div className="mb-4">
+                    {/* --- Header: อยู่บรรทัดเดียวกันและคงที่ ไม่เลื่อนตามการ์ด --- */}
+                    <div className="flex justify-between items-center px-2 mb-1">
+                      <h3 className="font-bold text-lg text-white">
+                        Joined Activities
+                      </h3>
+                      <button
+                        onClick={() =>
+                          navigate(`/joined-activities`, {
+                            state: {
+                              joinedActivities: activities,
+                              title: `My Joined Activities`,
+                            },
+                          })
+                        }
+                        className="text-xs font-bold text-primary hover:underline transition-all"
+                      >
+                        See More &gt;
+                      </button>
+                    </div>
+
+                    {/* --- Horizontal Scroll Area: โชว์แค่ 5 การ์ดแรก --- */}
+                    <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide scroll-smooth">
+                      {activities.slice(0, 5).map((activity) => {
+                        return (
+                          <div
+                            key={activity.id}
+                            onClick={() =>
+                              navigate(`/activity-details?actid=${activity.id}`)
+                            }
+                            className="min-w-[200px] border border-gray-200 rounded-2xl overflow-hidden shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+                          >
+                            <div className="h-32 bg-gray-200">
+                              <img
+                                src={activity.coverPhoto}
+                                alt={activity.title}
+                                className="w-full h-full object-cover"
+                              />
                             </div>
-                            <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-primary/90 backdrop-blur-sm text-[12px] font-bold text-white">
-                              <span>{activity.categoryIcon}</span>
-                              {activity.category}
-                            </div>
-                          </div>
-
-                          <Wishlist activityId={activity.id} />
-                        </div>
-
-                        <div className="p-2 space-y-4">
-                          <div>
-                            <h3 className="font-headline font-bold text-2xl text-on-surface group-hover:text-primary transition-colors">
-                              {activity.title}
-                            </h3>
-                          </div>
-
-                          <div className="flex flex-col gap-2.5">
-                            <div className="flex items-center gap-3 text-on-surface/60">
-                              <CalendarIcon className="w-4.5 text-primary" />
-                              <span className="text-sm font-medium">
-                                {format(
-                                  new Date(activity.eventStartTime),
-                                  "eee, dd MMM yyyy • p",
-                                )}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-3 text-on-surface/60">
-                              <LocationIcon className="w-4.5 text-primary" />
-                              <span className="text-sm font-medium">
-                                {activity.place?.placeName}
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="pt-4 flex items-center justify-between border-t border-surface-container-low">
-                            <div className="flex items-center gap-3">
-                              <div className="flex -space-x-3.5 items-center">
-                                {(
-                                  activity.joinRequests?.filter(
-                                    (req) => req.status === "APPROVED",
-                                  ) || []
-                                )
-                                  .slice(0, 3)
-                                  .map((attendee, i) => (
-                                    <img
-                                      key={attendee.id || i}
-                                      src={
-                                        attendee.user?.profileImg
-                                          ? attendee.user.profileImg.startsWith(
-                                              "http",
-                                            )
-                                            ? attendee.user.profileImg
-                                            : `http://localhost:3999${attendee.user.profileImg}`
-                                          : defaultProfile
-                                      }
-                                      className="w-10 h-10 rounded-full border-2 border-white object-cover shadow-sm"
-                                      alt="attendee"
-                                    />
-                                  ))}
-                                {(() => {
-                                  const approvedCount =
-                                    activity.joinRequests?.filter(
-                                      (req) => req.status === "APPROVED",
-                                    ).length || 0;
-
-                                  if (approvedCount > 3) {
-                                    return (
-                                      <div className=" h-5 px-3 rounded-full bg-[#ffccb5] border-2 border-white flex items-center justify-center text-[11px] font-black text-primary shadow-sm">
-                                        +{approvedCount - 3}
-                                      </div>
-                                    );
-                                  } else if (approvedCount > 0) {
-                                    return (
-                                      <div className=" px-3 h-5 rounded-full bg-[#ffccb5] border-2 border-white flex items-center justify-center text-[11px] font-black text-primary shadow-sm">
-                                        {approvedCount}
-                                      </div>
-                                    );
-                                  } else {
-                                    return (
-                                      <span className="text-[10px] font-bold text-on-surface/30 uppercase pl-2 leading-none">
-                                        No attendees yet
-                                      </span>
-                                    );
-                                  }
-                                })()}
-                              </div>
-                            </div>
-
-                            <div className="flex flex-col items-end">
-                              <span className="text-[10px] text-on-surface/40 font-bold uppercase tracking-wider">
-                                Hosted by
-                              </span>
-                              <span className="text-sm font-bold text-primary">
-                                {activity.host?.username}
-                              </span>
+                            <div className="p-3 bg-white backdrop-blur-md">
+                              <p className="font-light text-sm  text-black truncate">
+                                {activity?.title || "Untitled"}
+                              </p>
+                              <p className="text-xs text-primary mt-1">
+                                {activity?.category || "General"}
+                              </p>
                             </div>
                           </div>
-                        </div>
-                      </div>
-                    </NavLink>
-                  ))}
-                </div>
-              ) : (
-                <div className="p-10 text-center text-neutral opacity-40 bai-jamjuree-medium">
-                  {/* No events created yet. */}
-                </div>
-              ))}
-
-            {activeTab === "Created" &&
-              (activities.length > 0 ? (
-                <div className="space-y-8 flex overflow-x-auto gap-5  snap-x snap-mandatory scrollbar-thin scrollbar-thumb-gray-400 scroll-smooth">
-                  {activities.map((activity) => (
-                    <NavLink
-                      to={`/activity-details?actid=${activity.id}`}
-                      key={activity.id}
-                      className="block flex-none w-[300px] snap-start"
-                    >
-                      <div className="bg-white rounded-[35px] overflow-hidden shadow-[0_12px_32px_rgba(78,33,32,0.04)] hover:shadow-[0_12px_48px_rgba(78,33,32,0.08)] transition-all duration-300">
-                        <div className="relative h-30 w-full overflow-hidden">
-                          <img
-                            src={activity.coverPhoto}
-                            alt={activity.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                          <div className="absolute top-4 left-4 flex gap-2">
-                            <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-[12px] font-bold text-on-surface">
-                              <span>{activity.isPublic ? "🌎" : "🔒"}</span>
-                              {activity.isPublic ? "Public" : "Private"}
-                            </div>
-                            <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-primary/90 backdrop-blur-sm text-[12px] font-bold text-white">
-                              <span>{activity.categoryIcon}</span>
-                              {activity.category}
-                            </div>
-                          </div>
-
-                          <Wishlist activityId={activity.id} />
-                        </div>
-
-                        <div className="p-2 space-y-4">
-                          <div>
-                            <h3 className="font-headline font-bold text-2xl text-on-surface group-hover:text-primary transition-colors">
-                              {activity.title}
-                            </h3>
-                          </div>
-
-                          <div className="flex flex-col gap-2.5">
-                            <div className="flex items-center gap-3 text-on-surface/60">
-                              <CalendarIcon className="w-4.5 text-primary" />
-                              <span className="text-sm font-medium">
-                                {format(
-                                  new Date(activity.eventStartTime),
-                                  "eee, dd MMM yyyy • p",
-                                )}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-3 text-on-surface/60">
-                              <LocationIcon className="w-4.5 text-primary" />
-                              <span className="text-sm font-medium">
-                                {activity.place?.placeName}
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="pt-4 flex items-center justify-between border-t border-surface-container-low">
-                            <div className="flex items-center gap-3">
-                              <div className="flex -space-x-3.5 items-center">
-                                {(
-                                  activity.joinRequests?.filter(
-                                    (req) => req.status === "APPROVED",
-                                  ) || []
-                                )
-                                  .slice(0, 3)
-                                  .map((attendee, i) => (
-                                    <img
-                                      key={attendee.id || i}
-                                      src={
-                                        attendee.user?.profileImg
-                                          ? attendee.user.profileImg.startsWith(
-                                              "http",
-                                            )
-                                            ? attendee.user.profileImg
-                                            : `http://localhost:3999${attendee.user.profileImg}`
-                                          : defaultProfile
-                                      }
-                                      className="w-10 h-10 rounded-full border-2 border-white object-cover shadow-sm"
-                                      alt="attendee"
-                                    />
-                                  ))}
-                                {(() => {
-                                  const approvedCount =
-                                    activity.joinRequests?.filter(
-                                      (req) => req.status === "APPROVED",
-                                    ).length || 0;
-
-                                  if (approvedCount > 3) {
-                                    return (
-                                      <div className=" h-5 px-3 rounded-full bg-[#ffccb5] border-2 border-white flex items-center justify-center text-[11px] font-black text-primary shadow-sm">
-                                        +{approvedCount - 3}
-                                      </div>
-                                    );
-                                  } else if (approvedCount > 0) {
-                                    return (
-                                      <div className=" px-3 h-5 rounded-full bg-[#ffccb5] border-2 border-white flex items-center justify-center text-[11px] font-black text-primary shadow-sm">
-                                        {approvedCount}
-                                      </div>
-                                    );
-                                  } else {
-                                    return (
-                                      <span className="text-[10px] font-bold text-on-surface/30 uppercase pl-2 leading-none">
-                                        No attendees yet
-                                      </span>
-                                    );
-                                  }
-                                })()}
-                              </div>
-                            </div>
-
-                            <div className="flex flex-col items-end">
-                              <button
-                                type="button"
-                                onClick={(e) => hdlEdit(e, activity.id)}
-                              >
-                                Edit
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </NavLink>
-                  ))}
-                </div>
-              ) : (
-                <div className="p-10 text-center text-neutral opacity-40 bai-jamjuree-medium">
-                  No events created yet.
-                </div>
-              ))}
-
-            {activeTab === "Memory" &&
-              (activities.length > 0 ? (
-                <div className="space-y-8 flex overflow-x-auto gap-5  snap-x snap-mandatory scrollbar-thin scrollbar-thumb-gray-400 scroll-smooth">
-                  {activities.map((activity) => (
-                    <NavLink
-                      to={`/memory-activity-details?actid=${activity.id}`}
-                      key={activity.id}
-                      className="block flex-none w-[300px] snap-start"
-                    >
-                      <div className="bg-white rounded-[35px] overflow-hidden shadow-[0_12px_32px_rgba(78,33,32,0.04)] hover:shadow-[0_12px_48px_rgba(78,33,32,0.08)] transition-all duration-300">
-                        <div className="relative h-30 w-full overflow-hidden">
-                          <img
-                            src={activity.coverPhoto}
-                            alt={activity.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                          <div className="absolute top-4 left-4 flex gap-2">
-                            <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-[12px] font-bold text-on-surface">
-                              <span>{activity.isPublic ? "🌎" : "🔒"}</span>
-                              {activity.isPublic ? "Public" : "Private"}
-                            </div>
-                            <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-primary/90 backdrop-blur-sm text-[12px] font-bold text-white">
-                              <span>{activity.categoryIcon}</span>
-                              {activity.category}
-                            </div>
-                          </div>
-
-                          <Wishlist activityId={activity.id} />
-                        </div>
-
-                        <div className="p-2 space-y-4">
-                          <div>
-                            <h3 className="font-headline font-bold text-2xl text-on-surface group-hover:text-primary transition-colors">
-                              {activity.title}
-                            </h3>
-                          </div>
-
-                          <div className="flex flex-col gap-2.5">
-                            <div className="flex items-center gap-3 text-on-surface/60">
-                              <CalendarIcon className="w-4.5 text-primary" />
-                              <span className="text-sm font-medium">
-                                {format(
-                                  new Date(activity.eventStartTime),
-                                  "eee, dd MMM yyyy • p",
-                                )}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-3 text-on-surface/60">
-                              <LocationIcon className="w-4.5 text-primary" />
-                              <span className="text-sm font-medium">
-                                {activity.place?.placeName}
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="pt-4 flex items-center justify-between border-t border-surface-container-low">
-                            <div className="flex items-center gap-3">
-                              <div className="flex -space-x-3.5 items-center">
-                                {(
-                                  activity.joinRequests?.filter(
-                                    (req) => req.status === "APPROVED",
-                                  ) || []
-                                )
-                                  .slice(0, 3)
-                                  .map((attendee, i) => (
-                                    <img
-                                      key={attendee.id || i}
-                                      src={
-                                        attendee.user?.profileImg
-                                          ? attendee.user.profileImg.startsWith(
-                                              "http",
-                                            )
-                                            ? attendee.user.profileImg
-                                            : `http://localhost:3999${attendee.user.profileImg}`
-                                          : defaultProfile
-                                      }
-                                      className="w-10 h-10 rounded-full border-2 border-white object-cover shadow-sm"
-                                      alt="attendee"
-                                    />
-                                  ))}
-                                {(() => {
-                                  const approvedCount =
-                                    activity.joinRequests?.filter(
-                                      (req) => req.status === "APPROVED",
-                                    ).length || 0;
-
-                                  if (approvedCount > 3) {
-                                    return (
-                                      <div className=" h-5 px-3 rounded-full bg-[#ffccb5] border-2 border-white flex items-center justify-center text-[11px] font-black text-primary shadow-sm">
-                                        +{approvedCount - 3}
-                                      </div>
-                                    );
-                                  } else if (approvedCount > 0) {
-                                    return (
-                                      <div className=" px-3 h-5 rounded-full bg-[#ffccb5] border-2 border-white flex items-center justify-center text-[11px] font-black text-primary shadow-sm">
-                                        {approvedCount}
-                                      </div>
-                                    );
-                                  } else {
-                                    return (
-                                      <span className="text-[10px] font-bold text-on-surface/30 uppercase pl-2 leading-none">
-                                        No attendees yet
-                                      </span>
-                                    );
-                                  }
-                                })()}
-                              </div>
-                            </div>
-
-                            <div className="flex flex-col items-end">
-                              <span className="text-[10px] text-on-surface/40 font-bold uppercase tracking-wider">
-                                Hosted by
-                              </span>
-                              <span className="text-sm font-bold text-primary">
-                                {activity.host?.username}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </NavLink>
-                  ))}
-                </div>
-              ) : (
-                <div className="p-10 text-center text-neutral opacity-40 bai-jamjuree-medium">
-                  No events created yet.
-                </div>
-              ))}
-
-            {activeTab === "❤︎" ? (
-              <div className="space-y-8">
-                <WishlistAll />
+                        );
+                      })}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-10 text-center text-neutral opacity-40 bai-jamjuree-medium">
+                    {/* No events joined yet. */}
+                  </div>
+                )}
               </div>
-            ) : (
-              <div className="p-10 text-center text-neutral opacity-40 bai-jamjuree-medium">
-                No events created yet.
+            )}
+
+            {activeTab === "Created" && (
+              <div className="space-y-4">
+                {" "}
+                {activities.length > 0 ? (
+                  <div className="mb-4">
+                    {/* --- Header: อยู่บรรทัดเดียวกันและคงที่ ไม่เลื่อนตามการ์ด --- */}
+                    <div className="flex justify-between items-center px-2 mb-1">
+                      <h3 className="font-bold text-lg text-white">
+                        Created Activities
+                      </h3>
+                      <button
+                        onClick={() =>
+                          navigate(`/created-activities`, {
+                            state: {
+                              joinedActivities: activities,
+                              title: `My Created Activities`,
+                            },
+                          })
+                        }
+                        className="text-xs font-bold text-primary hover:underline transition-all"
+                      >
+                        See More &gt;
+                      </button>
+                    </div>
+
+                    <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide scroll-smooth">
+                      {activities.slice(0, 5).map((activity) => {
+                        return (
+                          <div
+                            key={activity.id}
+                            onClick={() =>
+                              navigate(`/activity-details?actid=${activity.id}`)
+                            }
+                            className="min-w-[200px] border border-gray-200 rounded-2xl overflow-hidden shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+                          >
+                            {/* <div className="bg-white rounded-[35px] overflow-hidden shadow-[0_12px_32px_rgba(78,33,32,0.04)] hover:shadow-[0_12px_48px_rgba(78,33,32,0.08)] transition-all duration-300"> */}
+                            <div className="h-32 bg-gray-200">
+                              <img
+                                src={activity.coverPhoto}
+                                alt={activity.title}
+                                className="w-full h-full object-cover "
+                              />
+                            </div>
+                            <div className="p-3 bg-white backdrop-blur-md">
+                              <p className="font-light text-sm  text-black truncate">
+                                {activity?.title || "Untitled"}
+                              </p>
+                              <p className="text-xs text-primary mt-1">
+                                {activity?.category || "General"}
+                              </p>
+                              <div className="flex items-center gap-1 px-2 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-[12px] font-bold text-on-surface">
+                                <button
+                                  type="button"
+                                  onClick={(e) => hdlEdit(e, activity.id)}
+                                >
+                                  Edit
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-10 text-center text-neutral opacity-40 bai-jamjuree-medium"></div>
+                )}
+              </div>
+            )}
+
+            {activeTab === "Memory" && (
+              <div className="space-y-4">
+                {" "}
+              {activities.length > 0 ? (
+                 <div className="mb-4">
+                    {/* --- Header: อยู่บรรทัดเดียวกันและคงที่ ไม่เลื่อนตามการ์ด --- */}
+                    <div className="flex justify-between items-center px-2 mb-1">
+                      <h3 className="font-bold text-lg text-white">
+                        Memory Activities
+                      </h3>
+                      <button
+                        onClick={() =>
+                          navigate(`/memory-activities`, {
+                            state: {
+                               joinedActivities: activities,
+                              title: `My Memory Activities`,
+                            },
+                          })
+                        }
+                        className="text-xs font-bold text-primary hover:underline transition-all"
+                      >
+                        See More &gt;
+                      </button>
+                    </div>
+
+                <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide scroll-smooth">
+                  {activities.slice(0, 5).map((activity) => {
+                    return (
+                    <div
+                    key={activity.id}
+                      onClick={() =>
+                              navigate(`/memory-activity-details?actid=${activity.id}`)}
+                       className="min-w-[200px] border border-gray-200 rounded-2xl overflow-hidden shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+                    >
+                      {/* <div className="bg-white rounded-[35px] overflow-hidden shadow-[0_12px_32px_rgba(78,33,32,0.04)] hover:shadow-[0_12px_48px_rgba(78,33,32,0.08)] transition-all duration-300"> */}
+                        <div className="h-32 bg-gray-200">
+                          <img
+                            src={activity.coverPhoto}
+                            alt={activity.title}
+                            className="w-full h-full object-cover "
+                          />
+                          </div>
+                           <div className="p-3 bg-white backdrop-blur-md">
+                              <p className="font-light text-sm  text-black truncate">
+                                {activity?.title || "Untitled"}
+                              </p>
+                              <p className="text-xs text-primary mt-1">
+                                {activity?.category || "General"}
+                              </p>
+                            </div>
+                           </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-10 text-center text-neutral opacity-40 bai-jamjuree-medium">
+                    {/* No events joined yet. */}
+                  </div>
+                )}
               </div>
             )}
           </motion.div>
