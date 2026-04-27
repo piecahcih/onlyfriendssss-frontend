@@ -10,6 +10,8 @@ function Add2Interest() {
   const completeRegistration = useUserStore(state => state.completeRegistration)
   const navigate = useNavigate()
 
+  const [isCreating, setIsCreating] = useState(false)
+
 const interests = [
   // Food & Drink
   { label: "foodie 🍳", value: "foodie" },
@@ -128,14 +130,14 @@ const interests = [
 
         <div className="fixed bottom-0 left-0 z-40 w-full p-6">
           <button
-            disabled={selected.length === 0}
+            disabled={selected.length === 0 && isCreating}
             onClick={hdlSubmit}
             style={{ backgroundColor: '#FF7F50' }}
             className={`w-full py-4 rounded-full bg-linear-to-r from-primary to-secondary text-white font-bold text-lg shadow-[0_8px_32px_rgba(168,49,0,0.24)] active:scale-95 transition-all hover:scale-[1.05]
               ${selected.length === 0 ? 'opacity-50' : 'opacity-100 active:scale-[0.98]'}
             `}
           >
-            continue
+            Continue {isCreating && <span className="loading loading-dots loading-md"></span>}
           </button>
         </div>
 
