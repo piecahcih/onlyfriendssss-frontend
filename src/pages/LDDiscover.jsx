@@ -68,12 +68,6 @@ const LDDiscover = () => {
   }, [hdlGetCurrentLocation, user?.profileImg]);
 
 
-  useEffect(() => {
-    if (hdlGetCurrentLocation) {
-      hdlGetCurrentLocation(getFullImgPath(user?.profileImg))
-    }
-  }, [hdlGetCurrentLocation, user?.profileImg])
-
   const connectSocket = () => {
     console.log('tokenkub', token)
     socketRef.current = io("http://localhost:3999", {

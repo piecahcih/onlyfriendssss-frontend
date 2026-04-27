@@ -235,11 +235,12 @@ function CreateActivity() {
               <span className="absolute left-5 top-1/2 -translate-y-1/2 text-[14px]">
                 📅
               </span>
-              <div className="text-[14px] w-full pl-14 pr-6 py-2 rounded-full bg-white text-left ring-2 ring-[#e09c99]/20 group-hover:ring-[#e09c99]/40 group-focus:ring-[#a83100] transition-all text-neutral placeholder:text-[#834c4b]/40">
+              <div>
                 <input
                   type="datetime-local"
                   value={eventStartTime}
                   onChange={(e) => setEventStartTime(e.target.value)}
+                  className="text-[14px] w-full pl-14 pr-6 py-2 rounded-full bg-white text-left ring-2 ring-[#e09c99]/20 group-hover:ring-[#e09c99]/40 group-focus:ring-[#a83100] transition-all text-neutral placeholder:text-[#834c4b]/40"
                 />
               </div>
             </div>
@@ -259,7 +260,7 @@ function CreateActivity() {
                     value={eventEndTime}
                     onChange={(e) => setEventEndTime(e.target.value)}
                     min={eventStartTime}
-                    className="w-full pl-14 pr-4 py-3 rounded-full bg-white border-none ring-2 ring-[#e09c99]/20 focus:ring-[#a83100] transition-all outline-none text-neutral text-sm"
+                    className="text-[14px] w-full pl-14 pr-6 py-2 rounded-full bg-white text-left ring-2 ring-[#e09c99]/20 group-hover:ring-[#e09c99]/40 group-focus:ring-[#a83100] transition-all text-neutral placeholder:text-[#834c4b]/40"
                   />
                 </div>
                 <button

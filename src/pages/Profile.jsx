@@ -302,7 +302,7 @@ const Profile = () => {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               className="fixed bottom-0
-      left-0 right-0 bg-white z-[101] rounded-t-[40px] p-8 shadow-2xl"
+      left-0 right-0 bg-white z-[200] rounded-t-[40px] p-8 shadow-2xl"
             >
               <div className="flex justify-between items-center mb-8">
                 <h2 className="text-2xl font-black text-neutral">Settings</h2>

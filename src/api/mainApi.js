@@ -111,7 +111,8 @@ export const markChatAsReadApi = (roomId) => mainApi.patch(`/chat/rooms/${roomId
 
 
 
-
+///Place
+export const getAllPlaceDataForQueryApi = (query) => mainApi.get(`/place?query=${query}`)
 
 
 
