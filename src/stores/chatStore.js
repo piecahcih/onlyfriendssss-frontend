@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { getChatRoomsApi, getChatHistoryApi } from "../api/mainApi";
+import { getChatRoomsApi, getChatHistoryApi, markChatAsReadApi } from "../api/mainApi";
 
 const useChatStore = create(
   persist(
@@ -11,6 +11,7 @@ const useChatStore = create(
       unreadCounts: {},
 
       getChatRooms: async () => {
+
         try {
           const res = await getChatRoomsApi();
           // พยายามแกะข้อมูลจากหลายๆ
@@ -54,8 +55,19 @@ const useChatStore = create(
       },
 
       addMessage: (newMessage) => {
-        const { activeRoomId, messages } = get();
-        if (String(newMessage.roomId) === String(activeRoomId)) {
+        const { activeRoomId, messages, rooms } = get();
+
+        // 1. อัปเดตรายชื่อห้อง (เพื่อให้ข้อความล่าสุดในลิสต์เปลี่ยน และห้องเด้งขึ้นบน)
+        const updatedRooms = rooms.map(room => {
+          if (String(room.id) === String(newMessage.roomId)) {
+            return { ...room, lastMessage: newMessage };
+          }
+          return room;
+        });
+        set({ rooms: updatedRooms });
+
+        // 2. อัปเดตเนื้อหาในห้องแชท หรือ เพิ่มเลข Unread
+        if (activeRoomId && String(newMessage.roomId) === String(activeRoomId)) {
           set({ messages: [...messages, newMessage] });
         } else {
           set((state) => ({
@@ -71,7 +83,12 @@ const useChatStore = create(
     }),
     {
       name: "OFsssChatState",
-      storage: createJSONStorage(() => localStorage)
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        rooms: state.rooms,
+        activeRoomId: state.activeRoomId
+
+      }),
     }
   )
 );

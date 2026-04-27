@@ -7,6 +7,7 @@ import NotificationModal from '../components/NotificationModal';
 import LikeModal from '../components/LikeModal';
 import useUserStore from '../stores/userStore';
 import useWishlistStore from '../stores/wishlistStore';
+import useNotificationStore from '../stores/notificationStore'
 import { format, formatRelative } from 'date-fns';
 import { NavLink } from 'react-router';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
@@ -17,23 +18,24 @@ import useFriendStore from '../stores/friendStore';
 
 function HomePage() {
   const [settingForm, setSettingForm] = useState(false)
-  const [searchText, setSearchText] = useState("");
   const [notiOpen, setNotiOpen] = useState(false);
   const [likeOpen, setLikeOpen] = useState(false);
 
-  const friends = useFriendStore(st=>st.friends)
-  const getFriends = useFriendStore(st=>st.getFriends)
+  const friends = useFriendStore(st => st.friends)
+  const getFriends = useFriendStore(st => st.getFriends)
 
-  const user = useUserStore(st=>st.user)
-  const suggests = useUserStore(st=>st.suggests)
-  const getUserSuggestedActivitiesByInterest = useUserStore(st=>st.getUserSuggestedActivitiesByInterest)
-  const exploreActivities = useUserStore(st=>st.exploreActivities)
-  
+  const user = useUserStore(st => st.user)
+  const suggests = useUserStore(st => st.suggests)
+  const getUserSuggestedActivitiesByInterest = useUserStore(st => st.getUserSuggestedActivitiesByInterest)
+  const exploreActivities = useUserStore(st => st.exploreActivities)
+
   const activities = useActivityStore((state) => state.activities) || [];
   const upcomingActivities = useActivityStore((state) => state.upcomingActivities) || [];
   const getUpcomingActivities = useActivityStore((state) => state.getUpcomingActivities);
-  
+
   const addWishlist = useWishlistStore(st => st.addWishlist);
+  const { unreadCount } = useNotificationStore()
+
 
   const [localSuggests, setLocalSuggests] = useState([]);
   console.log('localSuggests', localSuggests)
@@ -60,9 +62,9 @@ function HomePage() {
   //   }
   // }, [suggests, exploreActivities]);
 
-  useEffect(()=>{
+  useEffect(() => {
     getFriends()
-  },[getFriends])
+  }, [getFriends])
 
   useEffect(() => {
     if (suggests.length > 0) {
@@ -70,9 +72,9 @@ function HomePage() {
     }
   }, [suggests]);
 
-  useEffect(()=>{
+  useEffect(() => {
     getUpcomingActivities()
-  },[activities])
+  }, [activities])
 
   const handleSwipe = async (id, direction) => {
     if (direction === 'right') {
@@ -107,12 +109,13 @@ function HomePage() {
             <button
               type="button"
               onClick={() => setNotiOpen(true)}
-              className="relative p-3 rounded-full bg-white/95 backdrop-blur-md shadow-md active:scale-95 transition-all"
+              className="relative p-3 rounded-full bg-white/95 backdrop-blur-md shadow-xl active:scale-95 transition-all"
             >
               <Notification className="w-5 h-5" />
-              <span className="absolute top-1 right-1 w-5 h-5 bg-primary flex items-center justify-center text-[10px] font-bold text-white border-2 border-white rounded-full">
-                1
-              </span>
+              {unreadCount > 0 && (
+                <span className="absolute top-2 right-2 w-5 h-5 bg-primary flex items-center justify-center text-[10px] font-bold text-white border-2 border-white rounded-full">
+                </span>
+              )}
             </button>
           </div>
         </div>
@@ -123,30 +126,30 @@ function HomePage() {
           <div className="flex overflow-x-auto gap-4 scrollbar-hide -mr-6 pb-2">
             {upcomingActivities?.length > 0 ? (
               upcomingActivities.map((act) => (
-                <NavLink to={`/activity-details?actid=${act.id}`} key={act.id} 
+                <NavLink to={`/activity-details?actid=${act.id}`} key={act.id}
                   className="relative w-[285px] shrink-0 snap-start group">
-                    <div className="h-35 rounded-[14px] overflow-hidden relative shadow-sm">
-                      <img src={act.coverPhoto} alt="Activity" 
-                        className='w-full h-full object-cover group-hover:scale-105 transition-transform duration-300' />
-                      
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/60 pointer-events-none" />
-                      
-                      <div className="absolute top-3 left-3 right-3 text-white">
-                        <h4 className='font-bold text-[16px] leading-tight drop-shadow-md truncate' >
-                          {act.title}
-                        </h4> 
-                        <p className='text-[11px] font-medium opacity-90' >
-                          {act?.place?.placeName}
-                        </p> 
-                      </div>
+                  <div className="h-35 rounded-[14px] overflow-hidden relative shadow-sm">
+                    <img src={act.coverPhoto} alt="Activity"
+                      className='w-full h-full object-cover group-hover:scale-105 transition-transform duration-300' />
 
-                      <div className="absolute bottom-3 left-3 text-white">
-                        <p className="text-[12px] font-semibold bg-white/20 backdrop-blur-md px-2 py-1 rounded-md inline-block">
-                          {formatRelative(new Date(act.eventStartTime), new Date())}
-                        </p>
-                      </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/60 pointer-events-none" />
+
+                    <div className="absolute top-3 left-3 right-3 text-white">
+                      <h4 className='font-bold text-[16px] leading-tight drop-shadow-md truncate' >
+                        {act.title}
+                      </h4>
+                      <p className='text-[11px] font-medium opacity-90' >
+                        {act?.place?.placeName}
+                      </p>
                     </div>
-                  </NavLink>
+
+                    <div className="absolute bottom-3 left-3 text-white">
+                      <p className="text-[12px] font-semibold bg-white/20 backdrop-blur-md px-2 py-1 rounded-md inline-block">
+                        {formatRelative(new Date(act.eventStartTime), new Date())}
+                      </p>
+                    </div>
+                  </div>
+                </NavLink>
               ))
             ) : (
               <div className="h-35 w-full rounded-[14px] bg-white flex items-center justify-center border-2 border-dashed border-gray-200 mr-6">
@@ -158,7 +161,7 @@ function HomePage() {
           </div>
         </div>
 
-        
+
         {/* Suggested Section - Tinder Stack */}
         <div className="mt-6">
           <div className="flex items-center justify-between mb-6">
@@ -167,21 +170,21 @@ function HomePage() {
               {localSuggests.length} Picks
             </span> */}
           </div>
-          
+
           <div className="relative h-75 w-57 mx-auto">
             <AnimatePresence>
               {localSuggests.length > 0 ? (
                 localSuggests.reverse().map((act, index, simplifiedArray) => (
                   <div key={act.id}>
-                    <SuggestCard 
-                      act={act} 
-                      onSwipe={handleSwipe} 
+                    <SuggestCard
+                      act={act}
+                      onSwipe={handleSwipe}
                       index={(simplifiedArray.length - 1) - index}
                       total={localSuggests.length}
                     />
                     <div className="z-[199] text-red-500 text-[50px] absolute top-1">{simplifiedArray.length}</div>
                   </div>
-                  ))
+                ))
               ) : (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -189,16 +192,16 @@ function HomePage() {
                   exit={{ opacity: 0 }}
                   onClick={() => exploreActivities()}
                   className="w-full h-[310px] bg-white rounded-[14px] shadow-xl border-2 border-dashed border-primary/30 flex flex-col items-center justify-center p-6 text-center cursor-pointer hover:bg-primary/5 transition-colors">
-                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                      <SearchIcon className="w-8 h-8 text-primary" />
-                    </div>
-                    <h4 className="font-bold text-lg mb-2">Want to explore more?</h4>
-                    <p className="text-sm text-gray-500 mb-6">
-                      We've run out of suggestions based on your interests.
-                    </p>
-                    <button className="btn btn-primary btn-sm rounded-full px-6">
-                      Explore All
-                    </button>
+                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                    <SearchIcon className="w-8 h-8 text-primary" />
+                  </div>
+                  <h4 className="font-bold text-lg mb-2">Want to explore more?</h4>
+                  <p className="text-sm text-gray-500 mb-6">
+                    We've run out of suggestions based on your interests.
+                  </p>
+                  <button className="btn btn-primary btn-sm rounded-full px-6">
+                    Explore All
+                  </button>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -247,7 +250,7 @@ function HomePage() {
           onClick={() => alert('paichatja')}
           className="relative p-3 rounded-full bg-white/95 backdrop-blur-md shadow-md active:scale-95 transition-all"
         >
-          <ChatIcon className="w-5 h-5"/>
+          <ChatIcon className="w-5 h-5" />
         </button>
       </div>
 

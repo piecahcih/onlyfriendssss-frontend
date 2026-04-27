@@ -12,6 +12,7 @@ import { format } from "date-fns";
 import NotificationModal from "../components/NotificationModal";
 import { NavLink } from "react-router";
 import Wishlist from "../components/profile/Wishlist";
+import useNotificationStore from "../stores/notificationStore";
 import { useSpeechToText } from "../hooks/useSpeechToText";
 
 function ActivitiesList() {
@@ -46,20 +47,20 @@ function ActivitiesList() {
 
   const activitySuggestions = Array.isArray(activities)
     ? activities
-        .filter((act) =>
-          act.title.toLowerCase().includes(searchText.toLowerCase()),
-        )
-        .slice(0, 3)
+      .filter((act) =>
+        act.title.toLowerCase().includes(searchText.toLowerCase()),
+      )
+      .slice(0, 3)
     : [];
 
   const location = [...new Set(activities.map((act) => act.place?.placeName))];
 
   const locationSuggestions = Array.isArray(activities)
     ? location
-        .filter((placeName) =>
-          placeName?.toLowerCase().includes(searchText.toLowerCase()),
-        )
-        .slice(0, 3)
+      .filter((placeName) =>
+        placeName?.toLowerCase().includes(searchText.toLowerCase()),
+      )
+      .slice(0, 3)
     : [];
 
 
@@ -68,25 +69,26 @@ function ActivitiesList() {
       ? selectedCategory === "all"
         ? activities
         : activities.filter(
-            (act) => act.category === selectedCategory.toUpperCase(),
-          )
+          (act) => act.category === selectedCategory.toUpperCase(),
+        )
       : []
   ).filter(
     (act) =>
       act.title.toLowerCase().includes(searchText.toLowerCase()) ||
       act.place?.placeName?.toLowerCase().includes(searchText.toLowerCase()),
   );
-  
+
   const [notiOpen, setNotiOpen] = useState(false);
-  
+  const { unreadCount } = useNotificationStore();
+
   const { isListening, toggleListening, isSupported } = useSpeechToText((transcript) => {
     setSearchText(transcript);
     setLocationShown(false);
     setSuggestOpen(true);
   });
-  
+
   const [locationShown, setLocationShown] = useState(false)
-  const selectLocation = activities.filter((act)=> act?.place?.placeName.toLowerCase() === searchText.toLowerCase() )
+  const selectLocation = activities.filter((act) => act?.place?.placeName.toLowerCase() === searchText.toLowerCase())
   console.log('selectLocation', selectLocation)
 
   return (
@@ -108,16 +110,15 @@ function ActivitiesList() {
               onBlur={() => setTimeout(() => setSuggestOpen(false), 200)}
             />
             {isSupported && (
-                <div 
-                  className="absolute inset-y-0 right-5 flex items-center z-10 cursor-pointer"
-                  onClick={toggleListening}
-                >
-                  <MicIcon 
-                    className={`w-6 transition-all duration-300 ${
-                      isListening ? "text-red-500 animate-pulse scale-110" : "text-gray-400 hover:text-primary"
-                    }`} 
-                  />
-                </div>
+              <div
+                className="absolute inset-y-0 right-5 flex items-center z-10 cursor-pointer"
+                onClick={toggleListening}
+              >
+                <MicIcon
+                  className={`w-6 transition-all duration-300 ${isListening ? "text-red-500 animate-pulse scale-110" : "text-gray-400 hover:text-primary"
+                    }`}
+                />
+              </div>
             )}
 
             {/* Suggestions Modal */}
@@ -188,10 +189,12 @@ function ActivitiesList() {
             onClick={() => setNotiOpen(true)}
             className="relative p-3 rounded-full bg-white/95 backdrop-blur-md shadow-md active:scale-95 transition-all"
           >
-            <Notification className="w-5 h-5" />
-            <span className="absolute top-1 right-1 w-5 h-5 bg-primary flex items-center justify-center text-[10px] font-bold text-white border-2 border-white rounded-full">
-              1
-            </span>
+            <Notification className="w-6 h-6" />
+            {unreadCount > 0 && (
+              <span className="absolute top-2 right-2 w-5 h-5 bg-primary flex items-center justify-center text-[10px] font-bold text-white border-2 border-white rounded-full">
+                {unreadCount}
+              </span>
+            )}
           </button>
         </div>
 
@@ -203,11 +206,10 @@ function ActivitiesList() {
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
                 className={`shrink-0 px-4 py-1 rounded-3xl font-medium text-[12px] flex items-center gap-2 transition-all duration-300 active:scale-95
-                                    ${
-                                      selectedCategory === cat.id
-                                        ? "bg-primary text-white shadow-[0_8px_12px_rgba(252,81,0,0.3)]"
-                                        : "bg-white text-on-surface/60 hover:bg-white/80 shadow-sm"
-                                    }`}
+                                    ${selectedCategory === cat.id
+                    ? "bg-primary text-white shadow-[0_8px_12px_rgba(252,81,0,0.3)]"
+                    : "bg-white text-on-surface/60 hover:bg-white/80 shadow-sm"
+                  }`}
               >
                 <span className="text-lg">{cat.icon}</span>
                 {cat.title}
@@ -221,7 +223,7 @@ function ActivitiesList() {
             <div className="mt-4 mb-8.5">
               <div className="flex items-center gap-4">
                 <div className="flex justify-center items-center bg-base-100 p-5 rounded-[8px]">
-                  <LocationIcon className="w-8.5"/>
+                  <LocationIcon className="w-8.5" />
                 </div>
                 <div className="">
                   <h3 className="font-bold text-[16px]">{selectLocation[0]?.place?.placeName}</h3>
@@ -248,34 +250,43 @@ function ActivitiesList() {
               >
                 <div className="h-[230px] relative rounded-[18px] overflow-hidden shadow-md group">
 
-                    <img
-                      src={activity?.coverPhoto}
-                      alt={activity.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute top-4 left-4 flex gap-2">
-                      <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-white/80 backdrop-blur-sm text-[11px] font-bold text-on-surface">
-                        <span>{activity.isPublic ? "🌎" : "🔒"}</span>
-                        {activity.isPublic ? "Public" : "Private"}
-                      </div>
-                      <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-black/12 backdrop-blur-md text-[11px] font-bold text-white">
-                        <span>
-                            {categoryList.find((cat) =>cat.id ===activity.category.toLowerCase(),)?.icon || "✨"}
-                        </span>
-                        {activity.category}
-                      </div>
+                  <img
+                    src={activity?.coverPhoto}
+                    alt={activity.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute top-4 left-4 flex gap-2">
+                    <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-white/80 backdrop-blur-sm text-[11px] font-bold text-on-surface">
+                      <span>{activity.isPublic ? "🌎" : "🔒"}</span>
+                      {activity.isPublic ? "Public" : "Private"}
                     </div>
+                    <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-black/12 backdrop-blur-md text-[11px] font-bold text-white">
+                      <span>
+                        {categoryList.find((cat) => cat.id === activity.category.toLowerCase(),)?.icon || "✨"}
+                      </span>
+                      {activity.category}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 px-3 py-1 rounded-full backdrop-blur-md text-[11px] font-bold text-white">
+                    <span>
+                      {categoryList.find((cat) => cat.id === activity.category.toLowerCase(),)?.icon || "✨"}
+                    </span>
+                    {activity.category}
+                  </div>
+                </div>
 
-                    <Wishlist activityId={activity.id} />
+                <Wishlist activityId={activity.id} />
 
 
-                  {/* ContentAct */}
+                {/* ContentAct */}
+                <div className="backdrop-blur-md px-4 py-3 absolute bottom-2 left-3 right-3 rounded-[18px] text-white">
+
                   <div className="bg-black/12 backdrop-blur-md px-4 py-3 absolute bottom-2 left-3 right-3 rounded-[18px] text-white">
-                    
+
                     <h3 className="font-headline font-bold text-[18px] truncate">
-                        {activity.title}
+                      {activity.title}
                     </h3>
-                    
+
 
                     <div className="flex flex-col mt-1">
                       <div className="flex items-center gap-3 text-on-surface/60">

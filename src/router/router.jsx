@@ -164,13 +164,13 @@ const userRouter = createBrowserRouter([
       {
         path: "reviews-rating",
         element: <RatingReview />,
-        
+
       },
 
-        {
+      {
         path: "reviews-activities",
         element: <ActivitiesReview />,
-        },
+      },
 
       {
         path: "location-reviews",
