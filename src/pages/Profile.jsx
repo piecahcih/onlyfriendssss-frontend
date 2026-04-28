@@ -15,6 +15,7 @@ import MyActivityTab from "../components/profile/MyActivityTab";
 import useReviewStore from "../stores/reviewStore";
 import { editProfileApi } from "../api/mainApi";
 import "../../MyCalendar.css";
+import useActivityStore from "../stores/activitiesStore";
 
 const BACKEND_URL = "http://localhost:3999";
 
@@ -84,6 +85,8 @@ const Profile = () => {
 
   const userRatings = useReviewStore((state) => state.userRatings);
   const getUserRatings = useReviewStore((state) => state.getUserRatings);
+
+  const activities = useActivityStore((state) => state.activities);
 
   const [step, setStep] = useState("half");
   const y = useMotionValue(0);
@@ -404,12 +407,12 @@ const Profile = () => {
           if (info.offset.y < -50 || info.velocity.y < -300) setStep("high");
           else if (info.offset.y > 50 || info.velocity.y > 300) setStep("half");
         }}
-        className=" fixed inset-x-0 bottom-0  bg-black/40 backdrop-blur-md rounded-3xl
+        className="py-6 fixed inset-x-0 bottom-0  bg-black/40 backdrop-blur-md rounded-3xl
        shadow-[0_-20px_60px_rgba(0,0,0,0.4)] border-t border-white/10 z-40 flex flex-col overflow-hidden"
       >
         <div className="w-16 h-1.5 bg-white/70 rounded-full mx-auto my-4 flex-shrink-0" />
 
-        <div className="overflow-y-auto px-8 pb-48   scrollbar-hide">
+        <div className="overflow-y-auto px-6 pb-48   scrollbar-hide">
           {/* Profile Content */}
           <div className="mb-8">
             <div className="flex justify-between items-start ">
@@ -427,7 +430,7 @@ const Profile = () => {
                   to="/calendar"
                   className=" flex  items-center justify-center tracking-[4px] active:scale-95   relative"
                 >
-                  <div className="calendar-neon-btn -z-10"/>
+                  <div className="calendar-neon-btn -z-10" />
                   <span className="calendar text-[18px]  absolute top-0 ">🗓️</span>
                 </NavLink>
 
@@ -458,18 +461,17 @@ const Profile = () => {
                 </span>
               </NavLink>
 
-              <NavLink
-              to="/created-activities"
-               className="flex flex-col items-center flex-1">
+              <button
+                onClick={() => navigate("/created-activities", { state: { createdActivities: activities, title: "My Created Activities" } })}
+                className="flex flex-col items-center flex-1"
+              >
                 <span className="text-2xl font-black text-white">
                   {profileData?._count?.createdActivities || 0}
                 </span>
-                <div
-                 
-                className="text-[10px] font-light text-white uppercase tracking-wider mt-1">
-                <span>Events</span>
+                <div className="text-[10px] font-light text-white uppercase tracking-wider mt-1">
+                  <span>Events</span>
                 </div>
-              </NavLink>
+              </button>
 
               <NavLink
                 to="/friendlist"
