@@ -7,11 +7,12 @@ export const createSocketInstance = (token) => {
         auth: {
             token: token
         },
+        transports: ['websocket','polling'],
+        withCredentials:true,
         autoConnect: false,
         reconnection: true,
         reconnectionAttempts: 5,
         reconnectionDelay: 1000,
-        transports: ['websocket'],
     })
 
     socket.on('connect_error', (err) => {

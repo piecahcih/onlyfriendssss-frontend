@@ -3,12 +3,23 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],  
+  plugins: [react(), tailwindcss()],
   server: {
-    host: true,
-    port: 5173,
-    allowedHosts: [
-      'stick-silicon-premiere-hamburg.trycloudflare.com'
-    ]
+    allowedHosts: ['.trycloudflare.com'],
+    proxy: {
+      // สำหรับ API ปกติ
+      '/api': {
+        target: 'http://localhost:3999/',
+        changeOrigin: true,
+        secure: false,
+      },
+      // สำหรับ Socket.io
+      '/socket.io': {
+        target: 'http://localhost:3999/',
+        changeOrigin: true,
+        secure: false,
+        ws: true, // 🌟 สำคัญมาก: ต้องเปิดเพื่อให้รองรับ WebSocket
+      }
+    }
   }
 })
