@@ -79,7 +79,7 @@ function UserCreatedActivities() {
                   <button
                     onClick={(e) => hdlEdit(e, activity.id)}
                     className="absolute top-2 right-2 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg
-      text-primary z-20 opacity-0 group-hover:opacity-100 transition-opacity"
+      text-primary z-20"
                   >
                     <EditIcon className="w-4 h-4" />
                   </button>
