@@ -8,7 +8,7 @@ export default defineConfig({
     host: true,
     port: 5173,
     allowedHosts: [
-      'post-chain-beast-buildings.trycloudflare.com'
+      'neon-news-sociology-instead.trycloudflare.com'
     ]
   }
 })

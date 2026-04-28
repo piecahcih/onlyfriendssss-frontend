@@ -109,7 +109,7 @@ function NotificationModal({ isOpen, onClose }) {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: "100%" }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
-                    className="fixed inset-0 z-50 flex flex-col bg-base-200">
+                    className="fixed inset-0 z-120 flex flex-col bg-base-200">
 
                     <header className="w-full top-0 sticky z-40 bg-base-200 shadow-[0_8px_32px_rgba(78,33,32,0.08)] flex items-center justify-between px-6 py-4 relative">
                         <button type='button' onClick={onClose}

@@ -73,28 +73,24 @@ const LDDiscover = () => {
   }, [hdlGetCurrentLocation, user?.profileImg]);
 
 
+  const connectSocket = () => {
+    console.log('tokenkub', token)
+    socketRef.current = io("http://localhost:3999", {
+      auth: { token }
+    })
+    socketRef.current.on("connect", () => {
+      console.log('Connected', socketRef.current.id)
+    })
+    return () => {
+      socketRef.current.disconnect()
+    }
+  }
   useEffect(() => {
     if (hdlGetCurrentLocation) {
       hdlGetCurrentLocation(getFullImgPath(user?.profileImg))
     }
   }, [hdlGetCurrentLocation, user?.profileImg])
 
-  // const connectSocket = () => {
-  //   console.log('tokenkub', token)
-  //   socketRef.current = io("http://localhost:3999", {
-  //     auth: { token }
-  //   })
-  //   socketRef.current.on("connect", () => {
-  //     console.log('Connected', socketRef.current.id)
-  //   })
-  //   return () => {
-  //     socketRef.current.disconnect()
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   connectSocket()
-  // }, [])
 
   const activitySuggestions = Array.isArray(activities)
     ? activities
@@ -253,11 +249,11 @@ const LDDiscover = () => {
             <button
               type="button"
               onClick={() => setNotiOpen(true)}
-              className="relative p-3 rounded-full bg-white/95 backdrop-blur-md shadow-xl active:scale-95 transition-all"
+              className="relative p-2.5 rounded-full bg-white/95 backdrop-blur-md shadow-xl active:scale-95 transition-all"
             >
               <Notification className="w-6 h-6 text-gray-600" />
               {unreadCount > 0 && (  // แก้จาก hardcode 1
-                <span className="absolute top-2 right-2 w-5 h-5 bg-primary flex items-center justify-center text-[10px] font-bold text-white border-2 border-white rounded-full">
+                <span className="absolute top-1 right-1 w-5 h-5 bg-primary flex items-center justify-center text-[10px] font-bold text-white border-2 border-white rounded-full">
                   {unreadCount}
                 </span>
               )}

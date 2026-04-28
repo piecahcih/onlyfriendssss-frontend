@@ -384,21 +384,24 @@ function ActivityDetails() {
 
           {/* List: Approved Attendees (UI วงกลมเรียงกัน) */}
           <div className="flex items-center gap-4 overflow-x-auto pb-2 scrollbar-hide">
-            <button className="shrink-0 w-12 h-12 rounded-full border-2 border-dashed border-primary/30 flex items-center justify-center text-primary text-2xl font-light hover:bg-primary/5 active:scale-95 transition-all">
+            {/* <button className="shrink-0 w-12 h-12 rounded-full border-2 border-dashed border-primary/30 flex items-center justify-center text-primary text-2xl font-light hover:bg-primary/5 active:scale-95 transition-all">
               +
-            </button>
+            </button> */}
             {approvedRequests.map((item, idx) => (
               <div
                 key={idx}
                 className="shrink-0 text-center space-y-1 cursor-pointer hover:scale-105 transition-transform"
                 onClick={() => hdlToProfile(item.userId || item.user?.id)}
               >
-                <div className="relative">
+                <div className='relative'>
                   <img
                     src={getFullImgPath(item.user?.profileImg)}
-                    className="w-12 h-12 rounded-full border-2 border-white shadow-sm object-cover"
+                    className={`w-12 h-12 rounded-full shadow-sm object-cover ${item.userId === currentActivity.hostId ? 'border-2 border-primary' : ''}`}
                     alt="avatar"
                   />
+                  {item.userId === currentActivity.hostId && (
+                    <p className="absolute -top-2 -left-1.5 text-[16px] -rotate-45">👑</p>
+                  )}
                 </div>
                 <p className="text-[10px] font-bold text-on-surface/60 max-w-[48px] truncate">
                   {item.user?.username || "User"}

@@ -1,12 +1,13 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { changeActivityStatusApi, createActivityApi, deleteActivityByIdApi, editActivityByIdApi, getActivityByCategoryApi, getActivityByIdApi, getAllActivitiesApi, getAllActivitiesCreatedByThisAccountApi, getAllActivitiesJoinedByThisAccountApi, getAllCurrentActivitiesApi, getAllFinishedActivitiesOnThisAccountApi, joinActivityApi, manageJoinRequestApi, leaveActivityApi, cancelActivityStatusApi, getUpcomingActivitiesApi } from "../api/mainApi";
+import { changeActivityStatusApi, createActivityApi, deleteActivityByIdApi, editActivityByIdApi, getActivityByCategoryApi, getActivityByIdApi, getAllActivitiesApi, getAllActivitiesCreatedByThisAccountApi, getAllActivitiesJoinedByThisAccountApi, getAllCurrentActivitiesApi, getAllFinishedActivitiesOnThisAccountApi, joinActivityApi, manageJoinRequestApi, leaveActivityApi, cancelActivityStatusApi, getUpcomingActivitiesApi, getAllPlaceDataForQueryApi } from "../api/mainApi";
 
 const useActivityStore = create(persist((set, get) => ({
   activities: [],
   upcomingActivities: [],
   currentActivity: null,
   creatingActivity: {},
+  placeSuggests: [],
   setCreatingActivity: (data) => {
     console.log('data:', data)
     set({ creatingActivity: data })
@@ -49,6 +50,15 @@ const useActivityStore = create(persist((set, get) => ({
     set({ activities: res.data.activities })
   },
 
+  getAllPlaceDataForQuery: async (query) => {
+    console.log('start')
+    const res = await getAllPlaceDataForQueryApi(query)
+    console.log('placedatafromback', res)
+    const places = res.data.places
+
+    set({ placeSuggests: places })
+    return places
+  },
 
   createActivity: async (body) => {
     // console.log('start')
