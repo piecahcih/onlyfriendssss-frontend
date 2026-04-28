@@ -65,7 +65,7 @@ const interests = [
   { label: "sightseeing 🗺️", value: "sightseeing" },
 ];
 
-const Profile = () => {
+const ProfileP = () => {
   const navigate = useNavigate();
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
@@ -516,4 +516,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default ProfileP;

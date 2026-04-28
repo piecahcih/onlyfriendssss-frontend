@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router";
 import { LeftIcon } from "../../icons";
 import useReviewStore from "../../stores/reviewStore";
 import defaultProfile from "../../assets/default-profilepic.jpg";
+import Swal from "sweetalert2";
 
 function PeerReview() {
   const navigate = useNavigate();
@@ -43,17 +44,41 @@ function PeerReview() {
 
   const hdlSubmit = async () => {
     if (rating === 0) {
-      alert("Please select a rating");
+        Swal.fire({
+              title: '<h2 class="text-[20px] font-bold text-neutral leading-tight">Please select a rating</h2>',
+              // html: '<p class="text-neutral/70">Please log in first to join this activity.</p>',
+              icon: 'warning',
+              confirmButtonColor: "#FC5100",
+              width: '300px',
+              padding: '1em',
+            });
+    
       return;
     }
     try {
       setLoading(true);
       await createReviewUser(actid, userId, { rating, comment });
-      alert("Review submitted successfully!");
+      Swal.fire({
+              title: '<h2 class="text-[20px] font-bold text-neutral leading-tight">Review submitted successfully!</h2>',
+              // html: '<p class="text-neutral/70">Please log in first to join this activity.</p>',
+              icon: 'success',
+              confirmButtonColor: "#FC5100",
+              width: '300px',
+              padding: '1em',
+            });
       navigate(`/memory-activity-details?actid=${actid}`);
     } catch (error) {
       console.error(error);
-      alert("Failed to submit review");
+      Swal.fire({
+              title: '<h2 class="text-[20px] font-bold text-neutral leading-tight">You already reviewed this user!</h2>',
+              // html: '<p class="text-neutral/70">Please log in first to join this activity.</p>',
+              icon: 'warning',
+              confirmButtonColor: "#FC5100",
+              width: '300px',
+              padding: '1em',
+            });
+      
+      
     } finally {
       setLoading(false);
     }
@@ -130,7 +155,7 @@ function PeerReview() {
 
         {/* Submit Button */}
         <button
-          onClick={hdlSubmit}
+          onClick={()=>hdlSubmit()}
           disabled={loading}
           className="btn btn-primary w-full h-16 rounded-[25px] text-xl font-black text-white shadow-lg shadow-primary/20 active:scale-95 transition-all border-none"
         >

@@ -125,7 +125,7 @@ function Chat() {
             <div
               key={item.id}
               onClick={() => handleRoomClick(item)}
-              className="bg-white p-4 rounded-2xl shadow-sm flex items-center justify-between border border-transparent hover:border-primary/10 active:scale-[0.98] transition-all"
+              className=" relative bg-white p-4 rounded-2xl shadow-sm flex items-center justify-between border border-transparent hover:border-primary/10 active:scale-[0.98] transition-all"
             >
               <div className="flex items-center space-x-3 min-w-0 flex-1">
                 <div className="relative shrink-0">
@@ -138,18 +138,18 @@ function Chat() {
                       />
                     </div>
                   </div>
-                  {unreadCounts[item.id] > 0 && (
+                  {/* {unreadCounts[item.id] > 0 && (
                     <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold min-w-[20px] h-5 px-1.5 flex items-center justify-center rounded-full border-2 border-white shadow-md animate-pulse">
                       {unreadCounts[item.id]}
                     </span>
-                  )}
+                  )} */}
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex justify-between items-center mb-0.5">
                     <h3 className="font-bold text-[15px] text-neutral truncate pr-2">{item.name}</h3>
-                    <span className="text-[10px] opacity-40 whitespace-nowrap">
+                    {/* <span className="text-[10px] opacity-40 whitespace-nowrap">
                       {item.lastMessage?.createdAt ? new Date(item.lastMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ""}
-                    </span>
+                    </span> */}
                   </div>
                   <div className="flex items-center gap-1.5">
                     {item.type === "ACTIVITY" && (
@@ -159,13 +159,25 @@ function Chat() {
                       {item.lastMessage?.content || "Start a conversation..."}
                     </p>
                   </div>
+                  <div>
+                    <span className="text-[10px] opacity-40 whitespace-nowrap">
+                      {item.lastMessage?.createdAt ? new Date(item.lastMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ""}
+                    </span>
+                  </div>
                 </div>
               </div>
 
               <div className="ml-2 text-base-content/20 shrink-0">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+              {/* <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                </svg>
+                </svg> */}
+                   {unreadCounts[item.id] > 0 && (
+                    <div className="absolute right-3 top-9 -translate-y-1/2 flex items-center shadow-sm">
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold min-w-[20px] h-5 px-1.5 flex items-center justify-center rounded-full border-2 border-white shadow-md animate-pulse">
+                      {unreadCounts[item.id]}
+                    </span>
+                  </div>
+                  )}
               </div>
             </div>
           ))

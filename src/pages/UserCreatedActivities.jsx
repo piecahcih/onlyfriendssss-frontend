@@ -37,25 +37,20 @@ function UserCreatedActivities() {
 
   return (
     <div className="min-h-screen bg-base-200 flex flex-col">
-      {/* Header: UI เดียวกับ UserJoinedActivities */}
-      <header className="w-full top-0 sticky z-40 bg-base-200 shadow-[0_8px_32px_rgba(78,33,32,0.08)] flex flex-col
-      justify-between gap-5 px-6 py-4 relative">
-        <div className="flex items-center justify-between">
-          <button
-            type="button"
-            onClick={() => navigate(-1)}
-            className="text-[#a83100] hover:opacity-80 active:scale-95 transition-transform duration-200 relative z-10"
-          >
-           
-            <LeftIcon className="w-8" />
-          </button>
-          <button className="text-2xl font-bold text-neutral">•••</button>
-        </div>
-        <div className="w-full flex items-center gap-4 text-black">
-          <div className="w-full flex flex-col gap-4">
-            <h2 className="text-[22px] font-bold">{title}</h2>
-          </div>
-        </div>
+      <header className="w-full top-0 sticky z-40 bg-base-200 shadow-[0_8px_32px_rgba(78,33,32,0.08)] flex items-center justify-between px-6 py-4 relative">
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="text-secondary hover:opacity-80  active:scale-95 transition-transform duration-200 relative z-10"
+        >
+          <LeftIcon className="w-8" />
+        </button>
+
+        <h1 className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 tracking-[-0.02em] font-bold text-[20px] whitespace-nowrap">
+          {title}
+        </h1>
+
+        <div className="w-8"></div>
       </header>
 
       <motion.div

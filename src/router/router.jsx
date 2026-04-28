@@ -33,6 +33,7 @@ import UserCreatedActivities from "../pages/UserCreatedActivities";
 import UserMemoryActivities from "../pages/UserMemoryActivities";
 import MyCalendar from "../pages/MyCalendar";
 import AllFriendActivities from "../pages/AllFriendActivities";
+import ProfileP from "../pages/Profile copy";
 
 const guestRouter = createBrowserRouter([
   {
@@ -87,6 +88,10 @@ const userRouter = createBrowserRouter([
       {
         path: "profile",
         element: <Profile />,
+      },
+      {
+        path: "profileP",
+        element: <ProfileP />,
       },
       {
         path: "chat",

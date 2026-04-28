@@ -313,7 +313,9 @@ function MemoryActivityDetails() {
                 </div>
 
                 <div className="w-full space-y-3 mt-2">
-                  <button className="btn btn-primary w-full rounded-2xl text-white font-bold">
+                  <button 
+                    onClick={()=>navigate(`/friend-profile?userId=${selectedParticipant.user?.id}`)}
+                    className="btn btn-primary w-full rounded-2xl text-white font-bold">
                     Go the Profile
                   </button>
                   <button
