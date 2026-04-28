@@ -29,12 +29,25 @@ function InsideChat() {
 
   const [inputText, setInputText] = useState("");
   const messagesEndRef = useRef(null);
+  const emojiPickerRef = useRef(null);
 
   const [showPicker, setShowPicker] = useState(false)
 
   const handleEmojiClick = (emojiObject) => {
     setInputText((prev) => prev + emojiObject.emoji)
   }
+
+  // ปิด emoji picker เมื่อกดนอก
+  useEffect(() => {
+    if (!showPicker) return;
+    const handleClickOutside = (e) => {
+      if (emojiPickerRef.current && !emojiPickerRef.current.contains(e.target)) {
+        setShowPicker(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showPicker]);
 
 
   useEffect(() => {
@@ -76,7 +89,7 @@ function InsideChat() {
     socket.emit("send_message", { roomId, content: trimmedText }, (res) => {
       if (res?.success) {
         setInputText("");
-        setShowpicker(false)
+        setShowPicker(false)
       } else {
         console.error("❌ Send failed:", res?.message);
       }
@@ -174,7 +187,7 @@ function InsideChat() {
       {/* INPUT AREA */}
       <div className="fixed bottom-0 inset-x-0 bg-white/80 backdrop-blur-md p-4 border-t border-primary/5 z-20">
         {showPicker && (
-          <div className="absolute bottom-[80px] left-4 z-50 shadow-2xl rounded-xl">
+          <div ref={emojiPickerRef} className="absolute bottom-[80px] left-4 z-50 shadow-2xl rounded-xl">
             <EmojiPicker onEmojiClick={handleEmojiClick} searchDisabled={true} />
           </div>
         )}
