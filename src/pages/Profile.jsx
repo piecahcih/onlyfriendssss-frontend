@@ -407,7 +407,7 @@ const Profile = () => {
           if (info.offset.y < -50 || info.velocity.y < -300) setStep("high");
           else if (info.offset.y > 50 || info.velocity.y > 300) setStep("half");
         }}
-        className="py-6 fixed inset-x-0 bottom-0  bg-black/40 backdrop-blur-md rounded-3xl
+        className=" fixed inset-x-0 bottom-0  bg-black/40 backdrop-blur-md rounded-3xl
        shadow-[0_-20px_60px_rgba(0,0,0,0.4)] border-t border-white/10 z-40 flex flex-col overflow-hidden"
       >
         <div className="w-16 h-1.5 bg-white/70 rounded-full mx-auto my-4 flex-shrink-0" />
