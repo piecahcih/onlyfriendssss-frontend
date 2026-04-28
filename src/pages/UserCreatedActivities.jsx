@@ -1,15 +1,23 @@
-import { useLocation, useNavigate } from "react-router";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 import { motion } from "framer-motion";
 import { LeftIcon, EditIcon } from "../icons";
-import mockActImg from '../assets/mockActImg.jpg';
+import mockActImg from "../assets/mockActImg.jpg";
+import useActivityStore from "../stores/activitiesStore";
 
 function UserCreatedActivities() {
   const navigate = useNavigate();
-  const { state } = useLocation();
 
-  // รับข้อมูลจาก state ที่ส่งมาจาก MyActivityTab
-  const activities = state?.joinedActivities || [];
-  const title = state?.title || "My Created Activities";
+  const activities = useActivityStore((state) => state.activities);
+  const getAllActivitiesCreatedByThisAccount = useActivityStore(
+    (state) => state.getAllActivitiesCreatedByThisAccount
+  );
+
+  useEffect(() => {
+    getAllActivitiesCreatedByThisAccount();
+  }, []);
+
+  const title = "My Created Activities";
 
   const BACKEND_URL = "http://localhost:3999";
 

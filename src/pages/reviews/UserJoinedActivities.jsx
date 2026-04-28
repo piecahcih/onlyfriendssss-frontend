@@ -1,16 +1,23 @@
-import { useLocation, useNavigate } from "react-router";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 import { motion } from "framer-motion";
 import { LeftIcon } from "../../icons";
-import mockActImg from '../../assets/mockPlaceImg.jpg';
+import mockActImg from "../../assets/mockPlaceImg.jpg";
+import useActivityStore from "../../stores/activitiesStore";
 
 function UserJoinedActivities() {
   const navigate = useNavigate();
-  const { state } = useLocation();
 
-  // รับข้อมูลจาก state ที่ส่งมาจาก MyActivityTab
-  // MyActivityTab ส่ง profileData.joinRequests มาในชื่อ joinedActivities
-  const activities = state?.joinedActivities || [];
-  const title = state?.title || "My Joined Activities";
+  const activities = useActivityStore((state) => state.activities);
+  const getAllActivitiesJoinedByThisAccount = useActivityStore(
+    (state) => state.getAllActivitiesJoinedByThisAccount
+  );
+
+  useEffect(() => {
+    getAllActivitiesJoinedByThisAccount();
+  }, []);
+
+  const title = "My Joined Activities";
 
   const BACKEND_URL = "http://localhost:3999";
 

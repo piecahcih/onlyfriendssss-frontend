@@ -119,17 +119,20 @@ function HomePage() {
               <HeartIcon className="w-5 h-5" />
             </button>
 
+            {/* ปุ่ม Notification */}
             <button
               type="button"
               onClick={() => setNotiOpen(true)}
-              className="relative p-3 rounded-full bg-white/95 backdrop-blur-md shadow-xl active:scale-95 transition-all"
+              className="relative p-2.5 rounded-full bg-white/95 backdrop-blur-md shadow-xl active:scale-95 transition-all"
             >
-              <Notification className="w-5 h-5" />
-              {unreadCount > 0 && (
-                <span className="absolute top-2 right-2 w-4 h-4 bg-primary flex items-center justify-center text-[10px] font-bold text-white border-2 border-white rounded-full">
+              <Notification className="w-6 h-6 text-gray-600" />
+              {unreadCount > 0 && (  // แก้จาก hardcode 1
+                <span className="absolute top-1 right-1 w-5 h-5 bg-primary flex items-center justify-center text-[10px] font-bold text-white border-2 border-white rounded-full">
+                  {unreadCount}
                 </span>
               )}
             </button>
+
           </div>
         </div>
 
@@ -269,7 +272,8 @@ function HomePage() {
 
       </div>
 
-      <div className="fixed bottom-22 right-3 z-150">
+      {/* Future Ai Chatbot */}
+      {/* <div className="fixed bottom-22 right-3 z-150">
         <button
           type="button"
           onClick={() => alert('paichatja')}
@@ -277,7 +281,7 @@ function HomePage() {
         >
           <ChatIcon className="w-5 h-5" />
         </button>
-      </div>
+      </div> */}
 
       <LikeModal isOpen={likeOpen} onClose={() => setLikeOpen(false)} />
       <NotificationModal isOpen={notiOpen} onClose={() => setNotiOpen(false)} />

@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { format } from 'date-fns'
 import { NavLink } from 'react-router'
-import { LeftIcon, CalendarIcon, LocationIcon } from '../icons'
+import { LeftIcon, CalendarIcon, LocationIcon, HeartLineIcon } from '../icons'
 import Wishlist from './profile/Wishlist'
 import defaultProfile from '../assets/default-profilepic.jpg'
 import useWishlistStore from '../stores/wishlistStore'
@@ -47,9 +47,9 @@ function LikeModal({ isOpen, onClose }) {
             {!wishlist || wishlist.length === 0 ? (
               <div className="flex flex-col gap-6 items-center justify-center h-[60vh] opacity-20">
                 <div className="w-20 h-20 border-2 border-dashed border-on-surface rounded-full flex items-center justify-center">
-                  <LocationIcon className="w-10" />
+                  <HeartLineIcon className="w-10" />
                 </div>
-                <p className="font-bold text-[10px] uppercase tracking-[0.2em]">Gallery Empty</p>
+                <p className="font-bold text-[10px] uppercase tracking-[0.2em]">You have no wishlist</p>
               </div>
             ) : (
               <div className="flex flex-col gap-3">
