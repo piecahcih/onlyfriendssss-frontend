@@ -47,8 +47,8 @@ function ActivityDetails() {
   }, [actid, getActivityById]);
 
   const hdlGoBack = () => {
-    navigate('/activities');
-    // navigate(-1);
+    // navigate('/activities');
+    navigate(-1);
   };
 
 
