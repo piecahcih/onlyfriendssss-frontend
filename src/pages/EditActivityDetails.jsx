@@ -44,7 +44,8 @@ function EditActivityDetails() {
   }, [actid, getActivityById]);
 
   const hdlGoBack = () => {
-    navigate('/profile');
+    // navigate('/profile');
+    navigate(-1)
   };
 
   const hdlChange = (e) => {
@@ -79,7 +80,7 @@ function EditActivityDetails() {
   const saveEdit = async (e) => {
     e.preventDefault();
     setIsUpdating(true);
-    
+
     // Calculate current approved participants
     const joinedCount = currentActivity?.joinRequests?.filter(req => req.status === 'APPROVED').length || 0;
     const newMaxParticipants = parseInt(editForm.maxParticipants || currentActivity.maxParticipants);
@@ -99,7 +100,7 @@ function EditActivityDetails() {
     try {
       const formData = new FormData();
       let hasChanges = false;
-      
+
       Object.entries(editForm).forEach(([key, value]) => {
         if (value === "" || value === null || value === undefined) return;
 
@@ -111,10 +112,10 @@ function EditActivityDetails() {
         if (key === "eventStartTime" || key === "eventEndTime") {
           const newDate = new Date(value);
           if (isNaN(newDate.getTime())) return;
-          
+
           const newISO = newDate.toISOString();
           const oldISO = originalValue ? new Date(originalValue).toISOString() : null;
-          
+
           if (newISO === oldISO) return;
           formData.append(key, newISO);
           hasChanges = true;
@@ -123,7 +124,7 @@ function EditActivityDetails() {
           hasChanges = true;
         } else {
           if (value.toString() === (originalValue?.toString() || "")) return;
-          
+
           formData.append(key, value);
           hasChanges = true;
         }
@@ -202,19 +203,19 @@ function EditActivityDetails() {
       <form onSubmit={saveEdit}>
         <main className="max-w-2xl mx-auto px-6 space-y-6">
           <div className="flex flex-wrap gap-2.5">
-            <select 
-              name="isPublic" 
-              onChange={hdlChange} 
+            <select
+              name="isPublic"
+              onChange={hdlChange}
               defaultValue={currentActivity.isPublic}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white shadow-sm text-xs font-bold outline-none cursor-pointer"
             >
               <option value="true">🌎 Public</option>
               <option value="false">🔒 Private</option>
             </select>
-            
-            <select 
-              name="category" 
-              onChange={hdlChange} 
+
+            <select
+              name="category"
+              onChange={hdlChange}
               defaultValue={currentActivity.category}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 text-primary shadow-sm text-xs font-bold border border-primary/20 outline-none cursor-pointer"
             >
@@ -296,7 +297,7 @@ function EditActivityDetails() {
             </div>
           </div>
 
-          <div 
+          <div
             onClick={() => setIsMapOpen(true)}
             className="space-y-4 bg-white p-4 rounded-[30px] shadow-sm border border-primary/5 cursor-pointer hover:border-primary/20 transition-all group"
           >
@@ -338,8 +339,8 @@ function EditActivityDetails() {
 
           <div className="bg-white p-5 rounded-[30px] shadow-sm border border-primary/5 flex items-center justify-between">
             <span className="font-bold text-sm text-neutral/60">Max Participants</span>
-            <input 
-              type="number" 
+            <input
+              type="number"
               name="maxParticipants"
               defaultValue={currentActivity.maxParticipants || 0}
               onChange={hdlChange}
@@ -347,9 +348,9 @@ function EditActivityDetails() {
             />
           </div>
 
-          <button 
-            type="button" 
-            onClick={() => DeleteSwal({ currentActivity, hdlCancel })} 
+          <button
+            type="button"
+            onClick={() => DeleteSwal({ currentActivity, hdlCancel })}
             className="w-full flex items-center justify-center text-neutral/40 hover:text-error transition-colors text-sm font-medium underline"
           >
             Cancel this activity
@@ -357,7 +358,7 @@ function EditActivityDetails() {
         </main>
 
         <div className="fixed bottom-0 left-0 w-full p-6 z-40 bg-gradient-to-t from-base-200 via-base-200 to-transparent">
-          <button 
+          <button
             disabled={isUpdating}
             className={`w-full max-w-2xl mx-auto flex items-center justify-center gap-3 px-8 py-4 rounded-[25px] font-black text-xl active:scale-95 transition-all  
               ${isUpdating ? 'bg-neutral/20 text-neutral/40 cursor-not-allowed' : 'bg-gradient-to-r from-primary to-secondary text-white shadow-lg hover:shadow-primary/20'}`}
@@ -367,12 +368,12 @@ function EditActivityDetails() {
           </button>
         </div>
       </form>
-      
 
-      <MapModal 
-        isOpen={isMapOpen} 
-        onClose={() => setIsMapOpen(false)} 
-        onConfirm={hdlConfirmLocation} 
+
+      <MapModal
+        isOpen={isMapOpen}
+        onClose={() => setIsMapOpen(false)}
+        onConfirm={hdlConfirmLocation}
       />
     </div>
   );
