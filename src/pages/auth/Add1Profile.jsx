@@ -67,9 +67,7 @@ function Add1Profile() {
       const res = await updateProfileApi(registeringUser.id, formData)
       setRegisteringUser(res.data.user || registeringUser)
       toast.success('Update Success')
-      setTimeout(() => {
-        navigate('/add-interest');
-      }, 1500)
+      navigate('/add-interest');
     } catch (error) {
       console.log(error)
       toast.error(error.response?.data?.message || 'Please fill in all required fields')

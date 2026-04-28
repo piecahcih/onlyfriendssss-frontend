@@ -62,11 +62,15 @@ const useReviewStore = create(persist((set, get) => ({
   },
 
   createReviewActivity: async (actid, body) => {
+    // console.log('start', actid,body)
     const res = await createReviewActivityApi(actid, body)
+    // console.log('res', res)
     return res
   },
   createReviewUser: async (actid, receiverid, body) => {
+    console.log('start', actid, reviewid,body)
     const res = await createReviewUserApi(actid, receiverid, body)
+    console.log('res', res)
     return res
   },
 
