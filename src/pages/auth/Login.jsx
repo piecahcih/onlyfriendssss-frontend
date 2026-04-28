@@ -135,7 +135,7 @@ function Login() {
 
         <div className="divider w-90 m-auto text-[12px] p-7">OR</div>
 
-        <div className="flex justify-center gap-4 h-[50px]">
+        {/* <div className="flex justify-center gap-4 h-[50px]">
           <FacebookLogo className="bg-base-100 rounded-full p-2" />
           <button
             onClick={handleGoogleLogin}
@@ -144,6 +144,12 @@ function Login() {
             <GoogleLogo className="w-8 h-6" />
           </button>
           <AppleLogo className="bg-base-100 rounded-full p-2" />
+        </div> */}
+
+        <div className="flex justify-center gap-4 h-[40px] w-full px-10">
+          <button onClick={handleGoogleLogin} className="w-full flex gap-3 items-center justify-center transition-transform active:scale-95 bg-base-100 rounded-full p-2 shadow-sm hover:bg-gray-100">
+            <GoogleLogo className="w-8 h-5" /> Continue with Google
+          </button>
         </div>
 
         <p className="text-[12px] text-center mt-5">

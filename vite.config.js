@@ -8,7 +8,7 @@ export default defineConfig({
     host: true,
     port: 5173,
     allowedHosts: [
-      'neon-news-sociology-instead.trycloudflare.com'
+      'stick-silicon-premiere-hamburg.trycloudflare.com'
     ]
   }
 })
