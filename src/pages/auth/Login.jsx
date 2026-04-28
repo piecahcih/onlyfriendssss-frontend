@@ -3,11 +3,13 @@ import { AppleLogo, EyeIcon, EyeSlashIcon, FacebookLogo, GoogleLogo, WelcomeIcon
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../../validators/schema";
-import { signInWithPopup } from "firebase/auth";
+import { signInWithPopup, signInWithRedirect, getRedirectResult } from "firebase/auth";
 import { auth, googleProvider } from "../../utils/firebase";
 import useUserStore from "../../stores/userStore";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
+
+const isMobile = () => /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
 function Login() {
   const login = useUserStore((state) => state.login)
@@ -27,6 +29,26 @@ function Login() {
       setValue("email", savedEmail)
       setValue("rememberMe", true)
     }
+
+    // รับผลลัพธ์หลังจาก redirect กลับมาบนมือถือ
+    getRedirectResult(auth)
+      .then(async (result) => {
+        if (!result) return;
+        const idToken = await result.user.getIdToken();
+        const userData = {
+          email: result.user.email,
+          displayName: result.user.displayName,
+          photoURL: result.user.photoURL,
+        };
+        await loginWithGoogle(idToken, userData);
+        navigate('/welcome');
+      })
+      .catch((error) => {
+        if (error.code !== 'auth/no-auth-event') {
+          console.error("Redirect Result Error", error);
+          toast.error("เกิดข้อผิดพลาดในการเข้าสู่ระบบด้วย Google");
+        }
+      });
   }, [setValue])
 
   const onSubmit = async (data) => {
@@ -37,37 +59,37 @@ function Login() {
         localStorage.removeItem("rememberedEmail")
       }
       const res = await login(data)
-      // console.log(res.data.message)
       toast.success(res.data.message)
       navigate('/welcome')
     } catch (error) {
-      const errMsg =
-        error.response?.data?.message
+      const errMsg = error.response?.data?.message
       toast.error(errMsg)
     }
   };
 
   const handleGoogleLogin = async () => {
     try {
-      googleProvider.setCustomParameters({ prompt: "select_account" })
-      const result = await signInWithPopup(auth, googleProvider)
-      const idToken = await result.user.getIdToken()
+      googleProvider.setCustomParameters({ prompt: "select_account" });
 
+      if (isMobile()) {
+        // มือถือ: ใช้ redirect แทน popup เพราะ popup ถูก browser block
+        await signInWithRedirect(auth, googleProvider);
+        return;
+      }
+
+      // คอม: ใช้ popup ตามปกติ
+      const result = await signInWithPopup(auth, googleProvider);
+      const idToken = await result.user.getIdToken();
       const userData = {
         email: result.user.email,
         displayName: result.user.displayName,
         photoURL: result.user.photoURL,
       };
-
-      console.log(userData);
-      await loginWithGoogle(idToken, userData)
-      // toast.success("Login Success")
-      setTimeout(() => {
-        navigate('/welcome')
-      }, 1500)
+      await loginWithGoogle(idToken, userData);
+      setTimeout(() => navigate('/welcome'), 1500);
     } catch (error) {
-      console.error("Google Login Error", error)
-      toast.error("เกิดข้อผิดพลาดในการเข้าสู่ระบบด้วย Google")
+      console.error("Google Login Error", error);
+      toast.error("เกิดข้อผิดพลาดในการเข้าสู่ระบบด้วย Google");
     }
   };
 
