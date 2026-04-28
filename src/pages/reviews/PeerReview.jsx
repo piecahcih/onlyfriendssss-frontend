@@ -46,7 +46,7 @@ function PeerReview() {
     if (rating === 0) {
         Swal.fire({
               title: '<h2 class="text-[20px] font-bold text-neutral leading-tight">Please select a rating</h2>',
-              html: '<p class="text-neutral/70">Please log in first to join this activity.</p>',
+              // html: '<p class="text-neutral/70">Please log in first to join this activity.</p>',
               icon: 'warning',
               confirmButtonColor: "#FC5100",
               width: '300px',
@@ -58,11 +58,26 @@ function PeerReview() {
     try {
       setLoading(true);
       await createReviewUser(actid, userId, { rating, comment });
-      alert("Review submitted successfully!");
+      Swal.fire({
+              title: '<h2 class="text-[20px] font-bold text-neutral leading-tight">Review submitted successfully!</h2>',
+              // html: '<p class="text-neutral/70">Please log in first to join this activity.</p>',
+              icon: 'success',
+              confirmButtonColor: "#FC5100",
+              width: '300px',
+              padding: '1em',
+            });
       navigate(`/memory-activity-details?actid=${actid}`);
     } catch (error) {
       console.error(error);
-      alert("You already reviewed this user");
+      Swal.fire({
+              title: '<h2 class="text-[20px] font-bold text-neutral leading-tight">You already reviewed this user!</h2>',
+              // html: '<p class="text-neutral/70">Please log in first to join this activity.</p>',
+              icon: 'warning',
+              confirmButtonColor: "#FC5100",
+              width: '300px',
+              padding: '1em',
+            });
+      
       
     } finally {
       setLoading(false);
