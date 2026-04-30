@@ -25,7 +25,7 @@ export const useChatEvents = () => {
 
             addMessage(message);
             const currentUserId = useUserStore.getState().user?.id
-            if (message.roomId !== currentActiveRoomId && message.sender.id !== currentUserId) {
+            if (Number(message.roomId) !== Number(currentActiveRoomId) && Number(message.sender.id) !== Number(currentUserId)) {
                 addNotification({
                     id: message.id,
                     type: 'NEW_MESSAGE',  // เปลี่ยนจาก 'new_message' เป็น 'NEW_MESSAGE'
