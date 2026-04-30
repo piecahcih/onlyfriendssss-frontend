@@ -15,7 +15,7 @@ function getDistanceKm(lat1, lng1, lat2, lng2) {
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-const NEARBY_RADIUS_KM = 50; // รัศมีสำหรับ fitBounds (กม.)
+const NEARBY_RADIUS_KM = 10; // รัศมีสำหรับ fitBounds (กม.)
 
 export function useActivityMarkers(mapRef, activities) {
   const markersRef = useRef([]);
@@ -128,7 +128,7 @@ export function useActivityMarkers(mapRef, activities) {
         if (hasNearbyPins) {
           // มีหมุดใกล้ → fitBounds เฉพาะหมุดใน 50 กม.
           mapRef.current.fitBounds(nearbyBounds, {
-            padding: { top: 100, bottom: 450, left: 60, right: 60 },
+            padding: { top: 100, bottom: 330, left: 60, right: 60 },
             maxZoom: 15,
             duration: 2000,
             essential: true,
