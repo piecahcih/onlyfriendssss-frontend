@@ -26,3 +26,13 @@ dist-ssr
 node_modules/
 .DS_Store
 **/.DS_Store
+
+todsob/
+.env
+
+node_modules
+# Keep environment variables out of version control
+.env
+
+src/pages/Activities.jsx
+src/pages/Profile.jsx
