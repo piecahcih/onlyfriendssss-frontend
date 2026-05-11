@@ -1,26 +1,23 @@
-import { useLocation, useNavigate } from "react-router";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 import { motion } from "framer-motion";
-import { LeftIcon } from "../../icons";
-import mockActImg from '../../assets/mockPlaceImg.jpg';
+import useActivityStore from "../stores/activitiesStore";
+import { LeftIcon } from "../icons";
+
 
 function UserJoinedActivities() {
   const navigate = useNavigate();
-  const { state } = useLocation();
 
-  // รับข้อมูลจาก state ที่ส่งมาจาก MyActivityTab
-  // MyActivityTab ส่ง profileData.joinRequests มาในชื่อ joinedActivities
-  const activities = state?.joinedActivities || [];
-  const title = state?.title || "My Joined Activities";
+  const activities = useActivityStore((state) => state.activities);
+  const getAllActivitiesJoinedByThisAccount = useActivityStore(
+    (state) => state.getAllActivitiesJoinedByThisAccount
+  );
 
-  const BACKEND_URL = "http://localhost:3999";
+  useEffect(() => {
+    getAllActivitiesJoinedByThisAccount();
+  }, []);
 
-  const getFullImgPath = (path) => {
-    if (!path) return mockActImg;
-    if (typeof path !== "string" || path.startsWith("data:") || path.startsWith("http")) {
-      return path;
-    }
-    return `${BACKEND_URL}${path}`;
-  };
+  const title = "My Joined Activities";
 
   return (
     <div className="min-h-screen bg-base-200 flex flex-col">
@@ -50,21 +47,18 @@ function UserJoinedActivities() {
 
           {activities.length > 0 ? (
             <div className="grid grid-cols-2 gap-4">
-              {activities.map((item, idx) => {
-                // MyActivityTab ส่ง profileData.joinRequests ซึ่งแต่ละอันจะมี .activity ข้างใน
-                const activity = item.activity || item;
+              {activities.map((activity, idx) => {
                 return (
-                  <div
-                    key={idx}
+                  <div 
+                    key={idx} 
                     onClick={() => navigate(`/activity-details?actid=${activity.id}`)}
-                    className="border border-gray-200 bg-white rounded-2xl overflow-hidden shadow-sm flex
-          flex-col cursor-pointer hover:shadow-md transition-shadow"
+                    className="border border-gray-200 bg-white rounded-2xl overflow-hidden shadow-sm flex flex-col cursor-pointer hover:shadow-md transition-shadow"
                   >
                     <div className="h-32 bg-gray-200">
-                      <img
-                        src={getFullImgPath(activity?.coverPhoto)}
-                        className="w-full h-full object-cover"
-                        alt="activity"
+                      <img 
+                        src={activity?.coverPhoto} 
+                        className="w-full h-full object-cover" 
+                        alt="activity" 
                       />
                     </div>
                     <div className="p-3">
