@@ -28,7 +28,7 @@ import FriendProfile from "../pages/Friends/FriendProfile";
 import FriendReviews from "../pages/Friends/FriendReviews";
 import FriendJoinedActivities from "../pages/Friends/FriendJoinedActivities";
 import FriendCreatedActivities from "../pages/Friends/FriendCreatedActivities";
-import UserJoinedActivities from "../pages/reviews/UserJoinedActivities";
+import UserJoinedActivities from "../pages/UserJoinedActivities";
 import UserCreatedActivities from "../pages/UserCreatedActivities";
 import UserMemoryActivities from "../pages/UserMemoryActivities";
 import MyCalendar from "../pages/MyCalendar";
