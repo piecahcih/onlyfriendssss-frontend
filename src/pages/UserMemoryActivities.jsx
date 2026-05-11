@@ -17,16 +17,6 @@ function UserMemoryActivities() {
 
   const title = "My Memory Activities";
 
-  const BACKEND_URL = "http://localhost:3999";
-
-  const getFullImgPath = (path) => {
-    if (!path) return mockActImg;
-    if (typeof path !== "string" || path.startsWith("data:") || path.startsWith("http")) {
-      return path;
-    }
-    return `${BACKEND_URL}${path}`;
-  };
-
   return (
     <div className="min-h-screen bg-base-200 flex flex-col">
       <header className="w-full top-0 sticky z-40 bg-base-200 shadow-[0_8px_32px_rgba(78,33,32,0.08)] flex items-center justify-between px-6 py-4 relative">
@@ -63,7 +53,7 @@ function UserMemoryActivities() {
                 >
                   <div className="h-32 bg-gray-200">
                     <img
-                      src={getFullImgPath(activity?.coverPhoto)}
+                      src={activity?.coverPhoto}
                       className="w-full h-full object-cover"
                       alt="memory-activity"
                     />

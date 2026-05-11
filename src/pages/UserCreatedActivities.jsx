@@ -12,22 +12,12 @@ function UserCreatedActivities() {
   const getAllActivitiesCreatedByThisAccount = useActivityStore(
     (state) => state.getAllActivitiesCreatedByThisAccount
   );
-
+// console.log('activities', activities)
   useEffect(() => {
     getAllActivitiesCreatedByThisAccount();
   }, []);
 
   const title = "My Created Activities";
-
-  const BACKEND_URL = "http://localhost:3999";
-
-  const getFullImgPath = (path) => {
-    if (!path) return mockActImg;
-    if (typeof path !== "string" || path.startsWith("data:") || path.startsWith("http")) {
-      return path;
-    }
-    return `${BACKEND_URL}${path}`;
-  };
 
   const hdlEdit = (e, actid) => {
     e.preventDefault();
@@ -81,7 +71,7 @@ function UserCreatedActivities() {
 
                   <div className="h-32 bg-gray-200">
                     <img
-                      src={getFullImgPath(activity?.coverPhoto)}
+                      src={activity?.coverPhoto}
                       className="w-full h-full object-cover"
                       alt="activity"
                     />
