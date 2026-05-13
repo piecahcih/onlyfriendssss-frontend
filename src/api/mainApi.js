@@ -1,11 +1,11 @@
 import axios from "axios"
 import useUserStore from "../stores/userStore"
 
-const BASE_URL = import.meta.env.VITE_BACKEND_URL ||'http://localhost:3999'
+const BASE_URL = import.meta.env.VITE_BACKEND_URL ||`/api`
 
 export const mainApi = axios.create({
   // baseURL: "http://localhost:3999/api",
-  baseURL: `/api`,
+  baseURL: BASE_URL,
 })
 
 
