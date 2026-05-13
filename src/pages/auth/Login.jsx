@@ -168,7 +168,7 @@ function Login() {
           <AppleLogo className="bg-base-100 rounded-full p-2" />
         </div> */}
 
-        <div className="flex justify-center gap-4 h-[40px] w-full px-10">
+        <div className="flex justify-center gap-4 h-[40px] w-[315px]">
           <button onClick={handleGoogleLogin} className="w-full flex gap-3 items-center justify-center transition-transform active:scale-95 bg-base-100 rounded-full p-2 shadow-sm hover:bg-gray-100">
             <GoogleLogo className="w-8 h-5" /> Continue with Google
           </button>
