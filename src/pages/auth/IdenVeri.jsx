@@ -1,4 +1,4 @@
-import mockFaceId from "../../assets/Face Id.png"
+import mockFaceId from "../../assets/FaceID.png"
 
 function IdenVeri() {
   return (
