@@ -132,7 +132,7 @@ function Register() {
           </fieldset>
         </form>
 
-        <div className="divider mx-12 text-[12px]">OR</div>
+        <div className="divider w-90 m-auto text-[12px] p-7">OR</div>
 
         {/* <div className="flex justify-center gap-4 h-[50px]">
           <FacebookLogo className="bg-base-100 rounded-full p-2 text-black" />
@@ -141,7 +141,7 @@ function Register() {
           </button>
           <AppleLogo className="bg-base-100 rounded-full p-2" />
         </div> */}
-        <div className="flex justify-center gap-4 h-[40px] w-full px-10">
+        <div className="flex justify-center gap-4 h-[40px] w-[315px]">
           <button onClick={handleGoogleLogin} className="w-full flex gap-3 items-center justify-center transition-transform active:scale-95 bg-base-100 rounded-full p-2 shadow-sm hover:bg-gray-100">
             <GoogleLogo className="w-8 h-5" /> Continue with Google
           </button>
